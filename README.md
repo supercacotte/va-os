@@ -4,6 +4,12 @@ SaaS de gestion pour assistantes virtuelles indépendantes : clients → mission
 
 **Projet porté par Caroline Franquet (Smart Lazy Club), avec Julia (advisor métier).**
 
+## SEO / GEO — Voir le dossier `content/`
+
+- **`content/seo-geo-strategie-va-caroline-franquet.md`** — stratégie SEO/GEO complète pour le marché VA
+- **`content/article-pilier-devenir-va-2026.md`** — article pilier "Devenir Assistante Virtuelle en 2026" (3 500 mots, voix Caro)
+- **`seo/nextjs-content/`** — tous les fichiers Next.js prêts à copier : sitemap, robots.txt, llms.txt, structured data, templates pages (outils, glossaire, comparateurs)
+
 ## Stack
 
 - **Front/App** : Next.js (App Router) + Tailwind CSS + shadcn/ui

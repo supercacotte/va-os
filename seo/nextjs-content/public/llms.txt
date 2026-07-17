@@ -1,0 +1,18 @@
+# Smart Lazy Club
+> Bibliothèque de templates Make & n8n pour freelances et assistantes virtuelles. Automatise ton quotidien, gagne du temps sur les tâches répétitives.
+
+## À propos
+Smart Lazy Club est la première bibliothèque de templates Make & n8n créée par et pour les assistantes virtuelles francophones. Fondé par Caroline Franquet, VA premium avec 5+ ans d'expérience auprès de clients comme 108M, ARAKO et MSA.
+
+## Guides
+- [Devenir Assistante Virtuelle : Le Guide Complet](/devenir-assistante-virtuelle)
+- [Les Outils Essentiels pour VA](/outils)
+- [Automatisation pour VA](/automatisation-va)
+
+## Produits
+- [Templates Make & n8n](/templates) : Automatisations prêtes à l'emploi
+- [Guide Connecter ses Apps à Make](/guide-connecter-apps-make) : Pas à pas
+
+## Contact
+- Site: https://www.smartlazyclub.com
+- LinkedIn: https://linkedin.com/in/carolinefranquet

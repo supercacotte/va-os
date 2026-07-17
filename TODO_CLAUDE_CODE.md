@@ -1,5 +1,15 @@
 # Chantier réservé à la phase Claude Code (à partir du ~18 août)
 
+## SEO / GEO — Voir `seo/` et `content/`
+- [ ] Copier `seo/nextjs-content/` dans la racine du projet Next.js
+- [ ] Ajouter `robots.txt` et `llms.txt` dans `/public`
+- [ ] Intégrer `app/sitemap.ts` pour le sitemap dynamique
+- [ ] Intégrer `app/feed.xml/route.ts` pour le RSS feed
+- [ ] Intégrer `components/json-ld.tsx` et `lib/metadata.ts`
+- [ ] Intégrer le layout racine avec structured data
+- [ ] Créer les pages programmatiques : `/outils/`, `/comparer/`, `/glossaire-va/`, `/devenir-assistante-virtuelle/`
+- [ ] Rédiger le corps de l'article pilier dans `app/devenir-assistante-virtuelle/page.tsx` (contenu dans `content/article-pilier-devenir-va-2026.md`)
+
 > Ce que Bolt fait mal ou qu'on garde volontairement pour la reprise sur le repo exporté.
 > Ajouter ici tout bug abandonné après 2-3 tentatives Bolt (avec lien vers PROMPTS_LOG.md).
 
