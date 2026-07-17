@@ -14,7 +14,7 @@ SaaS de gestion pour assistantes virtuelles indépendantes : clients → mission
 
 ## Design system
 
-Fond crème `#FCF9E8` · Navy `#19192C` · Carmin `#E8005A` (actions) · Titres Clash Display · Corps Satoshi · UI en français, tutoiement.
+Fond crème `#FXXXX8` · Rouge `#XXXXX` · Carmin `#XXXXXX` (actions) · Titres Clash Display · Corps Satoshi · UI en français, tutoiement.
 
 ## Lancer en local
 
