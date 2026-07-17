@@ -15,7 +15,7 @@ Une assistante virtuelle (VA), c'est une professionnelle qui fournit des service
 
 Concrètement, tu fais ce qu'une assistante de direction ferait en entreprise — mais en remote et pour plusieurs clients.
 
-Le marché explose en France : +40% de recherche "devenir assistante virtuelle" chaque année. Les entrepreneurs délèguent de plus en plus, et ils cherchent des VA qui maîtrisent les outils modernes (automatisation, IA, no-code).
+Le marché de l'assistanat virtuel en France est encore jeune mais en pleine croissance. Les entrepreneurs délèguent de plus en plus, et ils cherchent des VA qui maîtrisent les outils modernes (automatisation, IA, no-code).
 
 Pas juste "taper des emails". **Les VA qui cartonnent en 2026 sont celles qui automatisent.**
 
@@ -114,10 +114,10 @@ Parlons chiffres. Parce que c'est la première question que tout le monde se pos
 
 | Niveau | TJM | Revenu mensuel estimé (mi-temps) |
 |--------|-----|----------------------------------|
-| Débutante (0-6 mois) | 150-200€ | 1 500 - 2 000€ |
-| Intermédiaire (6-18 mois) | 200-350€ | 2 500 - 4 000€ |
-| Confirmée (2-5 ans) | 350-500€ | 4 000 - 6 000€ |
-| Expert / stratège (5+ ans) | 500-800€ | 6 000 - 10 000€+ |
+| Débutante (0-6 mois) | 100-180€ | 1 000 - 2 000€ |
+| Intermédiaire (6-18 mois) | 180-300€ | 2 000 - 3 500€ |
+| Confirmée (2-5 ans) | 300-450€ | 3 500 - 5 500€ |
+| Expert / stratège (5+ ans) | 450-700€ | 5 000 - 9 000€+ |
 
 **Deux choses importantes :**
 
@@ -131,7 +131,7 @@ Si tu travailles à mi-temps (20h/semaine, 4 jours) :
 
 | Mois 1-3 | Mois 4-6 | Mois 7-9 | Mois 10-12 |
 |----------|----------|----------|------------|
-| 800-1 500€ | 1 500-2 500€ | 2 500-3 500€ | 3 500-5 000€ |
+| 500-1 200€ | 1 200-2 000€ | 2 000-3 000€ | 3 000-4 500€ |
 | 1-2 clients | 2-3 clients | 3-4 clients | 4-5 clients |
 
 Ces chiffres sont réalistes. Pas de promesse "gagne 10 000€ par mois en dormant" — ce genre de discours, tu l'oublies.
