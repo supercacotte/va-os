@@ -358,9 +358,9 @@ Devenir assistante virtuelle, c'est accessible à quasi tout le monde. Le vrai t
 
 Si tu veux aller plus loin, j'ai deux ressources pour toi :
 
-**🎓 La VA Academy** — formation en ligne pour les VA qui veulent maîtriser l'automatisation et les outils modernes. Pas de bullshit, du concret qui te fait gagner en valeur et en tarif.
-
 **⚡ Smart Lazy Club** — ma bibliothèque de templates Make prêts à l'emploi. Tu veux automatiser mais pas tout construire from scratch ? Les scénarios sont déjà prêts, tu importes et tu configures.
+
+**🎓 La VA Academy** — la formation de Maddalena et Tissem pour devenir VA, où j'interviens comme experte en automatisation. Si tu veux la partie métier + technique en un seul endroit, c'est là que ça se passe.
 
 Tu veux qu'on échange 15 min sur ton projet ? Prends un créneau → [lien Calendly]
 
