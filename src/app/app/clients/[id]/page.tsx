@@ -4,12 +4,15 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getClientDetailForVa } from "@/lib/data/clients";
 import { getActiveTimeEntryForVa } from "@/lib/data/timeEntries";
+import { clientColorVar } from "@/lib/client-colors";
 import ClientForm from "@/components/app/ClientForm";
 import InviteClientForm from "@/components/app/InviteClientForm";
 import AddMissionForm from "@/components/app/AddMissionForm";
 import MissionCard from "@/components/app/MissionCard";
 import AddTaskForm from "@/components/app/AddTaskForm";
 import TaskRow from "@/components/app/TaskRow";
+
+const SECTION_LABEL = "text-[13px] font-bold uppercase tracking-[1.5px] text-ink";
 
 export default async function ClientDetailPage({
   params,
@@ -27,90 +30,106 @@ export default async function ClientDetailPage({
   if (!client) notFound();
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-16">
-      <div>
-        <Link
-          href="/app/clients"
-          className="font-label text-xs uppercase tracking-wide text-muted transition hover:text-corail"
-        >
-          ← Mes clients
-        </Link>
-        <h1 className="mt-2 font-display text-3xl text-ink">{client.name}</h1>
-        {client.company && (
-          <p className="mt-1 font-label text-xs uppercase tracking-wide text-muted">
-            {client.company}
-          </p>
-        )}
-      </div>
+    <main className="flex-1 px-8 py-10">
+      <Link
+        href="/app/clients"
+        className="text-sm font-semibold text-ink underline decoration-orange decoration-2 underline-offset-4 transition hover:decoration-ink"
+      >
+        ← Mes clients
+      </Link>
 
-      <section className="rounded-3xl border border-line bg-paper p-6">
-        <h2 className="mb-4 font-display text-lg text-ink">Infos du client</h2>
-        <ClientForm
-          client={{ id: client.id, name: client.name, company: client.company }}
+      <div className="mb-8 mt-3 flex items-center gap-4">
+        <span
+          className="h-10 w-10 shrink-0 rounded-full shadow-sticker"
+          style={{ backgroundColor: clientColorVar(client.color) }}
+          aria-hidden
         />
-        <div className="mt-6 border-t border-line pt-4">
-          {client.portalUser ? (
-            <p className="font-body text-sm text-mer">
-              Portail activé pour {client.portalUser.email}
+        <div>
+          <h1 className="font-bowlby text-[44px] leading-none text-ink">{client.name}</h1>
+          {client.company && (
+            <p className="mt-1 text-[13px] font-semibold text-ink opacity-70">
+              {client.company}
             </p>
-          ) : (
-            <>
-              <p className="mb-2 font-body text-sm text-muted-2">
-                Invite ce client sur son portail (lecture seule de l&apos;avancement) :
-              </p>
-              <InviteClientForm clientId={client.id} />
-            </>
           )}
         </div>
-      </section>
+      </div>
 
-      <section className="flex flex-col gap-4">
-        <h2 className="font-display text-xl text-ink">Missions</h2>
+      <div className="grid gap-7 lg:grid-cols-[380px_minmax(0,1fr)]">
+        <section className="flex flex-col gap-3">
+          <h2 className={SECTION_LABEL}>Infos du client</h2>
+          <div className="rounded-[18px] bg-sand p-6">
+            <ClientForm
+              client={{ id: client.id, name: client.name, company: client.company }}
+            />
+            <div className="mt-6 border-t border-ink/15 pt-4">
+              {client.portalUser ? (
+                <p className="text-[13px] font-semibold text-ink">
+                  Portail activé pour {client.portalUser.email}{" "}
+                  <span className="ml-1 rounded-full bg-lime px-2 py-0.5 text-[11px] font-bold">
+                    actif ✓
+                  </span>
+                </p>
+              ) : (
+                <>
+                  <p className="mb-2 text-[13px] font-medium text-ink opacity-70">
+                    Invite ce client sur son portail (lecture seule de l&apos;avancement) :
+                  </p>
+                  <InviteClientForm clientId={client.id} />
+                </>
+              )}
+            </div>
+          </div>
+        </section>
 
-        {client.missions.length === 0 && (
-          <p className="rounded-3xl border border-dashed border-line bg-paper p-6 font-body text-sm text-muted-2">
-            Pas encore de mission pour {client.name}. Une mission = un chantier récurrent ou
-            ponctuel (ex. « Gestion des réseaux sociaux ») — crée la première ci-dessous.
-          </p>
-        )}
+        <section className="flex flex-col gap-3">
+          <h2 className={SECTION_LABEL}>Missions</h2>
 
-        {client.missions.map((mission) => (
-          <MissionCard
-            key={mission.id}
-            mission={{
-              id: mission.id,
-              name: mission.name,
-              status: mission.status,
-              clientId: client.id,
-            }}
-          >
-            {mission.tasks.length === 0 ? (
-              <p className="font-body text-xs text-muted">
-                Aucune tâche — ajoute la première ci-dessous.
-              </p>
-            ) : (
-              <ul className="flex flex-col">
-                {mission.tasks.map((task) => (
-                  <TaskRow
-                    key={task.id}
-                    task={{
-                      id: task.id,
-                      title: task.title,
-                      done: task.done,
-                      source: task.source,
-                    }}
-                    clientId={client.id}
-                    timerActive={activeEntry?.task.id === task.id}
-                  />
-                ))}
-              </ul>
-            )}
-            <AddTaskForm missionId={mission.id} clientId={client.id} />
-          </MissionCard>
-        ))}
+          {client.missions.length === 0 && (
+            <p className="rounded-[14px] border-2 border-dashed border-ink/30 p-5 text-[13px] font-medium text-ink opacity-70">
+              Pas encore de mission pour {client.name}. Une mission = un chantier récurrent ou
+              ponctuel — crée la première ci-dessous.
+            </p>
+          )}
 
-        <AddMissionForm clientId={client.id} />
-      </section>
+          {client.missions.map((mission) => (
+            <MissionCard
+              key={mission.id}
+              mission={{
+                id: mission.id,
+                name: mission.name,
+                status: mission.status,
+                clientId: client.id,
+              }}
+              clientColor={client.color}
+            >
+              {mission.tasks.length === 0 ? (
+                <p className="text-[13px] font-medium text-ink opacity-70">
+                  Aucune tâche — ajoute la première ci-dessous.
+                </p>
+              ) : (
+                <ul className="flex flex-col">
+                  {mission.tasks.map((task) => (
+                    <TaskRow
+                      key={task.id}
+                      task={{
+                        id: task.id,
+                        title: task.title,
+                        done: task.done,
+                        source: task.source,
+                      }}
+                      clientId={client.id}
+                      timerActive={activeEntry?.task.id === task.id}
+                    />
+                  ))}
+                </ul>
+              )}
+              <AddTaskForm missionId={mission.id} clientId={client.id} />
+            </MissionCard>
+          ))}
+
+          <AddMissionForm clientId={client.id} />
+        </section>
+      </div>
     </main>
   );
 }

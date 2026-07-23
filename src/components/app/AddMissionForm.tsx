@@ -17,7 +17,11 @@ export default function AddMissionForm({ clientId }: { clientId: string }) {
   );
 
   return (
-    <form ref={formRef} action={action} className="flex flex-col gap-2">
+    <form
+      ref={formRef}
+      action={action}
+      className="flex flex-col gap-2 rounded-[14px] border-2 border-dashed border-ink/30 p-4"
+    >
       <div className="flex flex-wrap items-center gap-2">
         <input type="hidden" name="clientId" value={clientId} />
         <label htmlFor={`mission-${clientId}`} className="sr-only">
@@ -28,17 +32,17 @@ export default function AddMissionForm({ clientId }: { clientId: string }) {
           name="name"
           required
           placeholder="Nouvelle mission (ex. Gestion des réseaux sociaux)"
-          className="min-w-0 flex-1 rounded-full border border-line bg-cream px-5 py-3 font-body text-sm text-ink outline-none transition focus:border-corail"
+          className="min-w-0 flex-1 rounded-[10px] bg-sand px-4 py-3 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
         />
         <button
           disabled={pending}
           type="submit"
-          className="rounded-full bg-corail px-5 py-3 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-ink disabled:opacity-60"
+          className="rounded-xl bg-orange px-5 py-3 text-sm font-bold text-ink shadow-sticker transition hover:brightness-95 disabled:opacity-60"
         >
           {pending ? "Ajout…" : "+ Mission"}
         </button>
       </div>
-      {state?.error && <p className="font-body text-xs text-corail">{state.error}</p>}
+      {state?.error && <p className="text-xs font-semibold text-ink/70">{state.error}</p>}
     </form>
   );
 }

@@ -9,22 +9,25 @@ export default async function NewClientPage() {
   if (session?.user.role !== "VA") redirect("/");
 
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-8 px-6 py-16">
-      <div>
-        <Link
-          href="/app/clients"
-          className="font-label text-xs uppercase tracking-wide text-muted transition hover:text-corail"
-        >
-          ← Mes clients
-        </Link>
-        <h1 className="mt-2 font-display text-3xl text-ink">Nouveau client</h1>
-        <p className="mt-1 font-body text-sm text-muted-2">
+    <main className="flex-1 px-8 py-10">
+      <Link
+        href="/app/clients"
+        className="text-sm font-semibold text-ink underline decoration-orange decoration-2 underline-offset-4 transition hover:decoration-ink"
+      >
+        ← Mes clients
+      </Link>
+
+      <div className="mb-8 mt-3">
+        <h1 className="font-bowlby text-[44px] leading-none text-ink">Nouveau client</h1>
+        <p className="mt-3 text-[13px] font-medium text-ink opacity-70">
           Une fiche créée = un endroit unique pour ses missions, ses tâches et bientôt ses
           rapports.
         </p>
       </div>
 
-      <ClientForm />
+      <div className="max-w-xl rounded-[18px] bg-sand p-6">
+        <ClientForm />
+      </div>
     </main>
   );
 }
