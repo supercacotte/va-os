@@ -27,6 +27,8 @@
 | D13 | Bolt Pro (tokens jusqu'au 28/08) relégué à un usage optionnel : maquettes UI jetables uniquement, jamais de code destiné au repo | ⏳ | Éviter deux bases de code divergentes |
 | D14 | **Tranchée le 23/07** : identité **VA Desk** (tagline « Tout votre business, au même endroit. ») — palette lavande `#C5C4FF`, rose `#FFB6E3`, citron `#E3F85A`, orange `#FCA049`, fond `#EBEAE5`, ink `#202221`, blanc `#FBFBF9`, olive `#CBC064` ; principe : app lisible, texte toujours ink sur fonds clairs, couleurs en accents/surfaces uniquement | ✅ 23/07 | Identité propre au produit (distincte du site SLC), pensée pour un outil de travail quotidien |
 
+| D15 | Rapports **persistés** (modèle `Report`, un par client × mois, « générer » = action explicite de la VA) + **toggle de visibilité portail par client** (`Client.portalReportsEnabled`, défaut ON) : le portail ne montre que les rapports générés d'un client dont le toggle est actif | ✅ 23/07 | Maquettes 15a/16c validées par Caroline ; remplace la V1 « tous les mois avec du temps sont visibles » (note de la session Phase 5) |
+
 ## Modèle d'entrée pour les prochaines décisions
 
 ```
