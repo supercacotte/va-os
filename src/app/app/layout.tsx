@@ -1,40 +1,37 @@
 import Link from "next/link";
 
-import SpaceHeader from "@/components/SpaceHeader";
+import { auth } from "@/auth";
+import AppNav from "@/components/app/AppNav";
+import UserMenu from "@/components/UserMenu";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+
   return (
-    <>
-      <SpaceHeader badge="Mon espace" homeHref="/app" />
-      <nav className="border-b border-line bg-paper/60 px-6 lg:px-10">
-        <div className="flex h-11 items-center gap-6">
-          <Link
-            href="/app"
-            className="font-label text-xs uppercase tracking-wide text-ink/70 transition hover:text-corail"
-          >
-            Tableau de bord
-          </Link>
-          <Link
-            href="/app/clients"
-            className="font-label text-xs uppercase tracking-wide text-ink/70 transition hover:text-corail"
-          >
-            Clients
-          </Link>
-          <Link
-            href="/app/temps"
-            className="font-label text-xs uppercase tracking-wide text-ink/70 transition hover:text-corail"
-          >
-            Temps
-          </Link>
-          <Link
-            href="/app/rapports"
-            className="font-label text-xs uppercase tracking-wide text-ink/70 transition hover:text-corail"
-          >
-            Rapports
-          </Link>
-        </div>
-      </nav>
-      {children}
-    </>
+    <div className="mx-auto flex w-full max-w-[1320px] flex-1 flex-col px-4 py-6 lg:px-8">
+      <div className="flex flex-1 flex-col rounded-3xl bg-paper shadow-screen">
+        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-ink/15 px-8 py-5">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/app"
+              className="-rotate-2 rounded-[10px] bg-pink px-3.5 py-1.5 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker"
+            >
+              VA DESK
+            </Link>
+            <span className="text-[13px] font-bold uppercase tracking-[1.5px] text-ink">
+              Mon espace
+            </span>
+          </div>
+
+          <div className="flex items-center gap-5">
+            <AppNav />
+            {session?.user && (
+              <UserMenu name={session.user.name} email={session.user.email} />
+            )}
+          </div>
+        </header>
+        {children}
+      </div>
+    </div>
   );
 }

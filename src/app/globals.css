@@ -1,64 +1,139 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Identité VA Desk (D14, 23/07) — « Tout votre business, au même endroit. »
-   Principe : app lisible. Le texte est toujours ink sur fonds clairs, les
-   couleurs ne servent qu'en accents et surfaces. */
+/* DA VA Desk — design/DESIGN.md (maquettes 5a & 7a).
+   « La grille est sérieuse, les accessoires sont ludiques. »
+   Texte toujours ink ; couleurs vives en fonds de surfaces et badges. */
 :root {
-  --lavande: #c5c4ff;
-  --rose: #ffb6e3;
-  --citron: #e3f85a;
-  --orange: #fca049;
-  --fond: #ebeae5;
   --ink: #202221;
-  --blanc: #fbfbf9;
+  --paper: #fbfbf9;
+  --sand: #ebeae5;
+  --lilac: #c5c4ff;
+  --pink: #ffb6e3;
+  --lime: #e3f85a;
+  --orange: #fca049;
   --olive: #cbc064;
+
+  /* Palette clients 1-20 (hex de secours — oklch ci-dessous) */
+  --client-1: #c5c4ff;
+  --client-2: #ffb6e3;
+  --client-3: #acddf8;
+  --client-4: #f8c79e;
+  --client-5: #ddd69a;
+  --client-6: #ffb9c6;
+  --client-7: #f0bcf0;
+  --client-8: #9ce5de;
+  --client-9: #ebcf97;
+  --client-10: #ffc0a8;
+  --client-11: #cbdd9f;
+  --client-12: #b8e2ab;
+  --client-13: #a9e5bc;
+  --client-14: #9fe6ce;
+  --client-15: #a0e2ec;
+  --client-16: #bcd6ff;
+  --client-17: #cbceff;
+  --client-18: #e4c1fb;
+  --client-19: #f9b8e2;
+  --client-20: #ffbab8;
+}
+
+/* Valeurs oklch préférées (DESIGN.md §1) quand le navigateur les supporte. */
+@supports (color: oklch(0.5 0.1 100)) {
+  :root {
+    --lilac: oklch(0.83 0.09 282);
+    --pink: oklch(0.85 0.11 340);
+    --client-1: oklch(0.83 0.09 282);
+    --client-2: oklch(0.85 0.11 340);
+    --client-3: oklch(0.86 0.09 216);
+    --client-4: oklch(0.86 0.09 54);
+    --client-5: oklch(0.86 0.09 90);
+    --client-6: oklch(0.86 0.09 0);
+    --client-7: oklch(0.86 0.09 306);
+    --client-8: oklch(0.86 0.09 180);
+    --client-9: oklch(0.86 0.09 72);
+    --client-10: oklch(0.86 0.09 36);
+    --client-11: oklch(0.86 0.09 108);
+    --client-12: oklch(0.86 0.09 126);
+    --client-13: oklch(0.86 0.09 144);
+    --client-14: oklch(0.86 0.09 162);
+    --client-15: oklch(0.86 0.09 198);
+    --client-16: oklch(0.86 0.09 234);
+    --client-17: oklch(0.86 0.09 252);
+    --client-18: oklch(0.86 0.09 288);
+    --client-19: oklch(0.86 0.09 324);
+    --client-20: oklch(0.86 0.09 18);
+  }
 }
 
 @theme inline {
-  --color-lavande: var(--lavande);
-  --color-rose: var(--rose);
-  --color-citron: var(--citron);
-  --color-orange: var(--orange);
-  --color-fond: var(--fond);
   --color-ink: var(--ink);
-  --color-blanc: var(--blanc);
+  --color-paper: var(--paper);
+  --color-sand: var(--sand);
+  --color-lilac: var(--lilac);
+  --color-pink: var(--pink);
+  --color-lime: var(--lime);
+  --color-orange: var(--orange);
   --color-olive: var(--olive);
 
-  /* Alias de transition pour les écrans des phases 0-1 (non restylés) —
-     à supprimer lors du passage des écrans à la charte VA Desk. */
-  --color-cream: var(--fond);
-  --color-paper: var(--blanc);
+  --color-client-1: var(--client-1);
+  --color-client-2: var(--client-2);
+  --color-client-3: var(--client-3);
+  --color-client-4: var(--client-4);
+  --color-client-5: var(--client-5);
+  --color-client-6: var(--client-6);
+  --color-client-7: var(--client-7);
+  --color-client-8: var(--client-8);
+  --color-client-9: var(--client-9);
+  --color-client-10: var(--client-10);
+  --color-client-11: var(--client-11);
+  --color-client-12: var(--client-12);
+  --color-client-13: var(--client-13);
+  --color-client-14: var(--client-14);
+  --color-client-15: var(--client-15);
+  --color-client-16: var(--client-16);
+  --color-client-17: var(--client-17);
+  --color-client-18: var(--client-18);
+  --color-client-19: var(--client-19);
+  --color-client-20: var(--client-20);
+
+  /* Alias de transition — écrans pas encore passés à la DA. À supprimer
+     à la fin de la migration écran par écran. */
+  --color-lavande: var(--lilac);
+  --color-rose: var(--pink);
+  --color-citron: var(--lime);
+  --color-blanc: var(--paper);
+  --color-fond: var(--sand);
+  --color-cream: var(--sand);
   --color-corail: var(--orange);
   --color-mer: var(--olive);
-  --color-soleil: var(--citron);
+  --color-soleil: var(--lime);
   --color-muted: #71716b;
   --color-muted-2: #4a4a45;
   --color-line: #d9d7d0;
 
-  /* BOWL (display) et Aileron (body) passeront en next/font/local dès que
-     les fichiers de police seront dans le repo (src/fonts/) : les variables
-     --font-bowl / --font-aileron prendront alors le relais des fallbacks. */
-  --font-display: var(--font-bowl, Georgia, "Times New Roman", serif);
-  --font-body: var(
-    --font-aileron,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Helvetica Neue",
-    Arial,
-    sans-serif
-  );
-  --font-label: var(--font-space-mono);
+  /* Typo : Bowlby One = display (H1, timer, logo SEULEMENT) ;
+     Instrument Sans partout ailleurs. Les alias display/label pointent sur
+     Instrument pour les écrans legacy. */
+  --font-bowlby: var(--font-bowlby-one), "Arial Black", sans-serif;
+  --font-sans: var(--font-instrument), Helvetica, Arial, sans-serif;
+  --font-body: var(--font-instrument), Helvetica, Arial, sans-serif;
+  --font-display: var(--font-instrument), Helvetica, Arial, sans-serif;
+  --font-label: var(--font-instrument), Helvetica, Arial, sans-serif;
+
+  /* Ombres DA : offset « sticker » sans flou ; l'ombre floue n'existe qu'au
+     niveau du conteneur de page. */
+  --shadow-sticker: 0 4px 0 rgba(32, 34, 33, 0.12);
+  --shadow-sticker-strong: 0 5px 0 rgba(32, 34, 33, 0.2);
+  --shadow-screen: 0 16px 40px rgba(32, 34, 33, 0.12);
 }
 
 ::selection {
-  background: var(--lavande);
+  background: var(--lilac);
   color: var(--ink);
 }
 
 body {
-  background-color: var(--fond);
+  background-color: var(--sand);
   color: var(--ink);
   font-family: var(--font-body);
 }

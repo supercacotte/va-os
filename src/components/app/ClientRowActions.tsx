@@ -39,17 +39,17 @@ export default function ClientRowActions({ clientId, name }: Props) {
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-label={`Actions pour ${name}`}
-        className="flex h-8 w-8 items-center justify-center rounded-full text-ink/60 transition hover:bg-cream hover:text-corail"
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-paper/60 text-ink transition hover:bg-paper"
       >
-        <MoreHorizontal size={18} />
+        <MoreHorizontal size={16} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-9 z-50 w-44 rounded-2xl border border-line bg-paper p-1.5 shadow-xl shadow-ink/10">
+        <div className="absolute right-0 top-10 z-50 w-44 rounded-xl bg-paper p-1.5 shadow-sticker-strong">
           <Link
             href={`/app/clients/${clientId}`}
             onClick={() => setOpen(false)}
-            className="block rounded-lg px-3 py-2 text-left font-label text-xs uppercase tracking-wide text-ink/80 transition hover:bg-cream hover:text-corail"
+            className="block rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink transition hover:bg-sand"
           >
             Ouvrir
           </Link>
@@ -71,9 +71,9 @@ export default function ClientRowActions({ clientId, name }: Props) {
             <input type="hidden" name="clientId" value={clientId} />
             <button
               type="submit"
-              className="w-full rounded-lg px-3 py-2 text-left font-label text-xs uppercase tracking-wide text-corail/80 transition hover:bg-cream hover:text-corail"
+              className="w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink transition hover:bg-sand"
             >
-              Supprimer
+              Supprimer…
             </button>
           </form>
         </div>

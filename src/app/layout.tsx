@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
-import { Space_Mono } from "next/font/google";
+import { Bowlby_One, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
-// Fontes de marque VA Desk (D14) : BOWL (display) et Aileron (body) seront
-// chargées ici en next/font/local (variables --font-bowl / --font-aileron)
-// dès que les fichiers seront dans src/fonts/ — d'ici là, globals.css
-// retombe sur les fallbacks système.
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
+// Typo DA (design/DESIGN.md §2) : Bowlby One en display (H1, timer, logo
+// uniquement), Instrument Sans pour tout le reste.
+const bowlbyOne = Bowlby_One({
+  variable: "--font-bowlby-one",
+  weight: "400",
+  subsets: ["latin"],
+});
+
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -26,7 +30,7 @@ export default function RootLayout({
   auth: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={spaceMono.variable}>
+    <html lang="fr" className={`${bowlbyOne.variable} ${instrumentSans.variable}`}>
       <body className="flex min-h-screen flex-col">
         {children}
         {auth}

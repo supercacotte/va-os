@@ -30,7 +30,8 @@ export const CLIENT_COLORS: { oklch: string; hex: string }[] = [
 
 // Ramène n'importe quel numéro stocké sur 1-20 (recyclage au-delà de 20).
 export function normalizeClientColor(n: number) {
-  return ((Math.max(1, n) - 1) % CLIENT_COLOR_COUNT) + 1;
+  if (!Number.isFinite(n)) return 1;
+  return ((Math.max(1, Math.trunc(n)) - 1) % CLIENT_COLOR_COUNT) + 1;
 }
 
 // À utiliser dans les styles : var CSS avec fallback hex intégré côté CSS.
