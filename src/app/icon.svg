@@ -2,5 +2,5 @@
   <!-- Monogramme V (planche 23a) : pastille citron, V ink — version petite
        taille : droit, sans liseré ni ombre, net dans un onglet. -->
   <rect width="64" height="64" rx="14" fill="#E3F85A"/>
-  <text x="32" y="46" text-anchor="middle" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="38" fill="#202221">V</text>
+  <path d="M 14 16 L 24 16 L 32 40 L 40 16 L 50 16 L 37 50 L 27 50 Z" fill="#202221"/>
 </svg>
