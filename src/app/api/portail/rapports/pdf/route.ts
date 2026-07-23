@@ -20,13 +20,16 @@ export async function GET(req: NextRequest) {
   }
 
   const [year, month] = mois.split("-").map(Number);
+  // D15 : 404 si le rapport n'a pas été généré ou si le toggle portail est
+  // désactivé pour ce client.
   const report = await getActivityReportForPortalUser(
     session.user.id,
+    mois,
     new Date(Date.UTC(year, month - 1, 1)),
     new Date(Date.UTC(year, month, 1)),
   );
   if (!report) {
-    return new NextResponse("Compte portail introuvable", { status: 404 });
+    return new NextResponse("Rapport indisponible", { status: 404 });
   }
 
   const periodLabel = new Intl.DateTimeFormat("fr-FR", {

@@ -104,9 +104,24 @@ model Client {
   // Numéro 1-20 dans la palette clients du DESIGN.md — attribué à la
   // création, ne change jamais (pas recalculé par index de liste).
   color      Int       @default(1)
+  // D15 : gouverne la visibilité des rapports générés sur le portail client.
+  portalReportsEnabled Boolean @default(true)
   portalUser User?
   missions   Mission[]
+  reports    Report[]
   createdAt  DateTime  @default(now())
+}
+
+// D15 : un rapport « généré » par client × mois — action explicite de la VA.
+// Le contenu (PDF, version portail) est rendu à la volée depuis les temps.
+model Report {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  month       String // "2026-07"
+  generatedAt DateTime @default(now())
+
+  @@unique([clientId, month])
 }
 
 model Mission {
