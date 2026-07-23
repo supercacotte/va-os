@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
+import Footer from "@/components/Footer";
 
 const SPACE_BY_ROLE = {
   VA: "/app",
@@ -295,19 +296,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="flex flex-wrap items-center justify-between gap-4 bg-ink px-6 py-5 lg:px-12">
-        <span className="font-bowlby text-sm tracking-wide text-pink">VA DESK</span>
-        <div className="flex items-center gap-5 text-[13px] font-semibold text-paper/80">
-          <a href="#fonctionnalites" className="transition hover:text-paper">
-            Fonctionnalités
-          </a>
-          <a href="mailto:hello@vadesk.fr" className="transition hover:text-paper">
-            Contact
-          </a>
-          <span className="opacity-60">© 2026</span>
-        </div>
-      </footer>
+      <Footer variant="ink" />
     </div>
   );
 }

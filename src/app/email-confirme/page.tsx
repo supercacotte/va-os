@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import Footer from "@/components/Footer";
+
 export default async function EmailConfirmePage({
   searchParams,
 }: {
@@ -9,6 +11,7 @@ export default async function EmailConfirmePage({
   const success = status === "ok";
 
   return (
+    <>
     <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-20 text-center">
       <h1 className="font-bowlby text-[44px] leading-none text-ink">
         {success ? "Email confirmé !" : "Lien invalide ou expiré"}
@@ -25,5 +28,7 @@ export default async function EmailConfirmePage({
         Retour à l&apos;accueil
       </Link>
     </main>
+    <Footer variant="ink" />
+    </>
   );
 }

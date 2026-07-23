@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { auth } from "@/auth";
+import Footer from "@/components/Footer";
 import NavPills, { type NavItem } from "@/components/NavPills";
 import UserMenu from "@/components/UserMenu";
 
@@ -41,6 +42,7 @@ export default async function Shell({ badge, homeHref, navItems, children }: Pro
           </div>
         </header>
         {children}
+        <Footer />
       </div>
     </div>
   );

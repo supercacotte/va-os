@@ -121,6 +121,22 @@ Base 4 px.
 9. Contraste : tout texte < 15 px sur aplat coloré passe en graisse ≥ 600.
 10. Pas d'emoji dans l'UI ; les symboles (▶ ⏸ ■ › ▾ ✓ ●) suffisent.
 
+## 5 bis. Footer
+
+Deux variantes, présentes sur toutes les pages :
+
+- **Footer app** (espaces connectés — VA, portail, admin) : bandeau discret en
+  bas du conteneur `paper`, séparé par un filet `1px rgba(32,34,33,0.15)`.
+  Gauche : « VA DESK » en Bowlby One 12 px (à plat, pas de rotation) +
+  « © 2026 » à 60 %. Droite : liens 12 px 600 (« Contact », « vadesk.fr »
+  souligné orange). Pas de couleur de fond.
+- **Footer ink** (pages publiques : landing, pages email) : bandeau `ink`
+  pleine largeur, logo « VA DESK » en Bowlby One couleur `pink`, liens
+  13 px 600 en `paper` à 80 %, « © 2026 » à 60 %.
+
+Le pied de page du document PDF (DESIGN-RAPPORTS.md §2) est distinct et suit
+ses propres règles.
+
 ## 6. Dashboard client (portail) — pattern spécifique
 
 Ces règles s'appliquent **uniquement au dashboard client** (référence : maquette 7a), pas à l'espace VA ni à l'admin.
