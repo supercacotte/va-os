@@ -25,7 +25,7 @@ export default function ActiveTimerBanner({ entry }: Props) {
       <div className="min-w-0">
         <div className="flex items-center gap-3">
           <p className="text-[19px] font-bold text-ink">En cours</p>
-          <span className="rotate-2 rounded-full bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-sticker">
+          <span className="rotate-2 rounded-full border-4 border-paper bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-sticker">
             ● rec
           </span>
         </div>

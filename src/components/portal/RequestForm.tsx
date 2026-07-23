@@ -34,7 +34,7 @@ export default function RequestForm({ clientColor, vaFirstName, requests }: Prop
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-[15px] font-bold text-ink">Un truc à déléguer ?</p>
-        <span className="rotate-2 rounded-full bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-sticker">
+        <span className="rotate-2 rounded-full border-4 border-paper bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-sticker">
           go
         </span>
       </div>

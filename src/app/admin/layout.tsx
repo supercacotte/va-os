@@ -6,6 +6,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       badge="Admin"
       homeHref="/admin"
       navItems={[{ href: "/admin", label: "Tableau de bord", exact: true }]}
+      footerTone="ink"
     >
       {children}
     </Shell>

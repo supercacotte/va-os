@@ -9,13 +9,20 @@ type Props = {
   badge: string;
   homeHref: string;
   navItems: NavItem[];
+  footerTone?: "pink" | "ink";
   children: React.ReactNode;
 };
 
 // Conteneur d'écran DA (DESIGN.md §3) : carte paper élevée sur fond sand —
-// seule ombre floutée autorisée. Header : sticker logo penché + label espace
-// en majuscules + nav pills (actif = ink).
-export default async function Shell({ badge, homeHref, navItems, children }: Props) {
+// seule ombre floutée autorisée. Header : logo die-cut (citron, liseré
+// paper, −3°) + label espace en majuscules + nav pills (actif = ink).
+export default async function Shell({
+  badge,
+  homeHref,
+  navItems,
+  footerTone = "pink",
+  children,
+}: Props) {
   const session = await auth();
 
   return (
@@ -25,7 +32,7 @@ export default async function Shell({ badge, homeHref, navItems, children }: Pro
           <div className="flex items-center gap-4">
             <Link
               href={homeHref}
-              className="-rotate-2 rounded-[10px] bg-pink px-3.5 py-1.5 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker"
+              className="-rotate-3 rounded-[10px] border-4 border-paper bg-lime px-3 py-1 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker"
             >
               VA DESK
             </Link>
@@ -42,7 +49,7 @@ export default async function Shell({ badge, homeHref, navItems, children }: Pro
           </div>
         </header>
         {children}
-        <Footer />
+        <Footer tone={footerTone} />
       </div>
     </div>
   );

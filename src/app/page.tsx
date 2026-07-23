@@ -31,7 +31,7 @@ export default async function Home() {
     <div className="flex flex-1 flex-col">
       {/* Header */}
       <header className="flex flex-wrap items-center justify-between gap-4 bg-paper px-6 py-4 lg:px-12">
-        <span className="-rotate-2 rounded-[10px] bg-pink px-3.5 py-1.5 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker">
+        <span className="-rotate-3 rounded-[10px] border-4 border-paper bg-lime px-3 py-1 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker">
           VA DESK
         </span>
         <nav className="flex items-center gap-5">
@@ -100,13 +100,13 @@ export default async function Home() {
 
         {/* Mockup produit */}
         <div className="relative mx-auto mt-12 max-w-3xl" aria-hidden>
-          <span className="absolute -left-3 -top-3 z-10 -rotate-6 rounded-[8px] bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+          <span className="absolute -left-3 -top-3 z-10 -rotate-6 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker">
             ton espace
           </span>
           <div className="rounded-2xl bg-paper p-5 text-left shadow-screen">
             <div className="flex items-center justify-between border-b border-ink/15 pb-3">
               <div className="flex items-center gap-2">
-                <span className="rounded-[6px] bg-pink px-2 py-1 font-bowlby text-[10px] leading-none text-ink">
+                <span className="-rotate-3 rounded-[6px] border-2 border-paper bg-lime px-2 py-1 font-bowlby text-[10px] leading-none text-ink shadow-sticker">
                   VA DESK
                 </span>
                 <span className="rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-paper">
@@ -246,7 +246,7 @@ export default async function Home() {
             </p>
           </div>
           <div className="relative" aria-hidden>
-            <span className="absolute -right-2 -top-3 z-10 rotate-3 rounded-[8px] bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            <span className="absolute -right-2 -top-3 z-10 rotate-3 rounded-[8px] border-4 border-paper bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker">
               nouvelle demande
             </span>
             <div className="rounded-[18px] bg-lilac p-5 shadow-sticker">

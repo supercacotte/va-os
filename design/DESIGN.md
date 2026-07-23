@@ -93,6 +93,7 @@ Deux ombres seulement :
 Jamais d'ombre floutée sur les composants internes.
 
 ### Rotations (le « twist »)
+Logo et stickers en style « die-cut » : liseré blanc `#FBFBF9` (4-6 px) + ombre offset uniquement sur le logo (fond citron `#E3F85A`, lettres ink, rotation −3° — plus jamais de rose) et sur les stickers posés sur fond coloré ou visuel ; sur fond neutre (écru/paper) les stickers restent sans liseré.
 - Autorisées **uniquement** sur les stickers décoratifs : logo VA DESK (−2°), badge compteur du titre (−3°), badge d'état du chrono (« ● rec », « à l'arrêt », +2°).
 - **Interdites** sur les conteneurs, les lignes de liste, les tags de statut des missions, les champs. Max 3 éléments penchés par écran.
 
@@ -121,21 +122,14 @@ Base 4 px.
 9. Contraste : tout texte < 15 px sur aplat coloré passe en graisse ≥ 600.
 10. Pas d'emoji dans l'UI ; les symboles (▶ ⏸ ■ › ▾ ✓ ●) suffisent.
 
-## 5 bis. Footer
+## 5 bis. Pied de page (toutes les pages app)
 
-Deux variantes, présentes sur toutes les pages :
+Toutes les pages de l'app (espace VA, portail client, admin) se terminent par le même footer discret — la version bandeau ink est réservée à la landing (`DESIGN-LANDING.md`) :
 
-- **Footer app** (espaces connectés — VA, portail, admin) : bandeau discret en
-  bas du conteneur `paper`, séparé par un filet `1px rgba(32,34,33,0.15)`.
-  Gauche : « VA DESK » en Bowlby One 12 px (à plat, pas de rotation) +
-  « © 2026 » à 60 %. Droite : liens 12 px 600 (« Contact », « vadesk.fr »
-  souligné orange). Pas de couleur de fond.
-- **Footer ink** (pages publiques : landing, pages email) : bandeau `ink`
-  pleine largeur, logo « VA DESK » en Bowlby One couleur `pink`, liens
-  13 px 600 en `paper` à 80 %, « © 2026 » à 60 %.
-
-Le pied de page du document PDF (DESIGN-RAPPORTS.md §2) est distinct et suit
-ses propres règles.
+- Filet supérieur `1px solid rgba(32,34,33,0.13)`, padding 20 px 32 px.
+- À gauche : wordmark « VA DESK » en Bowlby One 13 px, couleur du contexte (rose espace VA/portail, ink admin) — pas de sticker, pas de rotation.
+- À droite : liens 12 px 600 (Aide · Contact) + « © 2026 » à 60 % d'opacité.
+- Fond transparent (celui de la page). Jamais de CTA ni de nav dans le footer.
 
 ## 6. Dashboard client (portail) — pattern spécifique
 
