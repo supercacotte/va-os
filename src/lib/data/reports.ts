@@ -16,9 +16,17 @@ export type ActivityReport = {
     name: string;
     totalMs: number;
     tasks: { id: string; title: string; totalMs: number; entryCount: number }[];
+    entries: {
+      id: string;
+      startedAt: Date;
+      label: string | null;
+      taskTitle: string;
+      durationMs: number;
+    }[];
   }[];
   totalMs: number;
   entryCount: number;
+  coveredTaskCount: number;
 };
 
 type ReportClient = {
@@ -66,21 +74,43 @@ async function buildActivityReport(
       name: string;
       totalMs: number;
       tasks: Map<string, { id: string; title: string; totalMs: number; entryCount: number }>;
+      entries: {
+        id: string;
+        startedAt: Date;
+        label: string | null;
+        taskTitle: string;
+        durationMs: number;
+      }[];
     }
   >();
   let totalMs = 0;
+  const coveredTasks = new Set<string>();
 
   for (const entry of entries) {
     const ms = entry.endedAt!.getTime() - entry.startedAt.getTime();
     totalMs += ms;
+    coveredTasks.add(entry.task.id);
 
     const mission = entry.task.mission;
     let missionAgg = missionMap.get(mission.id);
     if (!missionAgg) {
-      missionAgg = { id: mission.id, name: mission.name, totalMs: 0, tasks: new Map() };
+      missionAgg = {
+        id: mission.id,
+        name: mission.name,
+        totalMs: 0,
+        tasks: new Map(),
+        entries: [],
+      };
       missionMap.set(mission.id, missionAgg);
     }
     missionAgg.totalMs += ms;
+    missionAgg.entries.push({
+      id: entry.id,
+      startedAt: entry.startedAt,
+      label: entry.label,
+      taskTitle: entry.task.title,
+      durationMs: ms,
+    });
 
     let taskAgg = missionAgg.tasks.get(entry.task.id);
     if (!taskAgg) {
@@ -102,6 +132,7 @@ async function buildActivityReport(
     })),
     totalMs,
     entryCount: entries.length,
+    coveredTaskCount: coveredTasks.size,
   };
 }
 
