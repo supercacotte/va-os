@@ -31,7 +31,7 @@ export default async function Home() {
     <div className="flex flex-1 flex-col">
       {/* Header */}
       <header className="flex flex-wrap items-center justify-between gap-4 bg-paper px-6 py-4 lg:px-12">
-        <span className="-rotate-3 rounded-[10px] border-4 border-paper bg-lime px-3 py-1 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker">
+        <span className="-rotate-3 rounded-[10px] border-[5px] border-paper bg-lime px-3 py-1 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker">
           VA DESK
         </span>
         <nav className="flex items-center gap-5">

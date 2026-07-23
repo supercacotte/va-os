@@ -32,7 +32,7 @@ export default async function Shell({
           <div className="flex items-center gap-4">
             <Link
               href={homeHref}
-              className="-rotate-3 rounded-[10px] border-4 border-paper bg-lime px-3 py-1 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker"
+              className="-rotate-3 rounded-[10px] border-[5px] border-paper bg-lime px-3 py-1 font-bowlby text-base leading-none tracking-wide text-ink shadow-sticker"
             >
               VA DESK
             </Link>
