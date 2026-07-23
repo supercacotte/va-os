@@ -62,3 +62,32 @@
 - **Prochaine session** : déployer le hello-world sur Vercel (base Prisma
   Postgres dédiée) + demander l'accès API partenaire Qonto, puis Phase 1
   (auth & rôles, layouts protégés `/app`, `/portail`, `/admin`).
+
+## 23/07 — Phase 1 : auth & rôles, layouts protégés
+- **Objectif de la session** : les 3 espaces protégés par rôle + l'invitation
+  des comptes CLIENT.
+- **Fait** :
+  - `/app` (VA), `/portail` (CLIENT), `/admin` (ADMIN) sur le pattern admin du
+    repo de référence : `SpaceHeader` dans le layout, **vérification du rôle
+    dans chaque page** (`if (session?.user.role !== …) redirect("/")`).
+  - Le listing Phase 0 a déménagé de `/` vers `/app` ; la home publique route
+    chaque rôle vers son espace.
+  - Invitation client : Server Action `inviteClientUser` (Zod + session VA +
+    **vérification de propriété du client, D12**) → crée le User rôle CLIENT
+    rattaché au Client, envoie le magic link Resend (message dégradé si Resend
+    absent), `revalidatePath`. Pas d'inscription libre CLIENT.
+  - `lib/data` : `getClientsOverview` (filtre `vaId`), `getClientForPortalUser`
+    (filtre par user portail — le portail ne voit que SON client), `admin.ts`.
+  - Seed enrichi (idempotent) : ADMIN `caro@test.local`, CLIENT
+    `marie@test.local` rattaché à Marie Dupont — mot de passe commun
+    `motdepasse123` (le CLIENT a un mot de passe **en dev seulement**, en réel
+    c'est magic link).
+  - Vérifié dans le navigateur : les 3 espaces avec les 3 comptes, invitation
+    live de `paul@test.local` (carte passée à « Portail activé »), et refus
+    croisés (VA→/admin, VA→/portail, CLIENT→/app ⇒ redirect `/`).
+- **Ça coince** : rien de bloquant. Resend non configuré en local : l'email
+  d'invitation ne part pas, le compte est quand même créé (message explicite).
+- **Décision prise / à prendre** : néant (D14 palette toujours ouverte).
+- **Prochaine session** : Phase 2 — CRUD clients/missions/tâches côté VA
+  (formulaires Server Actions + Zod, RowActionsMenu), `lib/data/*` filtrés
+  par `vaId` dès la première ligne.

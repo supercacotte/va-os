@@ -8,8 +8,13 @@ const adapter = new PrismaPg({
 });
 const prisma = new PrismaClient({ adapter });
 
+// Tous les comptes de test partagent ce mot de passe. Le compte CLIENT reçoit
+// aussi un mot de passe pour tester le portail en local sans Resend — en réel,
+// les clients n'ont que le magic link.
+const TEST_PASSWORD = "motdepasse123";
 const VA_EMAIL = "julia@test.local";
-const VA_PASSWORD = "motdepasse123";
+const ADMIN_EMAIL = "caro@test.local";
+const CLIENT_EMAIL = "marie@test.local";
 
 const clients = [
   {
@@ -50,46 +55,84 @@ const clients = [
 ];
 
 async function main() {
-  const existing = await prisma.user.findUnique({ where: { email: VA_EMAIL } });
-  if (existing) {
-    console.log(`Seed déjà passé (${VA_EMAIL} existe) — rien à faire.`);
-    return;
-  }
+  const passwordHash = await bcrypt.hash(TEST_PASSWORD, 10);
 
-  const va = await prisma.user.create({
-    data: {
-      email: VA_EMAIL,
-      name: "Julia",
-      lastName: "Test",
-      password: await bcrypt.hash(VA_PASSWORD, 10),
-      role: "VA",
-      emailVerified: new Date(),
-    },
-  });
-
-  for (const clientData of clients) {
-    await prisma.client.create({
+  let va = await prisma.user.findUnique({ where: { email: VA_EMAIL } });
+  if (!va) {
+    va = await prisma.user.create({
       data: {
-        vaId: va.id,
-        name: clientData.name,
-        company: clientData.company,
-        missions: {
-          create: clientData.missions.map((mission) => ({
-            name: mission.name,
-            tasks: {
-              create: mission.tasks.map((task) => ({
-                title: task.title,
-                done: task.done,
-                ...("source" in task ? { source: task.source } : {}),
-              })),
-            },
-          })),
-        },
+        email: VA_EMAIL,
+        name: "Julia",
+        lastName: "Test",
+        password: passwordHash,
+        role: "VA",
+        emailVerified: new Date(),
       },
     });
   }
 
-  console.log(`Seed OK — VA ${VA_EMAIL} (mot de passe : ${VA_PASSWORD}), ${clients.length} clients, missions et tâches créés.`);
+  const existingClients = await prisma.client.count({ where: { vaId: va.id } });
+  if (existingClients === 0) {
+    for (const clientData of clients) {
+      await prisma.client.create({
+        data: {
+          vaId: va.id,
+          name: clientData.name,
+          company: clientData.company,
+          missions: {
+            create: clientData.missions.map((mission) => ({
+              name: mission.name,
+              tasks: {
+                create: mission.tasks.map((task) => ({
+                  title: task.title,
+                  done: task.done,
+                  ...("source" in task ? { source: task.source } : {}),
+                })),
+              },
+            })),
+          },
+        },
+      });
+    }
+  }
+
+  const admin = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
+  if (!admin) {
+    await prisma.user.create({
+      data: {
+        email: ADMIN_EMAIL,
+        name: "Caro",
+        lastName: "Admin",
+        password: passwordHash,
+        role: "ADMIN",
+        emailVerified: new Date(),
+      },
+    });
+  }
+
+  const clientUser = await prisma.user.findUnique({ where: { email: CLIENT_EMAIL } });
+  if (!clientUser) {
+    const marie = await prisma.client.findFirst({
+      where: { vaId: va.id, name: "Marie Dupont" },
+      include: { portalUser: { select: { id: true } } },
+    });
+    if (marie && !marie.portalUser) {
+      await prisma.user.create({
+        data: {
+          email: CLIENT_EMAIL,
+          name: "Marie Dupont",
+          password: passwordHash,
+          role: "CLIENT",
+          clientId: marie.id,
+          emailVerified: new Date(),
+        },
+      });
+    }
+  }
+
+  console.log(
+    `Seed OK — VA ${VA_EMAIL}, ADMIN ${ADMIN_EMAIL}, CLIENT ${CLIENT_EMAIL} (mot de passe commun : ${TEST_PASSWORD}), ${clients.length} clients, missions et tâches.`,
+  );
 }
 
 main()
