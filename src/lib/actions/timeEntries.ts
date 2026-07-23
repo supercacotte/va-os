@@ -48,14 +48,19 @@ export async function startTimerAction(
   return undefined;
 }
 
-// Variante sans état pour le bouton ▶ des lignes de tâches.
+// Variante sans état pour le bouton ▶ des lignes de tâches et le panneau
+// « Reprendre » (relance avec le même label).
 export async function quickStartTimerAction(formData: FormData) {
   const session = await requireVa();
 
   const taskId = formData.get("taskId");
   if (typeof taskId !== "string" || !taskId) return;
 
-  await startTimeEntryForVa(session.user.id, taskId, null);
+  const labelRaw = formData.get("label");
+  const label =
+    typeof labelRaw === "string" && labelRaw.trim() ? labelRaw.trim().slice(0, 200) : null;
+
+  await startTimeEntryForVa(session.user.id, taskId, label);
 
   const clientId = formData.get("clientId");
   revalidateTimerPaths(typeof clientId === "string" ? clientId : undefined);

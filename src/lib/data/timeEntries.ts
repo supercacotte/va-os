@@ -31,6 +31,61 @@ export async function getActiveTimeEntryForVa(vaId: string) {
   });
 }
 
+// Stats de la page temps (maquette 14a) : aujourd'hui / semaine / mois +
+// répartition du mois par client. Bornes en heure locale du serveur.
+export async function getTimeStatsForVa(vaId: string) {
+  const now = new Date();
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+  const weekStart = new Date(todayStart);
+  weekStart.setDate(todayStart.getDate() - ((todayStart.getDay() + 6) % 7));
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const since = weekStart < monthStart ? weekStart : monthStart;
+
+  const entries = await prisma.timeEntry.findMany({
+    where: { endedAt: { not: null }, startedAt: { gte: since }, ...entryOwnedBy(vaId) },
+    select: {
+      startedAt: true,
+      endedAt: true,
+      task: {
+        select: {
+          mission: {
+            select: { client: { select: { id: true, name: true, color: true } } },
+          },
+        },
+      },
+    },
+  });
+
+  let todayMs = 0;
+  let weekMs = 0;
+  let monthMs = 0;
+  const perClient = new Map<
+    string,
+    { id: string; name: string; color: number; totalMs: number }
+  >();
+
+  for (const entry of entries) {
+    const ms = entry.endedAt!.getTime() - entry.startedAt.getTime();
+    if (entry.startedAt >= todayStart) todayMs += ms;
+    if (entry.startedAt >= weekStart) weekMs += ms;
+    if (entry.startedAt >= monthStart) {
+      monthMs += ms;
+      const client = entry.task.mission.client;
+      const agg = perClient.get(client.id) ?? { ...client, totalMs: 0 };
+      agg.totalMs += ms;
+      perClient.set(client.id, agg);
+    }
+  }
+
+  return {
+    todayMs,
+    weekMs,
+    monthMs,
+    perClient: Array.from(perClient.values()).sort((a, b) => b.totalMs - a.totalMs),
+  };
+}
+
 export async function getTimeEntriesForVa(vaId: string, limit = 50) {
   return prisma.timeEntry.findMany({
     where: { endedAt: { not: null }, ...entryOwnedBy(vaId) },

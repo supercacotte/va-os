@@ -5,9 +5,10 @@ import { useActionState } from "react";
 
 import { deleteTimeEntryAction, updateTimeEntryAction } from "@/lib/actions/timeEntries";
 import { formatDuration } from "@/lib/format";
+import { clientColorVar } from "@/lib/client-colors";
 import type { TaskOption } from "@/components/app/StartTimerForm";
 
-type Entry = {
+export type HistoryEntry = {
   id: string;
   label: string | null;
   startedAt: string;
@@ -15,7 +16,9 @@ type Entry = {
   taskId: string;
   taskTitle: string;
   missionName: string;
+  clientId: string;
   clientName: string;
+  clientColor: number;
 };
 
 function toDatetimeLocal(iso: string) {
@@ -33,7 +36,7 @@ export default function TimeEntryRow({
   entry,
   tasks,
 }: {
-  entry: Entry;
+  entry: HistoryEntry;
   tasks: TaskOption[];
 }) {
   const [editing, setEditing] = useState(false);
@@ -131,20 +134,23 @@ export default function TimeEntryRow({
   }
 
   return (
-    <li className="group flex flex-wrap items-center justify-between gap-3 rounded-[14px] bg-sand px-5 py-4">
+    <li className="group flex flex-wrap items-center gap-3 rounded-[14px] bg-sand px-5 py-3.5">
+      <span
+        className="h-3 w-3 shrink-0 rounded-full"
+        style={{ backgroundColor: clientColorVar(entry.clientColor) }}
+        aria-hidden
+      />
       <div className="min-w-0 flex-1">
         <p className="truncate text-[15px] font-semibold text-ink">
           {entry.label ?? entry.taskTitle}
         </p>
         <p className="truncate text-[13px] font-medium text-ink opacity-70">
-          {entry.clientName} — {entry.missionName}
-          {entry.label ? ` — ${entry.taskTitle}` : ""}
+          {entry.clientName} · {entry.missionName}
+          {entry.label ? ` · ${entry.taskTitle}` : ""}
         </p>
       </div>
       <p suppressHydrationWarning className="text-[13px] font-medium text-ink opacity-70">
         {new Intl.DateTimeFormat("fr-FR", {
-          day: "2-digit",
-          month: "2-digit",
           hour: "2-digit",
           minute: "2-digit",
         }).format(new Date(entry.startedAt))}
