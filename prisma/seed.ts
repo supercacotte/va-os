@@ -13,6 +13,7 @@ const prisma = new PrismaClient({ adapter });
 // les clients n'ont que le magic link.
 const TEST_PASSWORD = "motdepasse123";
 const VA_EMAIL = "julia@test.local";
+const VA2_EMAIL = "lea@test.local";
 const ADMIN_EMAIL = "caro@test.local";
 const CLIENT_EMAIL = "marie@test.local";
 
@@ -54,6 +55,63 @@ const clients = [
   },
 ];
 
+// Deuxième VA de test : ses données ne doivent JAMAIS apparaître chez Julia
+// (et réciproquement) — sert aussi à l'audit multi-tenant de la phase 10.
+const leaClients = [
+  {
+    name: "Thomas Petit",
+    company: "Cabinet Ostéo Petit",
+    missions: [
+      {
+        name: "Gestion de l'agenda patients",
+        tasks: [
+          { title: "Confirmer les rendez-vous de la semaine", done: false },
+          { title: "Mettre à jour la liste d'attente", done: true },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Anaïs Roche",
+    company: "La Fabrique à Pains",
+    missions: [
+      {
+        name: "Newsletter mensuelle",
+        tasks: [
+          { title: "Rédiger l'édito d'août", done: false },
+          { title: "Préparer les photos des nouveautés", done: false },
+        ],
+      },
+    ],
+  },
+];
+
+type SeedClient = (typeof clients)[number];
+
+async function seedClientsForVa(vaId: string, clientList: SeedClient[]) {
+  for (const clientData of clientList) {
+    await prisma.client.create({
+      data: {
+        vaId,
+        name: clientData.name,
+        company: clientData.company,
+        missions: {
+          create: clientData.missions.map((mission) => ({
+            name: mission.name,
+            tasks: {
+              create: mission.tasks.map((task) => ({
+                title: task.title,
+                done: task.done,
+                ...("source" in task ? { source: task.source } : {}),
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }
+}
+
 async function main() {
   const passwordHash = await bcrypt.hash(TEST_PASSWORD, 10);
 
@@ -73,27 +131,26 @@ async function main() {
 
   const existingClients = await prisma.client.count({ where: { vaId: va.id } });
   if (existingClients === 0) {
-    for (const clientData of clients) {
-      await prisma.client.create({
-        data: {
-          vaId: va.id,
-          name: clientData.name,
-          company: clientData.company,
-          missions: {
-            create: clientData.missions.map((mission) => ({
-              name: mission.name,
-              tasks: {
-                create: mission.tasks.map((task) => ({
-                  title: task.title,
-                  done: task.done,
-                  ...("source" in task ? { source: task.source } : {}),
-                })),
-              },
-            })),
-          },
-        },
-      });
-    }
+    await seedClientsForVa(va.id, clients);
+  }
+
+  let va2 = await prisma.user.findUnique({ where: { email: VA2_EMAIL } });
+  if (!va2) {
+    va2 = await prisma.user.create({
+      data: {
+        email: VA2_EMAIL,
+        name: "Léa",
+        lastName: "Demo",
+        password: passwordHash,
+        role: "VA",
+        emailVerified: new Date(),
+      },
+    });
+  }
+
+  const existingVa2Clients = await prisma.client.count({ where: { vaId: va2.id } });
+  if (existingVa2Clients === 0) {
+    await seedClientsForVa(va2.id, leaClients);
   }
 
   const admin = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
@@ -131,7 +188,7 @@ async function main() {
   }
 
   console.log(
-    `Seed OK — VA ${VA_EMAIL}, ADMIN ${ADMIN_EMAIL}, CLIENT ${CLIENT_EMAIL} (mot de passe commun : ${TEST_PASSWORD}), ${clients.length} clients, missions et tâches.`,
+    `Seed OK — VA ${VA_EMAIL} (${clients.length} clients), VA ${VA2_EMAIL} (${leaClients.length} clients), ADMIN ${ADMIN_EMAIL}, CLIENT ${CLIENT_EMAIL} — mot de passe commun : ${TEST_PASSWORD}.`,
   );
 }
 
