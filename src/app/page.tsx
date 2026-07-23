@@ -191,44 +191,105 @@ export default async function Home() {
         ))}
       </div>
 
-      {/* Trois choses */}
+      {/* Chrono. Suivi de mission. Rapport. */}
       <section id="fonctionnalites" className="bg-paper px-6 py-16 text-center lg:px-12">
-        <h2 className="text-[28px] font-bold text-ink">Trois choses, faites bien.</h2>
-        <p className="mt-2 text-[13px] font-medium text-ink opacity-70">
-          Pas une usine à gaz. Le strict nécessaire pour tenir les rênes.
+        <h2 className="mx-auto max-w-3xl font-bowlby text-[32px] leading-tight text-ink md:text-[40px]">
+          Chrono. Suivi de mission.{" "}
+          <span className="inline-block -rotate-2 rounded-[12px] border-[5px] border-paper bg-lime px-3 py-0.5 shadow-sticker">
+            Rapport.
+          </span>
+        </h2>
+        <p className="mt-4 text-[15px] font-medium text-ink opacity-70">
+          C&apos;est tout. Et c&apos;est exactement ce qu&apos;il te faut.
         </p>
-        <div className="mx-auto mt-8 grid max-w-4xl gap-4 text-left md:grid-cols-3">
-          {[
-            {
-              bg: "bg-lilac",
-              stat: "01:23:47",
-              title: "Le chrono qui facture",
-              body: "Un clic pour tracker chaque client. Tes heures s'additionnent toutes seules, mission par mission.",
-            },
-            {
-              bg: "bg-pink",
-              stat: "✓ fait",
-              title: "Le portail client",
-              body: "Tes clients suivent l'avancement et déposent leurs demandes au même endroit — fini les « ça en est où ? » par email.",
-            },
-            {
-              bg: "bg-lime",
-              stat: "9 h 30",
-              title: "Le rapport mensuel",
-              body: "Temps passé, tâches faites, répartition : un rapport propre par client, prêt à envoyer chaque fin de mois.",
-            },
-          ].map((card) => (
-            <div
-              key={card.title}
-              className={`rounded-[18px] border-[5px] border-paper p-6 shadow-sticker ${card.bg}`}
-            >
-              <p className="text-[26px] font-bold tabular-nums text-ink">{card.stat}</p>
-              <p className="mt-2 text-[15px] font-bold text-ink">{card.title}</p>
-              <p className="mt-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
-                {card.body}
-              </p>
+
+        <div className="mx-auto mt-10 grid max-w-5xl gap-5 text-left md:grid-cols-3">
+          {/* Le chrono qui facture */}
+          <div className="rounded-[18px] bg-lilac/30 p-5">
+            <div className="rounded-[14px] bg-lilac p-4 shadow-sticker" aria-hidden>
+              <div className="flex items-center justify-between">
+                <p className="text-[13px] font-bold text-ink">En cours</p>
+                <span className="rounded-full border-2 border-paper bg-lime px-2 py-0.5 text-[10px] font-bold text-ink">
+                  ● rec
+                </span>
+              </div>
+              <p className="mt-2 font-bowlby text-[28px] leading-none text-ink">01:23:47</p>
+              <div className="mt-3 flex gap-2">
+                <span className="rounded-[8px] bg-ink px-3 py-1.5 text-xs font-bold text-paper">
+                  ⏸ Pause
+                </span>
+                <span className="rounded-[8px] bg-paper px-3 py-1.5 text-xs font-bold text-ink">
+                  ■ Stop
+                </span>
+              </div>
             </div>
-          ))}
+            <p className="mt-5 text-[17px] font-bold text-ink">Le chrono qui facture</p>
+            <p className="mt-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
+              Un clic pour tracker chaque client. Tes heures s&apos;additionnent toutes seules,
+              mission par mission.
+            </p>
+          </div>
+
+          {/* Le portail client */}
+          <div className="rounded-[18px] bg-pink/25 p-5">
+            <div className="flex flex-col gap-3 rounded-[14px] bg-paper p-4 shadow-sticker" aria-hidden>
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[13px] font-bold text-ink">Newsletter mensuelle</p>
+                  <span className="rounded-full bg-lime px-2 py-0.5 text-[10px] font-bold text-ink">
+                    fait ✓
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand">
+                  <div className="h-full w-full rounded-full bg-lilac" />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[13px] font-bold text-ink">Shooting photo</p>
+                  <span className="rounded-full bg-orange px-2 py-0.5 text-[10px] font-bold text-ink">
+                    2 à faire
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand">
+                  <div className="h-full w-[38%] rounded-full bg-pink" />
+                </div>
+              </div>
+            </div>
+            <p className="mt-5 text-[17px] font-bold text-ink">Le portail client</p>
+            <p className="mt-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
+              Tes clients suivent l&apos;avancement et déposent leurs demandes au même endroit
+              — fini les « ça en est où ? » par email.
+            </p>
+          </div>
+
+          {/* Le rapport mensuel */}
+          <div className="rounded-[18px] bg-lime/25 p-5">
+            <div className="rounded-[14px] bg-paper p-4 shadow-sticker" aria-hidden>
+              <div className="flex items-center justify-between border-b-2 border-ink pb-2">
+                <p className="text-[11px] font-bold uppercase tracking-[1.5px] text-ink">
+                  Juillet 2026
+                </p>
+                <p className="text-[15px] font-bold text-ink">9 h 30</p>
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[12px] font-medium text-ink">
+                <span className="opacity-70">Newsletter</span>
+                <span className="font-bold">4 h 10</span>
+              </div>
+              <div className="mt-1 flex items-center justify-between text-[12px] font-medium text-ink">
+                <span className="opacity-70">Support admin</span>
+                <span className="font-bold">2 h 35</span>
+              </div>
+              <div className="mt-3 rounded-[8px] bg-orange px-3 py-2 text-center text-xs font-bold text-ink shadow-sticker">
+                ▶ Générer le rapport
+              </div>
+            </div>
+            <p className="mt-5 text-[17px] font-bold text-ink">Le rapport mensuel</p>
+            <p className="mt-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
+              Temps passé, tâches faites, répartition : un rapport propre par client, prêt à
+              envoyer chaque fin de mois.
+            </p>
+          </div>
         </div>
       </section>
 
