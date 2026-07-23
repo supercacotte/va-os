@@ -108,3 +108,22 @@
   headers, emails) restent à renommer lors du restyle des écrans.
 - **Prochaine session** : Phase 2, ou restyle VA Desk des écrans existants
   (supprimer les alias de transition + renommer la marque dans le code).
+
+## 23/07 — Déploiement Vercel (fin de Phase 0)
+- **Fait** :
+  - Projet Vercel `va-desk` créé et lié (CLI), repo GitHub connecté par
+    l'intégration Vercel.
+  - Base **Prisma Postgres** `va-desk-db` dédiée (eu-central-1), distincte de
+    celle du site — `DATABASE_URL` injectée en TCP direct, compatible adapter
+    `pg` sans changement de code.
+  - Script `vercel-build` : `prisma generate && prisma migrate deploy &&
+    next build` → la migration `init` s'est appliquée au premier déploiement.
+  - `AUTH_SECRET` configuré (Production + Preview).
+  - **Production verte : https://va-desk.vercel.app** (HTTP 200 vérifié).
+- **Ça coince / reste à faire** :
+  - `RESEND_API_KEY` + `EMAIL_FROM` pas encore configurés → pas de magic
+    link/invitations en prod tant que le compte Resend n'est pas créé.
+  - Base de prod vide (pas de seed — normal) : créer le vrai compte VA via
+    l'inscription.
+  - `git push` GitHub toujours bloqué en local (pas d'auth) ; une fois
+    débloqué, chaque push sur `main` déclenchera un déploiement automatique.
