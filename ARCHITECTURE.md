@@ -12,7 +12,7 @@ qui est nouveau** — pour que chaque session Claude Code parte des bons fichier
 | `src/lib/actions/auth.ts` | Signup/login en Server Actions + Zod + vérification email | Adapter le schéma Zod (rôle par défaut VA) |
 | `src/lib/prisma.ts` | Singleton Prisma | Identique |
 | `src/lib/mailer.ts` + `src/lib/email-templates.ts` | Envoi d'emails Resend + templates HTML | Rebrander les templates |
-| `src/lib/upload.ts` | Upload disque local avec validation type/taille | Identique (D11) |
+| `src/lib/upload.ts` | Upload avec validation type/taille | Adapter : stockage Vercel Blob (D11 révisée), garder la validation |
 | `src/lib/sanitize.ts` | Sanitization du HTML TipTap | Identique — sert pour les procédures (SOP) |
 | `src/lib/stripe.ts` + `src/lib/billing.ts` | Client Stripe lazy + getOrCreateStripeCustomerId | Identique |
 | `src/app/@auth/*` | Modales connexion/inscription en parallel + intercepting routes | Pattern à reprendre tel quel |
@@ -51,7 +51,7 @@ Conventions du repo à conserver : `cuid()`, enums, `onDelete: Cascade`,
 |---|---|
 | **Multi-tenancy** (D12) | Voir §4 ci-dessous — c'est LE sujet de sécurité du projet |
 | **Chrono** | Server Action start/stop + état côté client ; une seule entrée active par VA ; édition a posteriori |
-| **Rapport d'activité + PDF** | Génération côté serveur (react-pdf ou puppeteer sur le VPS) |
+| **Rapport d'activité + PDF** | Génération côté serveur avec react-pdf (serverless-friendly — pas de puppeteer sur Vercel) |
 | **Portail client** | Layout séparé `src/app/portail/*`, rôle CLIENT, 3 pages max |
 | **OAuth Qonto** | Flow OAuth complet + stockage tokens chiffrés (table dédiée, secret en env) |
 | **Ingestion réunions** | Route webhook générique `/api/inbound/[provider]` + table `MeetingItem` dédupliquée par `@@unique([provider, externalId])` ; polling Granola via n8n existant sur le VPS |
@@ -75,7 +75,13 @@ Supabase donnait un filet de sécurité (RLS). Prisma n'en donne aucun. Donc :
 
 ## 5. Déploiement
 
-Comme smartlazyclub.com : VPS Coolify (Hostinger), PostgreSQL managé par
-Coolify, `next build && next start`, volumes persistants pour `public/uploads`.
+Comme smartlazyclub.com : **Vercel + Prisma Postgres**, avec une base dédiée
+au projet (distincte de celle du site). Conséquences du filesystem éphémère
+de Vercel :
+- les uploads passent par **Vercel Blob** au lieu du pattern disque local de
+  `lib/upload.ts` (D11 révisée) — la validation type/taille du fichier est
+  conservée telle quelle ;
+- l'export PDF utilise **react-pdf** (serverless-friendly), pas de puppeteer.
+
 Le n8n déjà présent sur le VPS sert au prototypage du polling Granola avant
 internalisation.

@@ -11,7 +11,9 @@
   `@auth/*`, `AGENTS.md`, structure `globals.css`.
 - Nouveau `schema.prisma` (PRD §6) + première migration + seed (1 VA de test,
   2 clients, missions/tâches factices).
-- Déployer le hello-world sur Coolify dès cette phase (pipeline validé tôt).
+- Déployer le hello-world sur Vercel dès cette phase (pipeline validé tôt),
+  avec une base **Prisma Postgres dédiée au projet**, distincte de celle du
+  site smartlazyclub.com.
 - 📣 En parallèle : **demander l'accès API partenaire Qonto** (délai inconnu).
 
 ## Phase 1 — Auth & rôles (semaine du 28 juillet)

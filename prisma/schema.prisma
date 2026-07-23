@@ -1,0 +1,170 @@
+// Schéma V1 — draft du PRD §6, complété des modèles NextAuth (Account,
+// Session, VerificationToken, User.emailVerified) requis par le PrismaAdapter
+// et le flow de vérification d'email repris du repo de référence.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  VA
+  CLIENT
+  ADMIN
+}
+
+enum Plan {
+  ESSENTIELLE
+  PRO
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  name             String?
+  lastName         String?
+  password         String?
+  role             Role      @default(VA)
+  emailVerified    DateTime?
+  stripeCustomerId String?   @unique
+  // si role = CLIENT : rattachement au Client de la VA
+  clientId         String?   @unique
+  client           Client?   @relation(fields: [clientId], references: [id])
+  createdAt        DateTime  @default(now())
+
+  subscription Subscription?
+  clients      Client[]      @relation("VaClients")
+  accounts     Account[]
+  sessions     Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  vaId                 String             @unique
+  va                   User               @relation(fields: [vaId], references: [id], onDelete: Cascade)
+  plan                 Plan
+  status               SubscriptionStatus
+  stripeSubscriptionId String             @unique
+  currentPeriodEnd     DateTime
+}
+
+model Client {
+  id         String    @id @default(cuid())
+  vaId       String
+  va         User      @relation("VaClients", fields: [vaId], references: [id], onDelete: Cascade)
+  name       String
+  company    String?
+  portalUser User?
+  missions   Mission[]
+  createdAt  DateTime  @default(now())
+}
+
+model Mission {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name      String
+  status    String   @default("active")
+  tasks     Task[]
+  createdAt DateTime @default(now())
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  missionId   String
+  mission     Mission     @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  title       String
+  done        Boolean     @default(false)
+  source      String      @default("manual") // manual | meeting_sync | client_request
+  timeEntries TimeEntry[]
+  createdAt   DateTime    @default(now())
+}
+
+model TimeEntry {
+  id        String    @id @default(cuid())
+  taskId    String
+  task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label     String?
+  startedAt DateTime
+  endedAt   DateTime?
+  // durée éditable a posteriori
+}
+
+model Procedure {
+  id            String   @id @default(cuid())
+  vaId          String
+  title         String
+  steps         String // HTML sanitizé (pattern TipTap + sanitize-html du repo)
+  isSlcTemplate Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model MeetingItem {
+  id         String   @id @default(cuid())
+  vaId       String
+  provider   String // fireflies | granola | fathom
+  externalId String
+  transcript String
+  processed  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@unique([provider, externalId])
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  vaId           String
+  clientId       String
+  periodStart    DateTime
+  periodEnd      DateTime
+  qontoInvoiceId String?  @unique
+  amountCents    Int
+  createdAt      DateTime @default(now())
+}

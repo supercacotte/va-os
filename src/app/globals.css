@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Palette "plage" du site — D14 ouverte : une variante plus sobre pour l'app
+   se fera en ne touchant qu'à ces valeurs, jamais aux noms de tokens. */
+:root {
+  --cream: #ffffff;
+  --paper: #ffffff;
+  --ink: #24221c;
+  --corail: #d9583b;
+  --mer: #2f7e73;
+  --soleil: #e7a93c;
+  --muted: #9a8a68;
+  --muted-2: #5a5240;
+  --line: #dacdb6;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-corail: var(--corail);
+  --color-mer: var(--mer);
+  --color-soleil: var(--soleil);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-line: var(--line);
+
+  --font-script: var(--font-sacramento);
+  --font-display: var(--font-dm-serif);
+  --font-label: var(--font-space-mono);
+  --font-body: var(--font-work-sans);
+}
+
+::selection {
+  background: var(--corail);
+  color: var(--paper);
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+}

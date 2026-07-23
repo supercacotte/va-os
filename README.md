@@ -12,7 +12,7 @@ Conçu avec Julia (VA partenaire). Beta-testé par la communauté Smart Lazy Clu
 - **NextAuth v5** — credentials (bcrypt) + magic link (Resend), sessions JWT avec rôle
 - **Stripe** — abonnements (Essentielle 19 € / Pro 29 €)
 - **Tailwind v4** — tokens CSS via `@theme inline`
-- **Déploiement** : VPS Coolify (Hostinger), comme smartlazyclub.com
+- **Déploiement** : Vercel + Prisma Postgres (comme le repo de référence)
 
 ## Documentation
 
