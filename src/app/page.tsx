@@ -100,7 +100,7 @@ export default async function Home() {
 
         {/* Mockup produit */}
         <div className="relative mx-auto mt-12 max-w-3xl" aria-hidden>
-          <span className="absolute -left-3 -top-3 z-10 -rotate-6 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+          <span className="absolute -left-3 -top-3 z-10 -rotate-6 rounded-[8px] border-4 border-paper bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker">
             ton espace
           </span>
           <div className="rounded-2xl bg-paper p-5 text-left shadow-screen">
