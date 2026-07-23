@@ -32,6 +32,7 @@ const CLIENT_SELECT = {
   id: true,
   name: true,
   company: true,
+  color: true,
   va: { select: { name: true, lastName: true, email: true } },
 } as const;
 

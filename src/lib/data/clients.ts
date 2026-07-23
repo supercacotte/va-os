@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { CLIENT_COLOR_COUNT } from "@/lib/client-colors";
 
 // D12 : chaque fonction filtre par vaId (ou par l'utilisateur portail) dans sa
 // propre clause where — jamais dans le composant appelant. Les écritures
@@ -64,7 +65,7 @@ export async function getClientOptionsForVa(vaId: string) {
   return prisma.client.findMany({
     where: { vaId },
     orderBy: { name: "asc" },
-    select: { id: true, name: true, company: true },
+    select: { id: true, name: true, company: true, color: true },
   });
 }
 
@@ -83,8 +84,25 @@ export async function getClientDetailForVa(vaId: string, clientId: string) {
   });
 }
 
+// La couleur est choisie à la création (DESIGN.md §1) : premier numéro libre
+// dans l'ordre 1-20 chez cette VA, recyclage au-delà. Stockée, jamais
+// recalculée ensuite.
 export async function createClientForVa(vaId: string, data: ClientInput) {
-  return prisma.client.create({ data: { vaId, ...data } });
+  const existing = await prisma.client.findMany({
+    where: { vaId },
+    select: { color: true },
+  });
+  const used = new Set(existing.map((client) => client.color));
+
+  let color = (existing.length % CLIENT_COLOR_COUNT) + 1;
+  for (let n = 1; n <= CLIENT_COLOR_COUNT; n++) {
+    if (!used.has(n)) {
+      color = n;
+      break;
+    }
+  }
+
+  return prisma.client.create({ data: { vaId, color, ...data } });
 }
 
 export async function updateClientForVa(vaId: string, clientId: string, data: ClientInput) {

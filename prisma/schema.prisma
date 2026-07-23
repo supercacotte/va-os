@@ -101,6 +101,9 @@ model Client {
   va         User      @relation("VaClients", fields: [vaId], references: [id], onDelete: Cascade)
   name       String
   company    String?
+  // Numéro 1-20 dans la palette clients du DESIGN.md — attribué à la
+  // création, ne change jamais (pas recalculé par index de liste).
+  color      Int       @default(1)
   portalUser User?
   missions   Mission[]
   createdAt  DateTime  @default(now())

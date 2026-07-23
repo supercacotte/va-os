@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { CLIENT_COLOR_COUNT } from "../src/lib/client-colors";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -89,12 +90,13 @@ const leaClients = [
 type SeedClient = (typeof clients)[number];
 
 async function seedClientsForVa(vaId: string, clientList: SeedClient[]) {
-  for (const clientData of clientList) {
+  for (const [index, clientData] of clientList.entries()) {
     await prisma.client.create({
       data: {
         vaId,
         name: clientData.name,
         company: clientData.company,
+        color: (index % CLIENT_COLOR_COUNT) + 1,
         missions: {
           create: clientData.missions.map((mission) => ({
             name: mission.name,
@@ -184,6 +186,26 @@ async function main() {
           emailVerified: new Date(),
         },
       });
+    }
+  }
+
+  // Backfill one-shot des couleurs clients (DESIGN.md §1) : uniquement si
+  // les clients d'une VA sont encore tous au défaut (color=1) — on n'écrase
+  // jamais une couleur réellement attribuée.
+  const vas = await prisma.user.findMany({ where: { role: "VA" }, select: { id: true } });
+  for (const someVa of vas) {
+    const vaClients = await prisma.client.findMany({
+      where: { vaId: someVa.id },
+      orderBy: { createdAt: "asc" },
+      select: { id: true, color: true },
+    });
+    if (vaClients.length > 1 && vaClients.every((client) => client.color === 1)) {
+      for (const [index, client] of vaClients.entries()) {
+        await prisma.client.update({
+          where: { id: client.id },
+          data: { color: (index % CLIENT_COLOR_COUNT) + 1 },
+        });
+      }
     }
   }
 
