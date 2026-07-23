@@ -1,47 +1,43 @@
-# SLA VA OS *(nom de code — à renommer)*
+# Smart Lazy VA OS — SaaS pour assistantes virtuelles
 
-SaaS de gestion pour assistantes virtuelles indépendantes : clients → missions → tâches → temps → rapport → facture, plus procédures, portail client et extraction de tâches depuis les réunions.
+Cockpit d'opérations pour assistantes virtuelles indépendantes :
+**clients → missions → tâches → chrono → rapport d'activité → facture**.
 
-**Projet porté par Caroline Franquet (Smart Lazy Club), avec Julia (advisor métier).**
+Conçu avec Julia (VA partenaire). Beta-testé par la communauté Smart Lazy Club.
 
-## SEO / GEO — Voir le dossier `content/`
+## Stack (alignée sur le repo de référence `supercacotte/smart-lazy-club`)
 
-- **`content/seo-geo-strategie-va-caroline-franquet.md`** — stratégie SEO/GEO complète pour le marché VA
-- **`content/article-pilier-devenir-va-2026.md`** — article pilier "Devenir Assistante Virtuelle en 2026" (3 500 mots, voix Caro)
-- **`seo/nextjs-content/`** — tous les fichiers Next.js prêts à copier : sitemap, robots.txt, llms.txt, structured data, templates pages (outils, glossaire, comparateurs)
-
-## Stack
-
-- **Front/App** : Next.js (App Router) + Tailwind CSS + shadcn/ui
-- **Backend/DB** : Supabase (PostgreSQL, Auth magic link, RLS, Edge Functions)
-- **Déploiement** : Vercel
-- **Intégrations** : Qonto (OAuth, facturation), Google Calendar (lecture), Fireflies / Granola / Fathom (réunions), Toggl (import)
-- **IA** : Claude API (extraction de tâches depuis transcripts)
-
-## Design system
-
-Fond crème `#FXXXX8` · Rouge `#XXXXX` · Carmin `#XXXXXX` (actions) · Titres Clash Display · Corps Satoshi · UI en français, tutoiement.
-
-## Lancer en local
-
-```bash
-npm install
-cp .env.example .env.local   # remplir les valeurs (voir gestionnaire de mots de passe)
-npm run dev
-```
-
-## Environnements
-
-| Env | URL | Notes |
-|---|---|---|
-| Production | *(URL Vercel à compléter)* | Branche `main` |
-| Supabase | *(URL projet à compléter)* | Région EU |
+- **Next.js 16** (App Router) + React 19 + TypeScript
+- **Prisma 7 + PostgreSQL** (self-hosted, migrations versionnées)
+- **NextAuth v5** — credentials (bcrypt) + magic link (Resend), sessions JWT avec rôle
+- **Stripe** — abonnements (Essentielle 19 € / Pro 29 €)
+- **Tailwind v4** — tokens CSS via `@theme inline`
+- **Déploiement** : VPS Coolify (Hostinger), comme smartlazyclub.com
 
 ## Documentation
 
-- [`docs/PRD.md`](docs/PRD.md) — le cahier des charges qui fait foi (scope V1 gelé)
-- [`docs/DECISIONS.md`](docs/DECISIONS.md) — journal des décisions structurantes
-- [`docs/PROMPTS_LOG.md`](docs/PROMPTS_LOG.md) — journal des sessions Bolt
-- [`docs/TODO_CLAUDE_CODE.md`](docs/TODO_CLAUDE_CODE.md) — chantier réservé à la phase Claude Code (fin août)
+| Fichier | Rôle |
+|---|---|
+| `docs/PRD.md` | Produit : vision, personas, scope V1 gelé, modèle de données |
+| `docs/DECISIONS.md` | Journal des décisions — fait foi en cas de doute |
+| `docs/ARCHITECTURE.md` | Patterns repris du repo de référence, fichier par fichier |
+| `docs/BUILD_PLAN.md` | Plan de build par phases (Claude Code) jusqu'à la V1 septembre |
+| `docs/SESSIONS_LOG.md` | Journal des sessions de dev (à tenir à chaque session) |
 
-**Règle anti-dérive :** toute nouvelle idée de feature va dans `docs/V2.md`, jamais directement dans le code.
+## Règles de travail
+
+1. **Le PRD fait foi.** Toute nouvelle idée va dans la section V2/V3 du PRD, pas dans le code.
+2. **Une session = une entrée dans `SESSIONS_LOG.md`** (contexte, ce qui a été fait, ce qui coince).
+3. **Toute décision structurante = une ligne dans `DECISIONS.md`**, datée.
+4. **On copie avant de réinventer** : si le repo de référence a déjà résolu le problème (auth, admin, upload, Stripe), on reprend son pattern.
+
+## Démarrage (une fois le squelette forké)
+
+```bash
+npm install
+npx prisma migrate dev
+npm run db:seed
+npm run dev
+```
+
+Variables d'environnement attendues : `DATABASE_URL`, `AUTH_SECRET`, `RESEND_API_KEY`, `EMAIL_FROM`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
