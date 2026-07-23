@@ -16,7 +16,7 @@ function brandedEmailHtml({ heading, paragraph, buttonLabel, url }: BrandedEmail
         <table role="presentation" width="100%" style="max-width:480px;background-color:#ffffff;border:1px solid #dacdb6;border-radius:24px;" cellpadding="0" cellspacing="0">
           <tr>
             <td style="padding:40px 32px 32px;text-align:center;">
-              <img src="${LOGO_URL}" width="100" height="100" alt="Smart Lazy VA OS" style="display:inline-block;margin-bottom:24px;" />
+              <img src="${LOGO_URL}" width="100" height="100" alt="VA Desk" style="display:inline-block;margin-bottom:24px;" />
               <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:22px;color:#24221c;margin:0 0 12px;">
                 ${heading}
               </h1>
@@ -45,7 +45,7 @@ function brandedEmailHtml({ heading, paragraph, buttonLabel, url }: BrandedEmail
 export function magicLinkEmailHtml(url: string) {
   return brandedEmailHtml({
     heading: "Connecte-toi à ton compte",
-    paragraph: "Clique sur le bouton ci-dessous pour te connecter à Smart Lazy VA OS. Ce lien est valable 24h.",
+    paragraph: "Clique sur le bouton ci-dessous pour te connecter à VA Desk. Ce lien est valable 24h.",
     buttonLabel: "Se connecter",
     url,
   });

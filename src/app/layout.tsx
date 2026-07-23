@@ -13,9 +13,9 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Lazy VA OS — Le cockpit des assistantes virtuelles",
+  title: "VA Desk — Logiciel de gestion pour assistantes virtuelles",
   description:
-    "Clients, missions, chrono, rapports d'activité et factures : le cockpit d'opérations des assistantes virtuelles indépendantes.",
+    "Gestion des clients, suivi du temps, rapports d'activité et facturation : VA Desk rassemble tout le business des assistantes virtuelles indépendantes au même endroit.",
 };
 
 export default function RootLayout({

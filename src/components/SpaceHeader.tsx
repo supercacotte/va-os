@@ -16,7 +16,7 @@ export default async function SpaceHeader({ badge, homeHref }: Props) {
       <div className="flex h-16 items-center justify-between gap-6 px-6 lg:px-10">
         <Link href={homeHref} className="flex items-center gap-3">
           <span className="whitespace-nowrap font-display text-xl text-ink">
-            Smart Lazy VA OS
+            VA Desk
           </span>
           <span className="rounded-full bg-ink px-3 py-1 font-label text-[11px] uppercase tracking-wide text-paper">
             {badge}
@@ -24,12 +24,6 @@ export default async function SpaceHeader({ badge, homeHref }: Props) {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="whitespace-nowrap rounded-full border border-ink px-4 py-2 font-label text-xs uppercase tracking-wide text-ink transition hover:border-corail hover:text-corail"
-          >
-            Site public →
-          </Link>
           {session?.user && (
             <UserMenu name={session.user.name} email={session.user.email} />
           )}

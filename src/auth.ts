@@ -22,9 +22,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async sendVerificationRequest({ identifier: to, url }) {
         await sendEmail({
           to,
-          subject: "Ton lien de connexion Smart Lazy VA OS",
+          subject: "Ton lien de connexion VA Desk",
           html: magicLinkEmailHtml(url),
-          text: `Connecte-toi à Smart Lazy VA OS : ${url}\n\nSi tu n'es pas à l'origine de cette demande, tu peux ignorer cet email.`,
+          text: `Connecte-toi à VA Desk : ${url}\n\nSi tu n'es pas à l'origine de cette demande, tu peux ignorer cet email.`,
         });
       },
     }),

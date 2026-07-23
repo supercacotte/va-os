@@ -241,3 +241,26 @@
   VA). Si Julia préfère un partage manuel, ajouter un modèle SharedReport.
 - **Prochaine session** : 🎯 DÉMO à Julia + 2-3 beta-testeuses SLC (ne pas
   repousser), puis Phase 6 — abonnements Stripe.
+
+## 23/07 — Retours de Caroline : rebrand code, home, dashboard 3 colonnes
+- **Objectif de la session** : intégrer les premiers retours avant la
+  Phase 6.
+- **Fait** :
+  - « Smart Lazy VA OS » → **VA Desk** partout dans le code (metadata,
+    header, emails, page d'accueil).
+  - Home : h1 SEO (« Le logiciel de gestion des assistantes virtuelles
+    indépendantes »), tagline D14, la ligne pipeline supprimée ; connectée =
+    redirection directe vers son espace (plus de bouton « Ouvrir mon
+    espace ») ; lien « Site public » du header retiré en conséquence.
+  - **Dashboard 3 colonnes** (`DashboardBoard.tsx`) : tuiles clients
+    sélectionnables à gauche (surlignage corail), missions actives au centre
+    avec accordéon des tâches, panneau chrono à droite (tâches du client
+    sélectionné, ou chrono en cours avec Stop). Les anciennes stat-cards
+    disparaissent.
+  - Vérifié dans le navigateur (capture) : rebrand, sélection de tuile,
+    accordéon, panneau chrono. Build vert.
+- **Ça coince** : le panneau de préview est partagé — Caroline teste en même
+  temps que les vérifications automatisées, d'où des sessions qui basculent.
+  Sans gravité.
+- **Prochaine session** : Phase 6 — abonnements Stripe (2 Price IDs,
+  checkout subscription, webhook, gating Pro).

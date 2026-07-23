@@ -39,6 +39,26 @@ export async function getClientsForVa(vaId: string) {
   });
 }
 
+// Tout l'espace de travail de la VA pour le dashboard : clients → missions
+// → tâches, en un aller-retour.
+export async function getVaWorkspace(vaId: string) {
+  return prisma.client.findMany({
+    where: { vaId },
+    orderBy: { createdAt: "asc" },
+    include: {
+      missions: {
+        orderBy: { createdAt: "asc" },
+        include: {
+          tasks: {
+            orderBy: { createdAt: "asc" },
+            select: { id: true, title: true, done: true, source: true },
+          },
+        },
+      },
+    },
+  });
+}
+
 // Version allégée pour les selects (rapports, rattachements).
 export async function getClientOptionsForVa(vaId: string) {
   return prisma.client.findMany({

@@ -34,7 +34,7 @@ async function sendAccountVerificationEmail(email: string) {
   try {
     await sendEmail({
       to: email,
-      subject: "Confirme ton adresse email Smart Lazy VA OS",
+      subject: "Confirme ton adresse email VA Desk",
       html: verifyEmailHtml(verifyUrl),
       text: `Confirme ton adresse email : ${verifyUrl}`,
     });
