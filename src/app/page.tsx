@@ -218,7 +218,10 @@ export default async function Home() {
               body: "Temps passé, tâches faites, répartition : un rapport propre par client, prêt à envoyer chaque fin de mois.",
             },
           ].map((card) => (
-            <div key={card.title} className={`rounded-[18px] p-6 shadow-sticker ${card.bg}`}>
+            <div
+              key={card.title}
+              className={`rounded-[18px] border-[5px] border-paper p-6 shadow-sticker ${card.bg}`}
+            >
               <p className="text-[26px] font-bold tabular-nums text-ink">{card.stat}</p>
               <p className="mt-2 text-[15px] font-bold text-ink">{card.title}</p>
               <p className="mt-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
