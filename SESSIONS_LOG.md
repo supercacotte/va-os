@@ -213,3 +213,31 @@
   d'identifiants) — pousser depuis GitHub Desktop/VS Code pour déployer.
 - **Prochaine session** : Phase 5 — portail client (avancement, nouvelle
   demande, rapports partagés). 🎯 Jalon beta : démo à Julia + beta-testeuses.
+
+## 23/07 — Phase 5 : portail client 🎯 (jalon beta atteint côté code)
+- **Objectif de la session** : les 3 pages du portail, rien d'autre.
+- **Fait** :
+  - `lib/data/portal.ts` — D12 règle 4 : tout est filtré par la relation
+    `portalUser` de la session, le clientId ne vient JAMAIS d'un paramètre.
+  - `/portail` (avancement) : missions avec barre de progression (x/y tâches),
+    statut, tâches en lecture seule.
+  - `/portail/demandes` : formulaire une-phrase → `Task source=client_request`
+    dans une mission « Demandes du portail » créée à la volée chez la VA ;
+    historique des demandes avec statut Traitée/À traiter.
+  - `/portail/rapports` : mois où du temps a été suivi + PDF via
+    `/api/portail/rapports/pdf` (rôle CLIENT, client dérivé de la session).
+    Moteur d'agrégation de la phase 4 refactoré en `buildActivityReport`
+    partagé VA/portail.
+  - Nav portail (Avancement / Nouvelle demande / Rapports).
+  - Vérifié e2e : en Marie — avancement, envoi d'une demande, rapport
+    juillet + PDF 200, route PDF VA → 401 ; en Julia — la demande apparaît
+    badgée « Demande client » dans « Demandes du portail », chrono possible
+    dessus. Build vert.
+- **Ça coince** : la base locale contient des données de test manuelles
+  (mission dupliquée vide chez Marie, tâches cochées) — sans gravité,
+  nettoyables depuis l'UI. Push GitHub : toujours depuis ton outil à toi.
+- **Décision à prendre** : v1 des « rapports partagés » = tous les mois avec
+  du temps suivi sont visibles côté client (pas de partage explicite par la
+  VA). Si Julia préfère un partage manuel, ajouter un modèle SharedReport.
+- **Prochaine session** : 🎯 DÉMO à Julia + 2-3 beta-testeuses SLC (ne pas
+  repousser), puis Phase 6 — abonnements Stripe.

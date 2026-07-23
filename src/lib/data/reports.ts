@@ -2,8 +2,9 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 
-// D12 : le rapport ne s'assemble que si le client appartient à la VA, et les
-// entrées de temps sont refiltrées par la chaîne mission → client → vaId.
+// D12 : le rapport ne s'assemble que pour un client dont l'appelant est
+// légitime — la VA propriétaire (filtre vaId) ou l'utilisateur portail du
+// client (filtre portalUser). Le moteur d'agrégation est commun.
 
 export type ActivityReport = {
   client: { id: string; name: string; company: string | null };
@@ -20,28 +21,30 @@ export type ActivityReport = {
   entryCount: number;
 };
 
-export async function getActivityReport(
-  vaId: string,
-  clientId: string,
+type ReportClient = {
+  id: string;
+  name: string;
+  company: string | null;
+  va: { name: string | null; lastName: string | null; email: string };
+};
+
+const CLIENT_SELECT = {
+  id: true,
+  name: true,
+  company: true,
+  va: { select: { name: true, lastName: true, email: true } },
+} as const;
+
+async function buildActivityReport(
+  client: ReportClient,
   periodStart: Date,
   periodEnd: Date,
-): Promise<ActivityReport | null> {
-  const client = await prisma.client.findFirst({
-    where: { id: clientId, vaId },
-    select: {
-      id: true,
-      name: true,
-      company: true,
-      va: { select: { name: true, lastName: true, email: true } },
-    },
-  });
-  if (!client) return null;
-
+): Promise<ActivityReport> {
   const entries = await prisma.timeEntry.findMany({
     where: {
       endedAt: { not: null },
       startedAt: { gte: periodStart, lt: periodEnd },
-      task: { mission: { clientId: client.id, client: { vaId } } },
+      task: { mission: { clientId: client.id } },
     },
     include: {
       task: {
@@ -99,4 +102,60 @@ export async function getActivityReport(
     totalMs,
     entryCount: entries.length,
   };
+}
+
+export async function getActivityReport(
+  vaId: string,
+  clientId: string,
+  periodStart: Date,
+  periodEnd: Date,
+): Promise<ActivityReport | null> {
+  const client = await prisma.client.findFirst({
+    where: { id: clientId, vaId },
+    select: CLIENT_SELECT,
+  });
+  if (!client) return null;
+
+  return buildActivityReport(client, periodStart, periodEnd);
+}
+
+export async function getActivityReportForPortalUser(
+  userId: string,
+  periodStart: Date,
+  periodEnd: Date,
+): Promise<ActivityReport | null> {
+  const client = await prisma.client.findFirst({
+    where: { portalUser: { id: userId } },
+    select: CLIENT_SELECT,
+  });
+  if (!client) return null;
+
+  return buildActivityReport(client, periodStart, periodEnd);
+}
+
+// Mois (UTC) où du temps a été suivi pour le client du portail, du plus
+// récent au plus ancien, avec le total suivi.
+export async function getReportMonthsForPortalUser(userId: string) {
+  const entries = await prisma.timeEntry.findMany({
+    where: {
+      endedAt: { not: null },
+      task: { mission: { client: { portalUser: { id: userId } } } },
+    },
+    select: { startedAt: true, endedAt: true },
+  });
+
+  const months = new Map<string, number>();
+  for (const entry of entries) {
+    const key = `${entry.startedAt.getUTCFullYear()}-${String(
+      entry.startedAt.getUTCMonth() + 1,
+    ).padStart(2, "0")}`;
+    months.set(
+      key,
+      (months.get(key) ?? 0) + (entry.endedAt!.getTime() - entry.startedAt.getTime()),
+    );
+  }
+
+  return Array.from(months.entries())
+    .map(([mois, totalMs]) => ({ mois, totalMs }))
+    .sort((a, b) => b.mois.localeCompare(a.mois));
 }

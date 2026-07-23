@@ -88,12 +88,3 @@ export async function getOwnedClientWithPortal(vaId: string, clientId: string) {
     include: { portalUser: { select: { id: true } } },
   });
 }
-
-export async function getClientForPortalUser(userId: string) {
-  return prisma.client.findFirst({
-    where: { portalUser: { id: userId } },
-    include: {
-      va: { select: { name: true, lastName: true, email: true } },
-    },
-  });
-}
