@@ -44,6 +44,7 @@ export async function createTaskAction(
   const task = await createTaskForVa(session.user.id, missionId, title.data);
   if (!task) return { error: "Mission introuvable." };
 
+  revalidatePath("/app");
   revalidatePath(`/app/clients/${clientId}`);
   return undefined;
 }
@@ -66,6 +67,7 @@ export async function renameTaskAction(
   const updated = await updateTaskForVa(session.user.id, taskId, { title: title.data });
   if (!updated) return { error: "Tâche introuvable." };
 
+  revalidatePath("/app");
   revalidatePath(`/app/clients/${clientId}`);
   return undefined;
 }
@@ -78,6 +80,7 @@ export async function toggleTaskAction(formData: FormData) {
   if (typeof taskId !== "string" || typeof clientId !== "string") return;
 
   await toggleTaskForVa(session.user.id, taskId);
+  revalidatePath("/app");
   revalidatePath(`/app/clients/${clientId}`);
 }
 
@@ -89,5 +92,6 @@ export async function deleteTaskAction(formData: FormData) {
   if (typeof taskId !== "string" || typeof clientId !== "string") return;
 
   await deleteTaskForVa(session.user.id, taskId);
+  revalidatePath("/app");
   revalidatePath(`/app/clients/${clientId}`);
 }
