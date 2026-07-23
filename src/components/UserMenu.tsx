@@ -39,24 +39,24 @@ export default function UserMenu({ name, email }: Props) {
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-label="Menu du compte"
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-corail font-label text-sm text-paper transition hover:bg-ink"
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-orange text-sm font-bold text-ink transition hover:brightness-95"
       >
         {initial}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-56 rounded-2xl border border-line bg-cream p-2 shadow-xl shadow-ink/10">
-          <div className="border-b border-line px-3 py-2">
-            <p className="truncate font-body text-sm text-ink">{name ?? email}</p>
+        <div className="absolute right-0 top-12 z-50 w-56 rounded-xl bg-paper p-1.5 shadow-sticker-strong">
+          <div className="border-b border-ink/15 px-3 py-2">
+            <p className="truncate text-sm font-bold text-ink">{name ?? email}</p>
             {name && email && (
-              <p className="truncate font-body text-xs text-muted-2">{email}</p>
+              <p className="truncate text-xs font-medium text-ink opacity-60">{email}</p>
             )}
           </div>
 
           <form action={logout} className="pt-1">
             <button
               type="submit"
-              className="w-full rounded-lg px-3 py-2 text-left font-label text-xs uppercase tracking-wide text-ink/80 transition hover:bg-paper hover:text-corail"
+              className="w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink transition hover:bg-sand"
             >
               Déconnexion
             </button>

@@ -7,6 +7,10 @@ import { login, loginWithMagicLink, type MagicLinkState } from "@/lib/actions/au
 
 const initialMagicState: MagicLinkState = { status: "idle" };
 
+const FIELD =
+  "rounded-[10px] bg-sand px-4 py-3 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30";
+const LABEL = "text-[13px] font-bold text-ink";
+
 export default function LoginForm() {
   const [state, action, pending] = useActionState(login, undefined);
   const [magicState, magicAction, magicPending] = useActionState(
@@ -17,8 +21,8 @@ export default function LoginForm() {
   if (magicState.status === "sent") {
     return (
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="font-display text-2xl text-ink">Vérifie ta boîte mail</h1>
-        <p className="mt-2 max-w-sm font-body text-sm text-muted-2">
+        <h1 className="text-[19px] font-bold text-ink">Vérifie ta boîte mail</h1>
+        <p className="mt-2 max-w-sm text-[13px] font-medium text-ink opacity-70">
           On vient de t&apos;envoyer un lien magique. Clique dessus pour te connecter.
         </p>
       </div>
@@ -26,15 +30,17 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-8">
+    <div className="flex w-full max-w-md flex-col gap-6">
       <div className="text-center">
-        <h1 className="font-display text-2xl text-ink">Connexion</h1>
-        <p className="mt-2 font-body text-sm text-muted-2">Contente de te revoir.</p>
+        <h1 className="text-[19px] font-bold text-ink">Connexion</h1>
+        <p className="mt-1 text-[13px] font-medium text-ink opacity-70">
+          Contente de te revoir.
+        </p>
       </div>
 
       <form action={action} className="flex flex-col gap-4" autoComplete="on">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className="font-label text-xs uppercase tracking-wide text-ink/70">
+          <label htmlFor="email" className={LABEL}>
             Email
           </label>
           <input
@@ -44,12 +50,12 @@ export default function LoginForm() {
             autoComplete="email"
             required
             placeholder="toi@exemple.com"
-            className="rounded-full border border-line bg-paper px-5 py-3 font-body text-sm text-ink outline-none transition focus:border-corail"
+            className={FIELD}
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="password" className="font-label text-xs uppercase tracking-wide text-ink/70">
+          <label htmlFor="password" className={LABEL}>
             Mot de passe
           </label>
           <input
@@ -58,27 +64,27 @@ export default function LoginForm() {
             type="password"
             autoComplete="current-password"
             required
-            className="rounded-full border border-line bg-paper px-5 py-3 font-body text-sm text-ink outline-none transition focus:border-corail"
+            className={FIELD}
           />
         </div>
 
         {state?.message && (
-          <p className="font-body text-sm text-corail">{state.message}</p>
+          <p className="text-[13px] font-semibold text-ink">{state.message}</p>
         )}
 
         <button
           disabled={pending}
           type="submit"
-          className="mt-2 rounded-full bg-corail px-5 py-3 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-ink disabled:opacity-60"
+          className="mt-1 rounded-xl bg-orange px-5 py-3 text-sm font-bold text-ink shadow-sticker transition hover:brightness-95 disabled:opacity-60"
         >
           {pending ? "Connexion…" : "Se connecter"}
         </button>
       </form>
 
-      <div className="flex items-center gap-3 text-muted">
-        <div className="h-px flex-1 bg-line" />
-        <span className="font-label text-xs uppercase tracking-wide">ou</span>
-        <div className="h-px flex-1 bg-line" />
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-ink/15" />
+        <span className="text-xs font-bold text-ink/60">ou</span>
+        <div className="h-px flex-1 bg-ink/15" />
       </div>
 
       <form action={magicAction} className="flex flex-col gap-3" autoComplete="on">
@@ -92,25 +98,29 @@ export default function LoginForm() {
           autoComplete="email"
           required
           placeholder="toi@exemple.com"
-          className="rounded-full border border-line bg-paper px-5 py-3 font-body text-sm text-ink outline-none transition focus:border-corail"
+          className={FIELD}
         />
 
         {magicState.message && (
-          <p className="font-body text-sm text-corail">{magicState.message}</p>
+          <p className="text-[13px] font-semibold text-ink">{magicState.message}</p>
         )}
 
         <button
           disabled={magicPending}
           type="submit"
-          className="rounded-full border border-ink px-5 py-3 font-label text-xs uppercase tracking-wide text-ink transition hover:border-corail hover:text-corail disabled:opacity-60"
+          className="rounded-xl bg-sand px-5 py-3 text-sm font-bold text-ink transition hover:bg-ink/10 disabled:opacity-60"
         >
-          {magicPending ? "Envoi…" : "Recevoir un lien magique →"}
+          {magicPending ? "Envoi…" : "Recevoir un lien magique"}
         </button>
       </form>
 
-      <p className="text-center font-body text-sm text-muted-2">
+      <p className="text-center text-[13px] font-medium text-ink opacity-80">
         Pas encore de compte ?{" "}
-        <Link href="/inscription" prefetch={false} className="text-corail transition hover:text-ink">
+        <Link
+          href="/inscription"
+          prefetch={false}
+          className="font-semibold underline decoration-orange decoration-2 underline-offset-4 transition hover:decoration-ink"
+        >
           Créer mon compte
         </Link>
       </p>

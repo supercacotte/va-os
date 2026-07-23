@@ -1,10 +1,13 @@
-import SpaceHeader from "@/components/SpaceHeader";
+import Shell from "@/components/Shell";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <SpaceHeader badge="Admin" homeHref="/admin" />
+    <Shell
+      badge="Admin"
+      homeHref="/admin"
+      navItems={[{ href: "/admin", label: "Tableau de bord", exact: true }]}
+    >
       {children}
-    </>
+    </Shell>
   );
 }

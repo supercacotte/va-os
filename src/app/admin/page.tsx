@@ -17,19 +17,21 @@ export default async function AdminPage() {
   ];
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-16">
-      <div>
-        <h1 className="font-display text-3xl text-ink">Espace admin</h1>
-        <p className="mt-1 font-body text-sm text-muted-2">
-          {session.user.name ?? session.user.email} — vue d&apos;ensemble de la plateforme.
-        </p>
+    <main className="flex-1 px-8 py-10">
+      <div className="mb-2">
+        <h1 className="font-bowlby text-[44px] leading-none text-ink">Espace admin</h1>
       </div>
+      <p className="mb-8 text-[13px] font-medium text-ink opacity-70">
+        {session.user.name ?? session.user.email} — vue d&apos;ensemble de la plateforme.
+      </p>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-3xl border border-line bg-paper p-6 text-center">
-            <p className="font-display text-3xl text-ink">{stat.value}</p>
-            <p className="mt-1 font-label text-[11px] uppercase tracking-wide text-muted">
+          <div key={stat.label} className="rounded-[14px] bg-sand px-5 py-4">
+            <p className="text-[26px] font-bold leading-tight tabular-nums text-ink">
+              {stat.value}
+            </p>
+            <p className="text-[11px] font-bold uppercase tracking-[1.5px] text-ink/60">
               {stat.label}
             </p>
           </div>

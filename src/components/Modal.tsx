@@ -18,17 +18,17 @@ export function Modal({ children }: { children: React.ReactNode }) {
   return (
     <div
       onClick={() => router.back()}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 px-6 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/40 px-6 backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-3xl border border-line bg-cream p-8 shadow-2xl"
+        className="relative w-full max-w-md rounded-[18px] bg-paper p-8 shadow-screen"
       >
         <button
           type="button"
           onClick={() => router.back()}
           aria-label="Fermer"
-          className="absolute right-5 top-5 text-ink/50 transition hover:text-corail"
+          className="absolute right-5 top-5 text-ink/50 transition hover:text-ink"
         >
           <X size={20} />
         </button>
