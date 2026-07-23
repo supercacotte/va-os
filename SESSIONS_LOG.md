@@ -127,3 +127,37 @@
     l'inscription.
   - `git push` GitHub toujours bloqué en local (pas d'auth) ; une fois
     débloqué, chaque push sur `main` déclenchera un déploiement automatique.
+
+## 23/07 — Phase 2 : CRUD clients, missions, tâches
+- **Objectif de la session** : le cœur du cockpit — CRUD complet côté VA sur
+  le pattern des formulaires admin du repo de référence.
+- **Fait** :
+  - **Couche data D12 complète** : lectures ET écritures dans `lib/data/`
+    (`clients`, `missions`, `tasks`, `users`), toutes filtrées par `vaId`
+    dans leur propre clause where. Les mutations utilisent
+    `updateMany`/`deleteMany` avec le filtre tenant (`count === 0` ⇒
+    introuvable ou pas à toi, atomique, sans requête préalable). Plus aucun
+    appel Prisma hors de `lib/data`.
+  - Actions Zod (`clients`, `missions`, `tasks`) sur le pattern
+    `content.ts` du repo : `requireVa()`, `safeParse` + `fieldErrors`,
+    `revalidatePath`.
+  - Pages : `/app` (stats + onboarding si 0 client), `/app/clients` (liste +
+    compteurs + `ClientRowActions` avec confirm), `/app/clients/new`,
+    `/app/clients/[id]` (édition, invitation portail déplacée ici, missions
+    avec renommage inline / statut / suppression, tâches avec checkbox
+    optimiste, édition inline, badge « Demande client »). Nav `/app` ajoutée.
+  - États vides à chaque niveau : dashboard, liste clients, fiche sans
+    mission, mission sans tâche — avec quoi-faire-ensuite explicite.
+  - **Bug trouvé et corrigé** : le reset automatique des formulaires après
+    une Server Action (React 19) écrasait l'état de la checkbox contrôlée
+    des tâches → remplacée par un appel direct à l'action dans une
+    transition + `useOptimistic` (`TaskRow.tsx`).
+  - Seed inchangé : les comptes de test ont déjà 2 clients / 3 missions /
+    8 tâches à manipuler.
+  - Vérifié e2e dans le navigateur : création client (redirection fiche),
+    mission créée/terminée/réactivée, tâche créée/cochée/décochée,
+    suppression client en cascade (3 → 2), compteurs du dashboard à jour.
+    Build vert.
+- **Ça coince** : rien de bloquant.
+- **Prochaine session** : Phase 3 — chrono (start/stop rattaché à une tâche,
+  une seule entrée active, édition a posteriori).

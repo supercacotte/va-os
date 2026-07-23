@@ -3,9 +3,92 @@
 import * as z from "zod";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { prisma } from "@/lib/prisma";
 import { auth, signIn } from "@/auth";
+import {
+  createClientForVa,
+  deleteClientForVa,
+  getOwnedClientWithPortal,
+  updateClientForVa,
+} from "@/lib/data/clients";
+import { createPortalUser, findUserByEmail } from "@/lib/data/users";
+
+const ClientSchema = z.object({
+  name: z.string().trim().min(2, "Le nom doit faire au moins 2 caractères."),
+  company: z
+    .string()
+    .trim()
+    .max(120, "Le nom de l'entreprise est trop long (120 caractères max).")
+    .transform((value) => value || null),
+});
+
+export type ClientFormState =
+  | {
+      errors?: { name?: string[]; company?: string[] };
+      message?: string;
+    }
+  | undefined;
+
+async function requireVa() {
+  const session = await auth();
+  if (session?.user.role !== "VA") {
+    throw new Error("Unauthorized");
+  }
+  return session;
+}
+
+function parseClientForm(formData: FormData) {
+  const validated = ClientSchema.safeParse({
+    name: formData.get("name"),
+    company: formData.get("company") ?? "",
+  });
+  if (!validated.success) {
+    return { errors: z.flattenError(validated.error).fieldErrors };
+  }
+  return { data: validated.data };
+}
+
+export async function createClientAction(
+  _state: ClientFormState,
+  formData: FormData,
+): Promise<ClientFormState> {
+  const session = await requireVa();
+
+  const parsed = parseClientForm(formData);
+  if (parsed.errors) return { errors: parsed.errors };
+
+  const client = await createClientForVa(session.user.id, parsed.data);
+  revalidatePath("/app");
+  redirect(`/app/clients/${client.id}`);
+}
+
+export async function updateClientAction(
+  clientId: string,
+  _state: ClientFormState,
+  formData: FormData,
+): Promise<ClientFormState> {
+  const session = await requireVa();
+
+  const parsed = parseClientForm(formData);
+  if (parsed.errors) return { errors: parsed.errors };
+
+  const updated = await updateClientForVa(session.user.id, clientId, parsed.data);
+  if (!updated) return { message: "Client introuvable." };
+
+  revalidatePath("/app");
+  return { message: "Modifications enregistrées." };
+}
+
+export async function deleteClientAction(formData: FormData) {
+  const session = await requireVa();
+  const clientId = formData.get("clientId");
+  if (typeof clientId !== "string" || !clientId) return;
+
+  await deleteClientForVa(session.user.id, clientId);
+  revalidatePath("/app");
+  redirect("/app/clients");
+}
 
 const InviteSchema = z.object({
   clientId: z.string().min(1),
@@ -37,10 +120,7 @@ export async function inviteClientUser(
   const { clientId, email } = validated.data;
 
   // D12 : vérification de propriété de la ressource avant toute mutation.
-  const client = await prisma.client.findFirst({
-    where: { id: clientId, vaId: session.user.id },
-    include: { portalUser: { select: { id: true } } },
-  });
+  const client = await getOwnedClientWithPortal(session.user.id, clientId);
   if (!client) {
     return { message: "Client introuvable." };
   }
@@ -48,20 +128,13 @@ export async function inviteClientUser(
     return { message: "Ce client a déjà un accès portail." };
   }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const existing = await findUserByEmail(email);
   if (existing) {
     return { message: "Un compte existe déjà avec cet email." };
   }
 
-  await prisma.user.create({
-    data: {
-      email,
-      name: client.name,
-      role: "CLIENT",
-      clientId: client.id,
-    },
-  });
-  revalidatePath("/app");
+  await createPortalUser(client, email);
+  revalidatePath(`/app/clients/${clientId}`);
 
   try {
     await signIn("resend", { email, redirect: false });
