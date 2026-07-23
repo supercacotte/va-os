@@ -1,29 +1,14 @@
 import type { Metadata } from "next";
-import { Sacramento, DM_Serif_Display, Space_Mono, Work_Sans } from "next/font/google";
+import { Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const sacramento = Sacramento({
-  variable: "--font-sacramento",
-  weight: "400",
-  subsets: ["latin"],
-});
-
-const dmSerif = DM_Serif_Display({
-  variable: "--font-dm-serif",
-  weight: "400",
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-});
-
+// Fontes de marque VA Desk (D14) : BOWL (display) et Aileron (body) seront
+// chargées ici en next/font/local (variables --font-bowl / --font-aileron)
+// dès que les fichiers seront dans src/fonts/ — d'ici là, globals.css
+// retombe sur les fallbacks système.
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
   weight: ["400", "700"],
-  subsets: ["latin"],
-});
-
-const workSans = Work_Sans({
-  variable: "--font-work-sans",
-  weight: ["300", "400", "500"],
   subsets: ["latin"],
 });
 
@@ -41,10 +26,7 @@ export default function RootLayout({
   auth: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fr"
-      className={`${sacramento.variable} ${dmSerif.variable} ${spaceMono.variable} ${workSans.variable}`}
-    >
+    <html lang="fr" className={spaceMono.variable}>
       <body className="flex min-h-screen flex-col">
         {children}
         {auth}

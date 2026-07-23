@@ -25,7 +25,7 @@
 | D11 | **Révisée le 23/07** : uploads via Vercel Blob (hébergement Vercel, filesystem éphémère) ; la validation type/taille de `lib/upload.ts` est conservée | ✅ 23/07 | Pas de volume persistant sur Vercel ; Blob est le stockage natif de la plateforme |
 | D12 | Multi-tenancy applicative (pas de RLS Postgres) : tout accès passe par des fonctions de data-access filtrées par `vaId` — jamais de `prisma.x.findMany` nu dans une page | ⏳ | Prisma n'apporte pas le filet RLS de Supabase ; la discipline doit être structurelle (voir ARCHITECTURE.md) + audit dédié en phase 10 |
 | D13 | Bolt Pro (tokens jusqu'au 28/08) relégué à un usage optionnel : maquettes UI jetables uniquement, jamais de code destiné au repo | ⏳ | Éviter deux bases de code divergentes |
-| D14 | Palette de l'app : à trancher (palette "plage" du site vs variante sobre) | 🔲 Ouverte | Voir PRD §7 |
+| D14 | **Tranchée le 23/07** : identité **VA Desk** (tagline « Tout votre business, au même endroit. ») — palette lavande `#C5C4FF`, rose `#FFB6E3`, citron `#E3F85A`, orange `#FCA049`, fond `#EBEAE5`, ink `#202221`, blanc `#FBFBF9`, olive `#CBC064` ; principe : app lisible, texte toujours ink sur fonds clairs, couleurs en accents/surfaces uniquement | ✅ 23/07 | Identité propre au produit (distincte du site SLC), pensée pour un outil de travail quotidien |
 
 ## Modèle d'entrée pour les prochaines décisions
 

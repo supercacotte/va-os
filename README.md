@@ -1,4 +1,6 @@
-# Smart Lazy VA OS — SaaS pour assistantes virtuelles
+# VA Desk — SaaS pour assistantes virtuelles
+
+> « Tout votre business, au même endroit. »
 
 Cockpit d'opérations pour assistantes virtuelles indépendantes :
 **clients → missions → tâches → chrono → rapport d'activité → facture**.

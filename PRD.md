@@ -1,4 +1,4 @@
-# PRD — Smart Lazy VA OS (v1.1)
+# PRD — VA Desk (v1.1)
 
 > v1.1 — 23 juillet 2026. Révision de la v1.0 (16 juillet) : pivot de stack
 > Bolt/Supabase → Next.js/Prisma/NextAuth, aligné sur le repo de référence
@@ -177,14 +177,22 @@ enums, `onDelete: Cascade`, `@@unique` composés) reprises du repo de référenc
 
 ## 7. Design system
 
-Structure de tokens reprise du repo (`globals.css`, `@theme inline`).
-Palette du site actuel : cream `#ffffff`, ink `#24221c`, corail `#d9583b`,
-mer `#2f7e73`, soleil `#e7a93c`. Fontes : DM Serif (display), Work Sans
-(body), Space Mono (labels), Sacramento (script — usage marketing seulement).
+Identité **VA Desk** (D14, tranchée le 23/07). Tagline : « Tout votre
+business, au même endroit. »
 
-⚠️ À trancher (D14) : garder cette palette "plage" pour un outil de travail
-quotidien, ou décliner une variante plus sobre pour l'app (mêmes tokens,
-saturations réduites). Le portail client, lui, reste 100 % brandé.
+Palette : lavande `#C5C4FF`, rose `#FFB6E3`, citron `#E3F85A`, orange
+`#FCA049`, fond `#EBEAE5`, ink `#202221`, blanc `#FBFBF9`, olive `#CBC064`.
+Principe : l'app reste lisible — le texte est toujours ink sur fonds clairs,
+les couleurs ne servent qu'en **accents et surfaces**, jamais pour du texte
+courant.
+
+Fontes : **BOWL** (display) et **Aileron** (body), chargées en
+`next/font/local` dès que les fichiers de police seront dans le repo —
+fallbacks système en attendant. Structure de tokens reprise du repo de
+référence (`globals.css`, `@theme inline`).
+
+Ton : **joyeux, éditorial** — ni girlboss cliché, ni SaaS froid. On écrit
+comme une collègue compétente et de bonne humeur, pas comme un dashboard.
 
 ## 8. Intégrations
 

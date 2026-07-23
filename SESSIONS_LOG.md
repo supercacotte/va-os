@@ -48,9 +48,6 @@
   - Docs mises à jour suite au pivot hébergement : Vercel + Prisma Postgres
     (README, ARCHITECTURE §1/§3/§5, D11 révisée → Vercel Blob, BUILD_PLAN
     Phase 0).
-  - Listing temporaire des clients/missions/tâches sur la home (connectée VA),
-    via `lib/data/clients.ts` filtré par `vaId` (premier fichier du pattern
-    D12) — sera remplacé par le dashboard de la phase 2.
 - **Ça coince** : la machine n'avait ni Node ni Postgres — installés en
   espace utilisateur : Node 22 dans `~/.local/node22/bin` (à ajouter au PATH),
   Postgres 18 embarqué dans `~/.local/va-os-pg` (démarrage :
@@ -91,3 +88,23 @@
 - **Prochaine session** : Phase 2 — CRUD clients/missions/tâches côté VA
   (formulaires Server Actions + Zod, RowActionsMenu), `lib/data/*` filtrés
   par `vaId` dès la première ligne.
+
+## 23/07 — Rebrand : VA Desk (D14 tranchée)
+- **Objectif de la session** : appliquer la nouvelle identité VA Desk
+  (« Tout votre business, au même endroit. ») — tokens et docs seulement,
+  pas de restyle des écrans.
+- **Fait** :
+  - D14 tranchée dans DECISIONS.md (palette lavande/rose/citron/orange/fond/
+    ink/blanc/olive, principe « texte toujours ink sur fonds clairs »).
+  - `globals.css` : nouveaux tokens + **alias de transition** (cream→fond,
+    corail→orange, mer→olive…) pour que les écrans phases 0-1 restent
+    utilisables jusqu'au restyle — bloc marqué à supprimer.
+  - Fontes : BOWL (display) / Aileron (body) prévues en `next/font/local`,
+    fallbacks système tant que les fichiers ne sont pas dans `src/fonts/` ;
+    Space Mono conservée pour `--font-label`.
+  - README et PRD renommés VA Desk ; PRD §7 réécrit (palette, fontes, ton
+    « joyeux, éditorial — ni girlboss cliché, ni SaaS froid »).
+- **Ça coince** : les chaînes « Smart Lazy VA OS » dans le code (metadata,
+  headers, emails) restent à renommer lors du restyle des écrans.
+- **Prochaine session** : Phase 2, ou restyle VA Desk des écrans existants
+  (supprimer les alias de transition + renommer la marque dans le code).

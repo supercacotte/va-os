@@ -1,45 +1,64 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Palette "plage" du site — D14 ouverte : une variante plus sobre pour l'app
-   se fera en ne touchant qu'à ces valeurs, jamais aux noms de tokens. */
+/* Identité VA Desk (D14, 23/07) — « Tout votre business, au même endroit. »
+   Principe : app lisible. Le texte est toujours ink sur fonds clairs, les
+   couleurs ne servent qu'en accents et surfaces. */
 :root {
-  --cream: #ffffff;
-  --paper: #ffffff;
-  --ink: #24221c;
-  --corail: #d9583b;
-  --mer: #2f7e73;
-  --soleil: #e7a93c;
-  --muted: #9a8a68;
-  --muted-2: #5a5240;
-  --line: #dacdb6;
+  --lavande: #c5c4ff;
+  --rose: #ffb6e3;
+  --citron: #e3f85a;
+  --orange: #fca049;
+  --fond: #ebeae5;
+  --ink: #202221;
+  --blanc: #fbfbf9;
+  --olive: #cbc064;
 }
 
 @theme inline {
-  --color-cream: var(--cream);
-  --color-paper: var(--paper);
+  --color-lavande: var(--lavande);
+  --color-rose: var(--rose);
+  --color-citron: var(--citron);
+  --color-orange: var(--orange);
+  --color-fond: var(--fond);
   --color-ink: var(--ink);
-  --color-corail: var(--corail);
-  --color-mer: var(--mer);
-  --color-soleil: var(--soleil);
-  --color-muted: var(--muted);
-  --color-muted-2: var(--muted-2);
-  --color-line: var(--line);
+  --color-blanc: var(--blanc);
+  --color-olive: var(--olive);
 
-  --font-script: var(--font-sacramento);
-  --font-display: var(--font-dm-serif);
+  /* Alias de transition pour les écrans des phases 0-1 (non restylés) —
+     à supprimer lors du passage des écrans à la charte VA Desk. */
+  --color-cream: var(--fond);
+  --color-paper: var(--blanc);
+  --color-corail: var(--orange);
+  --color-mer: var(--olive);
+  --color-soleil: var(--citron);
+  --color-muted: #71716b;
+  --color-muted-2: #4a4a45;
+  --color-line: #d9d7d0;
+
+  /* BOWL (display) et Aileron (body) passeront en next/font/local dès que
+     les fichiers de police seront dans le repo (src/fonts/) : les variables
+     --font-bowl / --font-aileron prendront alors le relais des fallbacks. */
+  --font-display: var(--font-bowl, Georgia, "Times New Roman", serif);
+  --font-body: var(
+    --font-aileron,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    sans-serif
+  );
   --font-label: var(--font-space-mono);
-  --font-body: var(--font-work-sans);
 }
 
 ::selection {
-  background: var(--corail);
-  color: var(--paper);
+  background: var(--lavande);
+  color: var(--ink);
 }
 
 body {
-  background-color: var(--cream);
+  background-color: var(--fond);
   color: var(--ink);
   font-family: var(--font-body);
-  font-weight: 300;
 }
