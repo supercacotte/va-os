@@ -96,29 +96,10 @@
   --color-client-19: var(--client-19);
   --color-client-20: var(--client-20);
 
-  /* Alias de transition — écrans pas encore passés à la DA. À supprimer
-     à la fin de la migration écran par écran. */
-  --color-lavande: var(--lilac);
-  --color-rose: var(--pink);
-  --color-citron: var(--lime);
-  --color-blanc: var(--paper);
-  --color-fond: var(--sand);
-  --color-cream: var(--sand);
-  --color-corail: var(--orange);
-  --color-mer: var(--olive);
-  --color-soleil: var(--lime);
-  --color-muted: #71716b;
-  --color-muted-2: #4a4a45;
-  --color-line: #d9d7d0;
-
   /* Typo : Bowlby One = display (H1, timer, logo SEULEMENT) ;
-     Instrument Sans partout ailleurs. Les alias display/label pointent sur
-     Instrument pour les écrans legacy. */
+     Instrument Sans partout ailleurs. */
   --font-bowlby: var(--font-bowlby-one), "Arial Black", sans-serif;
   --font-sans: var(--font-instrument), Helvetica, Arial, sans-serif;
-  --font-body: var(--font-instrument), Helvetica, Arial, sans-serif;
-  --font-display: var(--font-instrument), Helvetica, Arial, sans-serif;
-  --font-label: var(--font-instrument), Helvetica, Arial, sans-serif;
 
   /* Ombres DA : offset « sticker » sans flou ; l'ombre floue n'existe qu'au
      niveau du conteneur de page. */
@@ -135,5 +116,5 @@
 body {
   background-color: var(--sand);
   color: var(--ink);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
 }
