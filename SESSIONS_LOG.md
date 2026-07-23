@@ -264,3 +264,35 @@
   Sans gravité.
 - **Prochaine session** : Phase 6 — abonnements Stripe (2 Price IDs,
   checkout subscription, webhook, gating Pro).
+
+## 23/07 — DA VA Desk : implémentation complète (maquettes 5a, 7a, 14a, PDF, landing)
+- **Objectif de la session** : DESIGN.md validé + couleur client en base +
+  généralisation de la DA à tous les écrans, un commit par écran.
+- **Fait** :
+  - `design/DESIGN.md` versionné avec les maquettes ; champ `Client.color`
+    (1-20, attribué à la création — premier numéro libre —, jamais
+    recalculé), migration `client_color`, module `client-colors`
+    (oklch + hex de secours via `@supports`), backfill one-shot du seed.
+  - Tokens §1-4 dans `@theme inline`, Bowlby One + Instrument Sans
+    (next/font/google), ombres sticker/screen, `--client-1..20`.
+  - Écrans passés à la DA : clients (témoin validé), dashboard VA (5a),
+    fiche client + création, **page temps enrichie selon 14a** (stats
+    jour/semaine/mois, répartition par client, historique groupé par jour
+    avec chips de filtre, panneau « Reprendre »), rapports VA, **portail
+    complet selon 7a** (panneau vedette « Demande à {VA}. » avec suivi
+    intégré, barres de progression couleur client, rapports avec mois en
+    cours encadré ink), admin, auth (modale + formulaires), **PDF selon
+    maquette** (lignes datées par entrée, stats encadrées, total orange),
+    **landing page complète** (hero stickers, mockup produit, bandeau ink,
+    3 cartes, côté client, témoignage, CTA, footer).
+  - Shell commun (header sticker + nav pills) pour les 3 espaces ;
+    SpaceHeader supprimé ; alias de transition purgés de globals.css.
+  - Écarts assumés : PDF en Helvetica (TTF de marque à embarquer plus
+    tard) ; stat « tâches couvertes » au lieu de « terminées » (honnête
+    avec nos données) ; nav landing sans « Tarifs » (pas de section).
+- **À décider — maquette 15a (page Rapports « générer en vedette »)** :
+  elle implique des rapports PERSISTÉS (générés/envoyés) et un toggle
+  « visible sur son portail » par client → modèle `Report` + champ de
+  visibilité, décision produit à acter (PRD/DECISIONS) avant
+  implémentation. Non traitée dans cette session.
+- **Prochaine session** : maquette 15a si validée, sinon Phase 6 (Stripe).
