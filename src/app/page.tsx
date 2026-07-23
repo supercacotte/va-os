@@ -60,16 +60,16 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-sand px-6 pb-16 pt-14 text-center">
-        <span className="absolute left-[12%] top-16 hidden -rotate-6 rounded-[8px] bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
+        <span className="absolute left-[12%] top-16 hidden -rotate-6 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
           to-do list
         </span>
-        <span className="absolute left-[6%] top-32 hidden rotate-3 rounded-[8px] bg-lilac px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
+        <span className="absolute left-[6%] top-32 hidden rotate-3 rounded-[8px] border-4 border-paper bg-lilac px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
           deadlines
         </span>
-        <span className="absolute right-[10%] top-14 hidden rotate-2 rounded-[8px] bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
+        <span className="absolute right-[10%] top-14 hidden rotate-2 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
           emails
         </span>
-        <span className="absolute right-[7%] top-32 hidden -rotate-3 rounded-[8px] bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
+        <span className="absolute right-[7%] top-32 hidden -rotate-3 rounded-[8px] border-4 border-paper bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
           factures
         </span>
 
