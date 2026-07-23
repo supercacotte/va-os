@@ -33,3 +33,4 @@ yarn-error.log*
 
 # uploads (volume persistant en prod, pas versionné)
 /public/uploads
+.env*
