@@ -32,7 +32,7 @@ export default function LoginForm() {
   return (
     <div className="flex w-full max-w-md flex-col gap-6">
       <div className="text-center">
-        <h1 className="text-[19px] font-bold text-ink">Connexion</h1>
+        <h1 className="font-bowlby text-[28px] leading-tight text-ink">Connexion</h1>
         <p className="mt-1 text-[13px] font-medium text-ink opacity-70">
           Contente de te revoir.
         </p>

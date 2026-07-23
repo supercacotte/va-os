@@ -296,3 +296,34 @@
   visibilité, décision produit à acter (PRD/DECISIONS) avant
   implémentation. Non traitée dans cette session.
 - **Prochaine session** : maquette 15a si validée, sinon Phase 6 (Stripe).
+
+## 23/07 — Rapports 15a/16c + signin : D15 implémentée
+- **Objectif de la session** : les fonctionnalités des maquettes 15a
+  (page Rapports), 16c (document PDF) et signin.
+- **Fait** :
+  - **D15** : modèle `Report` (client × mois unique, génération explicite,
+    régénérable) + `Client.portalReportsEnabled` (défaut ON), migration
+    `reports_and_portal_visibility`.
+  - Page Rapports 15a : cartes par client (avatar couleur, méta du mois,
+    toggle « Visible sur son portail » citron/ink, lignes de rapports avec
+    pills « sur le portail ✓ » / « à générer »), panneau vedette lilas
+    « Nouveau rapport » (récap temps/tâches/missions, ▶ Générer), carte
+    Rappel (2 alertes max, libellés de la maquette).
+  - **Le portail ne montre plus que les rapports générés** d'un client au
+    toggle actif ; la route PDF portail renvoie 404 sinon (D12 + D15).
+  - PDF 16c « Ink + orange » : Bowlby One + Instrument Sans **embarquées**
+    (TTF Google Fonts en base64 → tmp au premier rendu), monochrome ink,
+    accent orange unique, stats encadrées, entrées datées, bandeau total
+    orange, pagination.
+  - Maquette signin : le champ « Nom » disparaît de l'inscription (prénom +
+    email + mot de passe), titres de modales en Bowlby, badge « 2 min
+    chrono », lien magique aussi à l'inscription, microcopy CGU.
+  - Vérifié e2e (Julia) : génération du rapport de Marie (carte passée à
+    « sur le portail ✓ » + Télécharger), PDF 200 (19 Ko, polices
+    embarquées), toggle Paul OFF→ON persistant avec alerte Rappel conforme.
+    Deux redémarrages du dev server nécessaires après les migrations
+    (client Prisma généré à chaud).
+- **Écart maquette** : « Tâches terminées » → « Tâches couvertes »
+  (fidèle aux données) ; footer app « §5 bis » non implémenté (section
+  absente de DESIGN.md).
+- **Prochaine session** : Phase 6 — abonnements Stripe.

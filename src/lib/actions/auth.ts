@@ -12,9 +12,9 @@ import { verifyEmailHtml } from "@/lib/email-templates";
 
 // L'inscription libre crée toujours une VA (défaut du schéma). Les comptes
 // CLIENT sont créés par invitation de la VA (phase 1), jamais ici.
+// Maquette signin : prénom + email + mot de passe, rien d'autre.
 const SignupSchema = z.object({
   name: z.string().trim().min(2, "Le prénom doit faire au moins 2 caractères."),
-  lastName: z.string().trim().min(2, "Le nom doit faire au moins 2 caractères."),
   email: z.email("Adresse email invalide.").trim(),
   password: z.string().min(8, "Le mot de passe doit faire au moins 8 caractères."),
 });
@@ -46,7 +46,6 @@ async function sendAccountVerificationEmail(email: string) {
 export type SignupState = {
   errors?: {
     name?: string[];
-    lastName?: string[];
     email?: string[];
     password?: string[];
   };
@@ -56,7 +55,6 @@ export type SignupState = {
 export async function signup(_state: SignupState, formData: FormData): Promise<SignupState> {
   const validatedFields = SignupSchema.safeParse({
     name: formData.get("name"),
-    lastName: formData.get("lastName"),
     email: formData.get("email"),
     password: formData.get("password"),
   });
@@ -65,7 +63,7 @@ export async function signup(_state: SignupState, formData: FormData): Promise<S
     return { errors: z.flattenError(validatedFields.error).fieldErrors };
   }
 
-  const { name, lastName, email, password } = validatedFields.data;
+  const { name, email, password } = validatedFields.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -74,7 +72,7 @@ export async function signup(_state: SignupState, formData: FormData): Promise<S
 
   const hashedPassword = await bcrypt.hash(password, 10);
   await prisma.user.create({
-    data: { name, lastName, email, password: hashedPassword },
+    data: { name, email, password: hashedPassword },
   });
 
   await sendAccountVerificationEmail(email);
