@@ -2,6 +2,7 @@
 
 import Chronometer from "@/components/app/Chronometer";
 import { stopTimerAction } from "@/lib/actions/timeEntries";
+import { clientColorVar } from "@/lib/client-colors";
 
 type Props = {
   entry: {
@@ -11,33 +12,38 @@ type Props = {
     missionName: string;
     clientName: string;
     clientId: string;
+    clientColor: number;
   };
 };
 
 export default function ActiveTimerBanner({ entry }: Props) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-corail/40 bg-paper p-6">
+    <div
+      className="flex flex-wrap items-center justify-between gap-5 rounded-[18px] p-6 shadow-sticker"
+      style={{ backgroundColor: clientColorVar(entry.clientColor) }}
+    >
       <div className="min-w-0">
-        <p className="flex items-center gap-2 font-label text-[11px] uppercase tracking-wide text-corail">
-          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-corail" />
-          Chrono en cours
-        </p>
-        <p className="mt-1 truncate font-display text-lg text-ink">
-          {entry.label ?? entry.taskTitle}
-        </p>
-        <p className="truncate font-body text-sm text-muted-2">
+        <div className="flex items-center gap-3">
+          <p className="text-[19px] font-bold text-ink">En cours</p>
+          <span className="rotate-2 rounded-full bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-sticker">
+            ● rec
+          </span>
+        </div>
+        <p className="mt-2 truncate text-[13px] font-bold text-ink">
           {entry.clientName} — {entry.missionName}
-          {entry.label ? ` — ${entry.taskTitle}` : ""}
+        </p>
+        <p className="truncate text-[13px] font-semibold text-ink opacity-70">
+          {entry.label ?? entry.taskTitle}
         </p>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
         <Chronometer startedAt={entry.startedAt} />
         <form action={stopTimerAction}>
           <input type="hidden" name="clientId" value={entry.clientId} />
           <button
             type="submit"
-            className="rounded-full bg-ink px-5 py-3 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-corail"
+            className="rounded-xl bg-ink px-5 py-3 text-sm font-bold text-paper shadow-sticker transition hover:opacity-90"
           >
             ■ Stop
           </button>

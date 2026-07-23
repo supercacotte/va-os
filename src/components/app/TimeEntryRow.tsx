@@ -26,6 +26,9 @@ function toDatetimeLocal(iso: string) {
   )}:${pad(d.getMinutes())}`;
 }
 
+const FIELD =
+  "rounded-[10px] bg-paper px-4 py-2 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30";
+
 export default function TimeEntryRow({
   entry,
   tasks,
@@ -48,14 +51,10 @@ export default function TimeEntryRow({
 
   if (editing) {
     return (
-      <li className="rounded-2xl border border-corail/40 bg-paper p-4">
+      <li className="rounded-[14px] border-2 border-ink bg-sand p-4">
         <form action={action} className="flex flex-col gap-3">
           <input type="hidden" name="entryId" value={entry.id} />
-          <input
-            type="hidden"
-            name="tzOffset"
-            value={new Date().getTimezoneOffset()}
-          />
+          <input type="hidden" name="tzOffset" value={new Date().getTimezoneOffset()} />
           <div className="flex flex-wrap gap-2">
             <label htmlFor={`task-${entry.id}`} className="sr-only">
               Tâche
@@ -64,7 +63,7 @@ export default function TimeEntryRow({
               id={`task-${entry.id}`}
               name="taskId"
               defaultValue={entry.taskId}
-              className="min-w-0 flex-1 rounded-full border border-line bg-cream px-4 py-2 font-body text-sm text-ink outline-none transition focus:border-corail"
+              className={`${FIELD} min-w-0 flex-1`}
             >
               {tasks.map((task) => (
                 <option key={task.id} value={task.id}>
@@ -80,14 +79,11 @@ export default function TimeEntryRow({
               name="label"
               defaultValue={entry.label ?? ""}
               placeholder="Label (optionnel)"
-              className="min-w-0 flex-1 rounded-full border border-line bg-cream px-4 py-2 font-body text-sm text-ink outline-none transition focus:border-corail"
+              className={`${FIELD} min-w-0 flex-1`}
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <label
-              htmlFor={`start-${entry.id}`}
-              className="font-label text-[11px] uppercase tracking-wide text-muted"
-            >
+            <label htmlFor={`start-${entry.id}`} className="text-xs font-bold text-ink">
               Début
             </label>
             <input
@@ -96,12 +92,9 @@ export default function TimeEntryRow({
               type="datetime-local"
               defaultValue={toDatetimeLocal(entry.startedAt)}
               required
-              className="rounded-full border border-line bg-cream px-4 py-2 font-body text-sm text-ink outline-none transition focus:border-corail"
+              className={FIELD}
             />
-            <label
-              htmlFor={`duration-${entry.id}`}
-              className="font-label text-[11px] uppercase tracking-wide text-muted"
-            >
+            <label htmlFor={`duration-${entry.id}`} className="text-xs font-bold text-ink">
               Durée (min)
             </label>
             <input
@@ -112,43 +105,43 @@ export default function TimeEntryRow({
               max={1440}
               defaultValue={durationMin}
               required
-              className="w-24 rounded-full border border-line bg-cream px-4 py-2 font-body text-sm text-ink outline-none transition focus:border-corail"
+              className={`${FIELD} w-24`}
             />
             <div className="ml-auto flex items-center gap-2">
               <button
                 disabled={pending}
                 type="submit"
-                className="rounded-full bg-corail px-4 py-2 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-ink disabled:opacity-60"
+                className="rounded-xl bg-orange px-4 py-2 text-xs font-bold text-ink shadow-sticker disabled:opacity-60"
               >
                 {pending ? "…" : "Enregistrer"}
               </button>
               <button
                 type="button"
                 onClick={() => setEditing(false)}
-                className="font-label text-xs uppercase tracking-wide text-muted transition hover:text-ink"
+                className="text-xs font-semibold text-ink/60 transition hover:text-ink"
               >
                 Annuler
               </button>
             </div>
           </div>
-          {state?.error && <p className="font-body text-xs text-corail">{state.error}</p>}
+          {state?.error && <p className="text-xs font-semibold text-ink/70">{state.error}</p>}
         </form>
       </li>
     );
   }
 
   return (
-    <li className="group flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-paper p-4">
+    <li className="group flex flex-wrap items-center justify-between gap-3 rounded-[14px] bg-sand px-5 py-4">
       <div className="min-w-0 flex-1">
-        <p className="truncate font-body text-sm font-medium text-ink">
+        <p className="truncate text-[15px] font-semibold text-ink">
           {entry.label ?? entry.taskTitle}
         </p>
-        <p className="truncate font-body text-xs text-muted-2">
+        <p className="truncate text-[13px] font-medium text-ink opacity-70">
           {entry.clientName} — {entry.missionName}
           {entry.label ? ` — ${entry.taskTitle}` : ""}
         </p>
       </div>
-      <p suppressHydrationWarning className="font-body text-xs text-muted">
+      <p suppressHydrationWarning className="text-[13px] font-medium text-ink opacity-70">
         {new Intl.DateTimeFormat("fr-FR", {
           day: "2-digit",
           month: "2-digit",
@@ -156,12 +149,14 @@ export default function TimeEntryRow({
           minute: "2-digit",
         }).format(new Date(entry.startedAt))}
       </p>
-      <p className="font-label text-sm tabular-nums text-ink">{formatDuration(durationMs)}</p>
+      <p className="text-[15px] font-bold tabular-nums text-ink">
+        {formatDuration(durationMs)}
+      </p>
       <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100">
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="rounded-full px-2 py-1 font-label text-[11px] uppercase tracking-wide text-ink/50 transition hover:text-corail"
+          className="rounded-full px-2 py-1 text-xs font-semibold text-ink/50 transition hover:text-ink"
         >
           Éditer
         </button>
@@ -174,7 +169,7 @@ export default function TimeEntryRow({
           <input type="hidden" name="entryId" value={entry.id} />
           <button
             type="submit"
-            className="rounded-full px-2 py-1 font-label text-[11px] uppercase tracking-wide text-corail/60 transition hover:text-corail"
+            className="rounded-full px-2 py-1 text-xs font-semibold text-ink/50 transition hover:text-ink"
           >
             Suppr.
           </button>
