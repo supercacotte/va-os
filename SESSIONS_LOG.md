@@ -186,3 +186,30 @@
 - **Ça coince** : rien de bloquant.
 - **Prochaine session** : Phase 4 — rapport d'activité (vue client × période,
   agrégats par mission/tâche, export PDF react-pdf).
+
+## 23/07 — Phase 4 : rapport d'activité + export PDF
+- **Objectif de la session** : vue client × mois avec temps agrégés par
+  mission/tâche, export PDF serveur.
+- **Fait** :
+  - `lib/data/reports.ts` : `getActivityReport(vaId, clientId, période)` —
+    propriété du client vérifiée (D12), entrées refiltrées par la chaîne
+    mission → client → vaId, agrégation mission → tâche (totaux + nombre
+    d'entrées).
+  - Page `/app/rapports` : filtres client + mois (`type="month"`) en GET
+    (URL partageable), tableau missions/tâches avec sous-totaux et total,
+    états vides, lien nav.
+  - Export PDF : `@react-pdf/renderer` (serverless-friendly, D11/archi
+    Vercel) — document A4 brandé VA Desk (palette D14), route
+    `/api/rapports/pdf` (auth VA + mêmes filtres D12),
+    `Content-Disposition: attachment`.
+  - Bornes de mois en UTC pour l'instant — un temps saisi autour de minuit
+    au 1er du mois peut glisser d'un mois vu de Paris ; à affiner si les
+    beta-testeuses le remarquent.
+  - Vérifié e2e (compte Léa) : tableau agrégé correct (1 h 30 sur
+    « Newsletter mensuelle »), PDF 200/application/pdf
+    (`rapport-anais-roche-2026-07.pdf`), et 404 sur le client d'une autre
+    VA. Build vert.
+- **Ça coince** : push GitHub toujours impossible depuis le CLI local (pas
+  d'identifiants) — pousser depuis GitHub Desktop/VS Code pour déployer.
+- **Prochaine session** : Phase 5 — portail client (avancement, nouvelle
+  demande, rapports partagés). 🎯 Jalon beta : démo à Julia + beta-testeuses.

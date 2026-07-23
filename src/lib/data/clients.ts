@@ -39,6 +39,15 @@ export async function getClientsForVa(vaId: string) {
   });
 }
 
+// Version allégée pour les selects (rapports, rattachements).
+export async function getClientOptionsForVa(vaId: string) {
+  return prisma.client.findMany({
+    where: { vaId },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, company: true },
+  });
+}
+
 export async function getClientDetailForVa(vaId: string, clientId: string) {
   return prisma.client.findFirst({
     where: { id: clientId, vaId },
