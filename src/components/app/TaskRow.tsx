@@ -39,7 +39,7 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
   }
 
   return (
-    <li className="group flex flex-col gap-1 rounded-xl px-2 py-1.5 transition hover:bg-cream/70">
+    <li className="group flex flex-col gap-1 rounded-[10px] px-2 py-1.5 transition hover:bg-paper/60">
       <div className="flex items-center gap-3">
         <input
           type="checkbox"
@@ -47,7 +47,7 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
           disabled={togglePending}
           onChange={toggle}
           aria-label={`Marquer « ${task.title} » comme ${optimisticDone ? "à faire" : "faite"}`}
-          className="h-4 w-4 accent-corail"
+          className="h-4 w-4 accent-ink"
         />
 
         {editing ? (
@@ -63,19 +63,19 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
               defaultValue={task.title}
               autoFocus
               required
-              className="min-w-0 flex-1 rounded-full border border-line bg-cream px-3 py-1.5 font-body text-sm text-ink outline-none transition focus:border-corail"
+              className="min-w-0 flex-1 rounded-[10px] bg-paper px-3 py-1.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
             />
             <button
               disabled={renamePending}
               type="submit"
-              className="font-label text-xs uppercase tracking-wide text-corail transition hover:text-ink"
+              className="rounded-lg bg-orange px-2.5 py-1 text-xs font-bold text-ink shadow-sticker disabled:opacity-60"
             >
               OK
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="font-label text-xs uppercase tracking-wide text-muted transition hover:text-ink"
+              className="text-xs font-semibold text-ink/60 transition hover:text-ink"
             >
               Annuler
             </button>
@@ -83,14 +83,14 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
         ) : (
           <>
             <span
-              className={`min-w-0 flex-1 truncate font-body text-sm ${
-                optimisticDone ? "text-muted line-through" : "text-ink"
+              className={`min-w-0 flex-1 truncate text-[13px] font-medium text-ink ${
+                optimisticDone ? "line-through opacity-60" : ""
               }`}
             >
               {task.title}
               {task.source === "client_request" && (
-                <span className="ml-2 rounded-full bg-soleil/20 px-2 py-0.5 font-label text-[10px] uppercase tracking-wide text-muted-2">
-                  Demande client
+                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink">
+                  demande client
                 </span>
               )}
             </span>
@@ -99,10 +99,9 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
                 <input type="hidden" name="clientId" value={clientId} />
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 rounded-full bg-corail/15 px-3 py-1 font-label text-[11px] uppercase tracking-wide text-corail transition hover:bg-corail hover:text-paper"
+                  className="rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-paper transition hover:opacity-80"
                 >
-                  <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-corail" />
-                  Stop
+                  ■ Stop
                 </button>
               </form>
             )}
@@ -114,7 +113,7 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
                   <button
                     type="submit"
                     title="Lancer le chrono sur cette tâche"
-                    className="rounded-full px-2 py-1 font-label text-[11px] uppercase tracking-wide text-ink/50 transition hover:text-corail"
+                    className="rounded-full px-2 py-1 text-xs font-bold text-ink/60 transition hover:text-ink"
                   >
                     ▶ Chrono
                   </button>
@@ -123,7 +122,7 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
               <button
                 type="button"
                 onClick={() => setEditing(true)}
-                className="rounded-full px-2 py-1 font-label text-[11px] uppercase tracking-wide text-ink/50 transition hover:text-corail"
+                className="rounded-full px-2 py-1 text-xs font-semibold text-ink/50 transition hover:text-ink"
               >
                 Éditer
               </button>
@@ -137,7 +136,7 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
                 <input type="hidden" name="clientId" value={clientId} />
                 <button
                   type="submit"
-                  className="rounded-full px-2 py-1 font-label text-[11px] uppercase tracking-wide text-corail/60 transition hover:text-corail"
+                  className="rounded-full px-2 py-1 text-xs font-semibold text-ink/50 transition hover:text-ink"
                 >
                   Suppr.
                 </button>
@@ -147,7 +146,7 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
         )}
       </div>
       {renameState?.error && (
-        <p className="pl-7 font-body text-xs text-corail">{renameState.error}</p>
+        <p className="pl-7 text-xs font-semibold text-ink/70">{renameState.error}</p>
       )}
     </li>
   );

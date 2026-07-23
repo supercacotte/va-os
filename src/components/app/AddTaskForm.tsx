@@ -34,17 +34,17 @@ export default function AddTaskForm({ missionId, clientId }: Props) {
           name="title"
           required
           placeholder="Ajouter une tâche…"
-          className="min-w-0 flex-1 rounded-full border border-line bg-cream px-4 py-2 font-body text-sm text-ink outline-none transition focus:border-corail"
+          className="min-w-0 flex-1 rounded-[10px] bg-paper px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
         />
         <button
           disabled={pending}
           type="submit"
-          className="rounded-full border border-ink px-4 py-2 font-label text-xs uppercase tracking-wide text-ink transition hover:border-corail hover:text-corail disabled:opacity-60"
+          className="rounded-[10px] bg-orange px-4 py-2.5 text-xs font-bold text-ink shadow-sticker transition hover:brightness-95 disabled:opacity-60"
         >
           {pending ? "Ajout…" : "Ajouter"}
         </button>
       </div>
-      {state?.error && <p className="font-body text-xs text-corail">{state.error}</p>}
+      {state?.error && <p className="text-xs font-semibold text-ink/70">{state.error}</p>}
     </form>
   );
 }

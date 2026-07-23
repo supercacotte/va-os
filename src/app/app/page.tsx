@@ -15,24 +15,35 @@ export default async function AppPage() {
     getActiveTimeEntryForVa(session.user.id),
   ]);
 
+  const openTaskCount = clients
+    .flatMap((client) => client.missions)
+    .filter((mission) => mission.status === "active")
+    .flatMap((mission) => mission.tasks)
+    .filter((task) => !task.done).length;
+
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-6 py-12">
-      <div>
-        <h1 className="font-display text-3xl text-ink">
+    <main className="flex-1 px-8 py-10">
+      <div className="mb-8 flex items-center gap-4">
+        <h1 className="font-bowlby text-[44px] leading-none text-ink">
           Bonjour {session.user.name?.split(" ")[0] ?? ""} !
         </h1>
+        {openTaskCount > 0 && (
+          <span className="-rotate-3 rounded-[10px] bg-lime px-3 py-1.5 text-xs font-bold text-ink shadow-sticker">
+            {openTaskCount} tâche{openTaskCount > 1 ? "s" : ""} à faire
+          </span>
+        )}
       </div>
 
       {clients.length === 0 ? (
-        <div className="flex flex-col items-start gap-4 rounded-3xl border border-dashed border-line bg-paper p-8">
-          <h2 className="font-display text-xl text-ink">Bienvenue sur VA Desk ✨</h2>
-          <p className="max-w-md font-body text-sm text-muted-2">
+        <div className="flex max-w-xl flex-col items-start gap-4 rounded-[18px] border-2 border-dashed border-ink/30 p-8">
+          <h2 className="text-[19px] font-bold text-ink">Bienvenue sur VA Desk</h2>
+          <p className="text-[13px] leading-relaxed text-ink opacity-70">
             Tout commence par un client : ajoute ta première fiche, puis crée ses missions et
             leurs tâches. Le chrono et les rapports viendront s&apos;y brancher tout seuls.
           </p>
           <Link
             href="/app/clients/new"
-            className="rounded-full bg-corail px-5 py-3 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-ink"
+            className="rounded-xl bg-orange px-5 py-3 text-sm font-bold text-ink shadow-sticker transition hover:brightness-95"
           >
             + Ajouter mon premier client
           </Link>
@@ -43,6 +54,7 @@ export default async function AppPage() {
             id: client.id,
             name: client.name,
             company: client.company,
+            color: client.color,
             missions: client.missions.map((mission) => ({
               id: mission.id,
               name: mission.name,
@@ -60,6 +72,7 @@ export default async function AppPage() {
                   missionName: activeEntry.task.mission.name,
                   clientId: activeEntry.task.mission.client.id,
                   clientName: activeEntry.task.mission.client.name,
+                  clientColor: activeEntry.task.mission.client.color,
                 }
               : null
           }

@@ -9,6 +9,7 @@ import StartTimerForm from "@/components/app/StartTimerForm";
 import TaskRow from "@/components/app/TaskRow";
 import AddTaskForm from "@/components/app/AddTaskForm";
 import { stopTimerAction } from "@/lib/actions/timeEntries";
+import { clientColorVar } from "@/lib/client-colors";
 
 type Task = { id: string; title: string; done: boolean; source: string };
 type Mission = { id: string; name: string; status: string; tasks: Task[] };
@@ -16,6 +17,7 @@ export type WorkspaceClient = {
   id: string;
   name: string;
   company: string | null;
+  color: number;
   missions: Mission[];
 };
 
@@ -27,12 +29,15 @@ export type ActiveTimer = {
   missionName: string;
   clientId: string;
   clientName: string;
+  clientColor: number;
 };
 
 type Props = {
   clients: WorkspaceClient[];
   activeTimer: ActiveTimer | null;
 };
+
+const SECTION_LABEL = "text-[13px] font-bold uppercase tracking-[1.5px] text-ink";
 
 export default function DashboardBoard({ clients, activeTimer }: Props) {
   const [selectedClientId, setSelectedClientId] = useState(
@@ -54,6 +59,15 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
     setExpandedMissions(new Set(first ? [first] : []));
   }
 
+  function toggleMission(missionId: string) {
+    setExpandedMissions((prev) => {
+      const next = new Set(prev);
+      if (next.has(missionId)) next.delete(missionId);
+      else next.add(missionId);
+      return next;
+    });
+  }
+
   const selectedClient = clients.find((client) => client.id === selectedClientId);
   const activeMissions =
     selectedClient?.missions.filter((mission) => mission.status === "active") ?? [];
@@ -70,22 +84,11 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
       ),
   }));
 
-  function toggleMission(missionId: string) {
-    setExpandedMissions((prev) => {
-      const next = new Set(prev);
-      if (next.has(missionId)) next.delete(missionId);
-      else next.add(missionId);
-      return next;
-    });
-  }
-
   return (
-    <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)_280px]">
+    <div className="grid gap-7 lg:grid-cols-[300px_minmax(0,1fr)_340px]">
       {/* Colonne clients */}
-      <aside className="flex flex-col gap-2">
-        <h2 className="font-label text-[11px] uppercase tracking-widest text-muted">
-          Clients
-        </h2>
+      <aside className="flex flex-col gap-3">
+        <h2 className={SECTION_LABEL}>Clients</h2>
         {clients.map((client) => {
           const selected = client.id === selectedClientId;
           const missionCount = client.missions.filter((m) => m.status === "active").length;
@@ -95,28 +98,29 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
               type="button"
               onClick={() => selectClient(client.id)}
               aria-pressed={selected}
-              className={`rounded-2xl border p-4 text-left transition ${
+              className={`rounded-[16px] p-5 text-left transition ${
                 selected
-                  ? "border-corail bg-corail/10"
-                  : "border-line bg-paper hover:border-corail/40"
+                  ? "border-2 border-ink shadow-sticker-strong"
+                  : "shadow-sticker hover:-translate-y-0.5"
               }`}
+              style={{ backgroundColor: clientColorVar(client.color) }}
             >
-              <p className="truncate font-display text-base text-ink">{client.name}</p>
+              <p className="truncate text-[19px] font-bold text-ink">{client.name}</p>
               {client.company && (
-                <p className="truncate font-label text-[10px] uppercase tracking-wide text-muted">
+                <p className="truncate text-[13px] font-semibold text-ink opacity-70">
                   {client.company}
                 </p>
               )}
-              <p className="mt-1 font-body text-xs text-muted-2">
+              <span className="mt-3 inline-block rounded-full bg-paper px-3 py-1 text-xs font-bold text-ink">
                 {missionCount} mission{missionCount > 1 ? "s" : ""} active
                 {missionCount > 1 ? "s" : ""}
-              </p>
+              </span>
             </button>
           );
         })}
         <Link
           href="/app/clients/new"
-          className="rounded-2xl border border-dashed border-line p-4 text-center font-label text-xs uppercase tracking-wide text-muted transition hover:border-corail hover:text-corail"
+          className="flex min-h-[64px] items-center justify-center rounded-[16px] border-2 border-dashed border-ink/30 text-sm font-semibold text-ink/70 transition hover:border-ink/60 hover:text-ink"
         >
           + Nouveau client
         </Link>
@@ -125,13 +129,11 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
       {/* Colonne missions & tâches */}
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-label text-[11px] uppercase tracking-widest text-muted">
-            Missions actives
-          </h2>
+          <h2 className={SECTION_LABEL}>Missions actives</h2>
           {selectedClient && (
             <Link
               href={`/app/clients/${selectedClient.id}`}
-              className="font-label text-[11px] uppercase tracking-wide text-corail transition hover:text-ink"
+              className="text-sm font-semibold text-ink underline decoration-orange decoration-2 underline-offset-4 transition hover:decoration-ink"
             >
               Ouvrir la fiche →
             </Link>
@@ -139,7 +141,7 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
         </div>
 
         {activeMissions.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-line bg-paper p-5 font-body text-sm text-muted-2">
+          <p className="rounded-[14px] border-2 border-dashed border-ink/30 p-5 text-[13px] font-medium text-ink opacity-70">
             Pas de mission active pour {selectedClient?.name ?? "ce client"} — crée-la depuis
             sa fiche.
           </p>
@@ -149,42 +151,39 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
           const expanded = expandedMissions.has(mission.id);
           const openCount = mission.tasks.filter((task) => !task.done).length;
           return (
-            <div
-              key={mission.id}
-              className={`rounded-2xl border bg-paper transition ${
-                expanded ? "border-corail/40 shadow-sm" : "border-line"
-              }`}
-            >
+            <div key={mission.id} className="rounded-[14px] bg-sand">
               <button
                 type="button"
                 onClick={() => toggleMission(mission.id)}
                 aria-expanded={expanded}
-                className="group flex w-full items-center gap-3 rounded-2xl p-4 text-left transition hover:bg-cream/60"
+                className="flex w-full items-center gap-3 rounded-[14px] px-5 py-4 text-left"
               >
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition ${
-                    expanded
-                      ? "rotate-90 border-corail bg-corail text-paper"
-                      : "border-line bg-cream text-ink/60 group-hover:border-corail group-hover:text-corail"
-                  }`}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink"
+                  style={{ backgroundColor: clientColorVar(selectedClient?.color ?? 1) }}
                 >
-                  <ChevronRight size={16} />
+                  <ChevronRight
+                    size={16}
+                    className={`transition-transform ${expanded ? "rotate-90" : ""}`}
+                  />
                 </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-display text-base text-ink">{mission.name}</p>
-                </div>
-                <span
-                  className={`shrink-0 rounded-full px-3 py-1 font-label text-[11px] uppercase tracking-wide ${
-                    openCount === 0 ? "bg-mer/15 text-mer" : "bg-cream text-muted-2"
-                  }`}
-                >
-                  {openCount === 0 ? "Tout est fait ✓" : `${openCount} à faire`}
-                </span>
+                <p className="min-w-0 flex-1 truncate text-[17px] font-semibold text-ink">
+                  {mission.name}
+                </p>
+                {openCount > 0 ? (
+                  <span className="shrink-0 rounded-full bg-orange px-3 py-1 text-xs font-bold text-ink">
+                    {openCount} à faire
+                  </span>
+                ) : (
+                  <span className="shrink-0 rounded-full bg-lime px-3 py-1 text-xs font-bold text-ink">
+                    tout est fait ✓
+                  </span>
+                )}
               </button>
               {expanded && (
-                <div className="border-t border-line px-4 py-3">
+                <div className="border-t border-ink/15 px-5 pb-4 pt-3">
                   {mission.tasks.length === 0 ? (
-                    <p className="font-body text-xs text-muted">
+                    <p className="text-[13px] font-medium text-ink opacity-70">
                       Aucune tâche — ajoute la première ci-dessous.
                     </p>
                   ) : (
@@ -208,28 +207,33 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
       </section>
 
       {/* Colonne chrono */}
-      <aside className="flex flex-col gap-2">
-        <h2 className="font-label text-[11px] uppercase tracking-widest text-muted">Chrono</h2>
+      <aside className="flex flex-col gap-3">
+        <h2 className={SECTION_LABEL}>Chrono</h2>
         {activeTimer ? (
-          <div className="flex flex-col gap-4 rounded-2xl border border-corail/40 bg-paper p-5">
-            <p className="flex items-center gap-2 font-label text-[11px] uppercase tracking-wide text-corail">
-              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-corail" />
-              En cours
-            </p>
-            <div className="min-w-0">
-              <p className="truncate font-display text-base text-ink">
-                {activeTimer.label ?? activeTimer.taskTitle}
-              </p>
-              <p className="truncate font-body text-xs text-muted-2">
-                {activeTimer.clientName} — {activeTimer.missionName}
-              </p>
+          <div
+            className="flex flex-col gap-4 rounded-[18px] p-6 shadow-sticker"
+            style={{ backgroundColor: clientColorVar(activeTimer.clientColor) }}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[19px] font-bold text-ink">En cours</p>
+              <span className="rotate-2 rounded-full bg-lime px-2.5 py-1 text-xs font-bold text-ink shadow-sticker">
+                ● rec
+              </span>
             </div>
             <Chronometer startedAt={activeTimer.startedAt} />
+            <div className="min-w-0">
+              <p className="truncate text-[13px] font-bold text-ink">
+                {activeTimer.clientName} — {activeTimer.missionName}
+              </p>
+              <p className="truncate text-[13px] font-semibold text-ink opacity-70">
+                {activeTimer.label ?? activeTimer.taskTitle}
+              </p>
+            </div>
             <form action={stopTimerAction}>
               <input type="hidden" name="clientId" value={activeTimer.clientId} />
               <button
                 type="submit"
-                className="w-full rounded-full bg-ink px-4 py-3 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-corail"
+                className="w-full rounded-xl bg-ink px-4 py-3 text-sm font-bold text-paper shadow-sticker transition hover:opacity-90"
               >
                 ■ Stop
               </button>

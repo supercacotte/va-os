@@ -17,7 +17,7 @@ const withTaskContext = {
       mission: {
         select: {
           name: true,
-          client: { select: { id: true, name: true } },
+          client: { select: { id: true, name: true, color: true } },
         },
       },
     },

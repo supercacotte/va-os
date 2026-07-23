@@ -26,8 +26,8 @@ type Props = {
   layout?: "row" | "column";
 };
 
-// Démarrage en deux temps : on choisit d'abord le client, puis une de SES
-// tâches — le select de tâches se filtre en cascade.
+// État repos du chrono (DESIGN.md §3) : zone en pointillés, timer fantôme,
+// démarrage en deux temps — d'abord le client, puis une de SES tâches.
 export default function StartTimerForm({ clients, defaultClientId, layout = "row" }: Props) {
   const [clientId, setClientId] = useState(
     () => defaultClientId ?? (clients.length === 1 ? clients[0].id : ""),
@@ -46,15 +46,25 @@ export default function StartTimerForm({ clients, defaultClientId, layout = "row
   const tasks = selectedClient?.tasks ?? [];
 
   const fieldClass =
-    "min-w-0 rounded-full border border-line bg-cream px-4 py-2.5 font-body text-sm text-ink outline-none transition focus:border-corail disabled:opacity-60";
+    "min-w-0 rounded-[10px] bg-sand px-4 py-3 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30 disabled:opacity-60";
 
   return (
     <form
       ref={formRef}
       action={action}
-      className="flex flex-col gap-3 rounded-3xl border border-line bg-paper p-5"
+      className="flex flex-col gap-3 rounded-[18px] border-2 border-dashed border-ink/30 p-6"
     >
-      <h2 className="font-display text-lg text-ink">Lancer un chrono</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-[19px] font-bold text-ink">Lancer un chrono</h2>
+        <span className="rotate-2 rounded-full bg-sand px-2.5 py-1 text-xs font-bold text-ink">
+          à l&apos;arrêt
+        </span>
+      </div>
+
+      {layout === "column" && (
+        <p className="font-bowlby text-[38px] leading-none text-ink opacity-20">00:00:00</p>
+      )}
+
       <div className={layout === "row" ? "flex flex-wrap items-center gap-2" : "flex flex-col gap-2"}>
         <label htmlFor="timer-client" className="sr-only">
           Client
@@ -116,14 +126,14 @@ export default function StartTimerForm({ clients, defaultClientId, layout = "row
         <button
           disabled={pending || tasks.length === 0}
           type="submit"
-          className={`rounded-full bg-corail px-5 py-2.5 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-ink disabled:opacity-60 ${
+          className={`rounded-xl bg-orange px-5 py-3 text-sm font-bold text-ink shadow-sticker transition hover:brightness-95 disabled:opacity-60 ${
             layout === "column" ? "w-full" : ""
           }`}
         >
           {pending ? "Démarrage…" : "▶ Démarrer"}
         </button>
       </div>
-      {state?.error && <p className="font-body text-xs text-corail">{state.error}</p>}
+      {state?.error && <p className="text-xs font-semibold text-ink/70">{state.error}</p>}
     </form>
   );
 }
