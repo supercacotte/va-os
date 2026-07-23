@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRef } from "react";
-import { useActionState } from "react";
 import Link from "next/link";
 
 import Chronometer from "@/components/app/Chronometer";
-import { startTimerAction, stopTimerAction } from "@/lib/actions/timeEntries";
+import StartTimerForm from "@/components/app/StartTimerForm";
+import { stopTimerAction } from "@/lib/actions/timeEntries";
 
 type Task = { id: string; title: string; done: boolean; source: string };
 type Mission = { id: string; name: string; status: string; tasks: Task[] };
@@ -37,22 +36,22 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
     () => activeTimer?.clientId ?? clients[0]?.id,
   );
   const [expandedMissions, setExpandedMissions] = useState<Set<string>>(new Set());
-  const startFormRef = useRef<HTMLFormElement>(null);
-  const [startState, startAction, startPending] = useActionState(
-    async (...args: Parameters<typeof startTimerAction>) => {
-      const result = await startTimerAction(...args);
-      if (!result?.error) startFormRef.current?.reset();
-      return result;
-    },
-    undefined,
-  );
 
   const selectedClient = clients.find((client) => client.id === selectedClientId);
   const activeMissions =
     selectedClient?.missions.filter((mission) => mission.status === "active") ?? [];
-  const openTasks = activeMissions
-    .flatMap((mission) => mission.tasks.map((task) => ({ ...task, missionName: mission.name })))
-    .filter((task) => !task.done);
+
+  const timerClients = clients.map((client) => ({
+    id: client.id,
+    name: client.name,
+    tasks: client.missions
+      .filter((mission) => mission.status === "active")
+      .flatMap((mission) =>
+        mission.tasks
+          .filter((task) => !task.done)
+          .map((task) => ({ id: task.id, title: task.title, missionName: mission.name })),
+      ),
+  }));
 
   function toggleMission(missionId: string) {
     setExpandedMissions((prev) => {
@@ -206,52 +205,12 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
             </form>
           </div>
         ) : (
-          <form
-            ref={startFormRef}
-            action={startAction}
-            className="flex flex-col gap-3 rounded-2xl border border-line bg-paper p-5"
-          >
-            <label htmlFor="board-task" className="sr-only">
-              Tâche
-            </label>
-            <select
-              id="board-task"
-              name="taskId"
-              required
-              defaultValue=""
-              key={selectedClientId}
-              className="w-full rounded-full border border-line bg-cream px-4 py-2.5 font-body text-sm text-ink outline-none transition focus:border-corail"
-            >
-              <option value="" disabled>
-                {openTasks.length === 0 ? "Aucune tâche à faire" : "Choisis une tâche…"}
-              </option>
-              {openTasks.map((task) => (
-                <option key={task.id} value={task.id}>
-                  {task.missionName} — {task.title}
-                </option>
-              ))}
-            </select>
-            <input type="hidden" name="clientId" value={selectedClientId ?? ""} />
-            <label htmlFor="board-label" className="sr-only">
-              Label (optionnel)
-            </label>
-            <input
-              id="board-label"
-              name="label"
-              placeholder="Label (optionnel)"
-              className="w-full rounded-full border border-line bg-cream px-4 py-2.5 font-body text-sm text-ink outline-none transition focus:border-corail"
-            />
-            <button
-              disabled={startPending || openTasks.length === 0}
-              type="submit"
-              className="w-full rounded-full bg-corail px-4 py-3 font-label text-xs uppercase tracking-wide text-paper transition hover:bg-ink disabled:opacity-60"
-            >
-              {startPending ? "Démarrage…" : "▶ Démarrer"}
-            </button>
-            {startState?.error && (
-              <p className="font-body text-xs text-corail">{startState.error}</p>
-            )}
-          </form>
+          <StartTimerForm
+            key={selectedClientId}
+            clients={timerClients}
+            defaultClientId={selectedClientId}
+            layout="column"
+          />
         )}
       </aside>
     </div>

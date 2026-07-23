@@ -39,7 +39,24 @@ export default async function TempsPage() {
           }}
         />
       ) : tasks.some((task) => !task.done) ? (
-        <StartTimerForm tasks={tasks} />
+        <StartTimerForm
+          clients={Object.values(
+            tasks
+              .filter((task) => !task.done)
+              .reduce<
+                Record<string, { id: string; name: string; tasks: { id: string; title: string; missionName: string }[] }>
+              >((acc, task) => {
+                const client = task.mission.client;
+                acc[client.id] ??= { id: client.id, name: client.name, tasks: [] };
+                acc[client.id].tasks.push({
+                  id: task.id,
+                  title: task.title,
+                  missionName: task.mission.name,
+                });
+                return acc;
+              }, {}),
+          )}
+        />
       ) : (
         <div className="flex flex-col items-start gap-4 rounded-3xl border border-dashed border-line bg-paper p-8">
           <h2 className="font-display text-xl text-ink">Rien à chronométrer pour l&apos;instant</h2>

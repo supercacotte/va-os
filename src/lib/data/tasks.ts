@@ -17,7 +17,7 @@ export async function getTasksForVa(vaId: string) {
       mission: {
         select: {
           name: true,
-          client: { select: { name: true } },
+          client: { select: { id: true, name: true } },
         },
       },
     },
