@@ -20,6 +20,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           >
             Clients
           </Link>
+          <Link
+            href="/app/temps"
+            className="font-label text-xs uppercase tracking-wide text-ink/70 transition hover:text-corail"
+          >
+            Temps
+          </Link>
         </div>
       </nav>
       {children}

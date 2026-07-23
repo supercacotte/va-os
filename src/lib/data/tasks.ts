@@ -5,6 +5,25 @@ import { prisma } from "@/lib/prisma";
 // D12 : le tenant (vaId) est vérifié dans la clause where de chaque fonction,
 // via la chaîne mission → client pour les tâches.
 
+// Liste plate des tâches de la VA, pour les selects (rattachement d'un temps).
+export async function getTasksForVa(vaId: string) {
+  return prisma.task.findMany({
+    where: { mission: { client: { vaId } } },
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      title: true,
+      done: true,
+      mission: {
+        select: {
+          name: true,
+          client: { select: { name: true } },
+        },
+      },
+    },
+  });
+}
+
 export async function createTaskForVa(vaId: string, missionId: string, title: string) {
   const mission = await prisma.mission.findFirst({
     where: { id: missionId, client: { vaId } },

@@ -161,3 +161,28 @@
 - **Ça coince** : rien de bloquant.
 - **Prochaine session** : Phase 3 — chrono (start/stop rattaché à une tâche,
   une seule entrée active, édition a posteriori).
+
+## 23/07 — Phase 3 : chrono
+- **Objectif de la session** : start/stop nommable rattaché à une tâche, une
+  seule entrée active par VA, historique éditable a posteriori.
+- **Fait** :
+  - `lib/data/timeEntries.ts` (D12 via la chaîne task → mission → client) :
+    l'invariant « une seule entrée active » est garanti côté data —
+    `startTimeEntryForVa` ferme d'abord toute entrée ouverte de la VA.
+    Édition a posteriori : label, durée, rattachement, heure de début.
+  - Actions Zod (`timeEntries.ts`) ; heure de début envoyée en heure murale
+    `datetime-local` + `tzOffset` du navigateur → instant UTC exact quel que
+    soit le fuseau du serveur (Vercel = UTC).
+  - Page `/app/temps` : bannière chrono actif (compteur qui tourne côté
+    client, `suppressHydrationWarning`), démarrage rapide (select des tâches
+    non faites + label), historique éditable inline, états vides. Lien
+    « Temps » dans la nav.
+  - Boutons ▶ Chrono / ■ Stop sur chaque tâche des fiches clients (masqués
+    pour les tâches faites).
+  - Vérifié e2e (compte Léa) : démarrage avec label, compteur qui avance,
+    auto-stop en démarrant un 2e chrono, stop, suppression, édition
+    (durée 90 min → « 1 h 30 », rattachement à une autre tâche, label).
+    Base contrôlée en direct : jamais plus d'une entrée active. Build vert.
+- **Ça coince** : rien de bloquant.
+- **Prochaine session** : Phase 4 — rapport d'activité (vue client × période,
+  agrégats par mission/tâche, export PDF react-pdf).

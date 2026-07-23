@@ -4,13 +4,15 @@ import { useOptimistic, useState, useTransition } from "react";
 import { useActionState } from "react";
 
 import { deleteTaskAction, renameTaskAction, toggleTaskAction } from "@/lib/actions/tasks";
+import { quickStartTimerAction, stopTimerAction } from "@/lib/actions/timeEntries";
 
 type Props = {
   task: { id: string; title: string; done: boolean; source: string };
   clientId: string;
+  timerActive?: boolean;
 };
 
-export default function TaskRow({ task, clientId }: Props) {
+export default function TaskRow({ task, clientId, timerActive = false }: Props) {
   const [editing, setEditing] = useState(false);
   // Pas de <form> pour la checkbox : le reset automatique des formulaires
   // après une action (React 19) écraserait son état. Action directe +
@@ -92,7 +94,32 @@ export default function TaskRow({ task, clientId }: Props) {
                 </span>
               )}
             </span>
+            {timerActive && (
+              <form action={stopTimerAction} className="shrink-0">
+                <input type="hidden" name="clientId" value={clientId} />
+                <button
+                  type="submit"
+                  className="flex items-center gap-1.5 rounded-full bg-corail/15 px-3 py-1 font-label text-[11px] uppercase tracking-wide text-corail transition hover:bg-corail hover:text-paper"
+                >
+                  <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-corail" />
+                  Stop
+                </button>
+              </form>
+            )}
             <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-hover:opacity-100">
+              {!timerActive && !task.done && (
+                <form action={quickStartTimerAction}>
+                  <input type="hidden" name="taskId" value={task.id} />
+                  <input type="hidden" name="clientId" value={clientId} />
+                  <button
+                    type="submit"
+                    title="Lancer le chrono sur cette tâche"
+                    className="rounded-full px-2 py-1 font-label text-[11px] uppercase tracking-wide text-ink/50 transition hover:text-corail"
+                  >
+                    ▶ Chrono
+                  </button>
+                </form>
+              )}
               <button
                 type="button"
                 onClick={() => setEditing(true)}

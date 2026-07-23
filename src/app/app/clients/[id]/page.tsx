@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { getClientDetailForVa } from "@/lib/data/clients";
+import { getActiveTimeEntryForVa } from "@/lib/data/timeEntries";
 import ClientForm from "@/components/app/ClientForm";
 import InviteClientForm from "@/components/app/InviteClientForm";
 import AddMissionForm from "@/components/app/AddMissionForm";
@@ -19,7 +20,10 @@ export default async function ClientDetailPage({
   if (session?.user.role !== "VA") redirect("/");
 
   const { id } = await params;
-  const client = await getClientDetailForVa(session.user.id, id);
+  const [client, activeEntry] = await Promise.all([
+    getClientDetailForVa(session.user.id, id),
+    getActiveTimeEntryForVa(session.user.id),
+  ]);
   if (!client) notFound();
 
   return (
@@ -96,6 +100,7 @@ export default async function ClientDetailPage({
                       source: task.source,
                     }}
                     clientId={client.id}
+                    timerActive={activeEntry?.task.id === task.id}
                   />
                 ))}
               </ul>
