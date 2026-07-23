@@ -13,47 +13,67 @@ function monthLabel(mois: string) {
   }).format(new Date(Date.UTC(year, month - 1, 1)));
 }
 
+function currentMonthKey() {
+  const now = new Date();
+  return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
 export default async function PortailRapportsPage() {
   const session = await auth();
   if (session?.user.role !== "CLIENT") redirect("/");
 
   const months = await getReportMonthsForPortalUser(session.user.id);
+  const currentKey = currentMonthKey();
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-6 py-16">
-      <div>
-        <h1 className="font-display text-3xl text-ink">Rapports d&apos;activité</h1>
-        <p className="mt-1 font-body text-sm text-muted-2">
-          Le détail du temps passé pour toi, mois par mois, à télécharger en PDF.
-        </p>
-      </div>
+    <main className="flex-1 px-8 py-10">
+      <h1 className="font-bowlby text-[44px] leading-none text-ink">Rapports</h1>
+      <p className="mb-8 mt-3 text-[13px] font-medium text-ink opacity-70">
+        Le détail du temps passé pour toi, mois par mois, à télécharger en PDF.
+      </p>
 
       {months.length === 0 ? (
-        <p className="rounded-3xl border border-dashed border-line bg-paper p-6 font-body text-sm text-muted-2">
+        <p className="max-w-xl rounded-[18px] border-2 border-dashed border-ink/30 p-6 text-[13px] font-medium text-ink opacity-70">
           Pas encore de rapport — ils apparaîtront ici dès que du temps aura été suivi sur
           tes missions.
         </p>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {months.map(({ mois, totalMs }) => (
-            <li
-              key={mois}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-paper px-5 py-4"
-            >
-              <div>
-                <p className="font-display text-base capitalize text-ink">{monthLabel(mois)}</p>
-                <p className="font-body text-xs text-muted-2">
-                  {formatDuration(totalMs)} suivies
-                </p>
-              </div>
-              <a
-                href={`/api/portail/rapports/pdf?mois=${mois}`}
-                className="rounded-full border border-ink px-4 py-2 font-label text-xs uppercase tracking-wide text-ink transition hover:border-corail hover:text-corail"
+        <ul className="flex max-w-xl flex-col gap-2.5">
+          {months.map(({ mois, totalMs }) => {
+            const isCurrent = mois === currentKey;
+            return (
+              <li
+                key={mois}
+                className={`flex flex-wrap items-center justify-between gap-3 px-5 py-4 ${
+                  isCurrent
+                    ? "rounded-[18px] border-2 border-ink bg-paper"
+                    : "rounded-[14px] bg-sand"
+                }`}
               >
-                Télécharger le PDF ↓
-              </a>
-            </li>
-          ))}
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="text-[15px] font-bold capitalize text-ink">
+                      {monthLabel(mois)}
+                    </p>
+                    <p className="text-[13px] font-medium text-ink opacity-70">
+                      {formatDuration(totalMs)}
+                    </p>
+                  </div>
+                  {isCurrent && (
+                    <span className="rounded-full bg-sand px-2.5 py-1 text-[11px] font-bold text-ink">
+                      en cours
+                    </span>
+                  )}
+                </div>
+                <a
+                  href={`/api/portail/rapports/pdf?mois=${mois}`}
+                  className="text-sm font-semibold text-ink underline decoration-orange decoration-2 underline-offset-4 transition hover:decoration-ink"
+                >
+                  Télécharger ↓
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>
