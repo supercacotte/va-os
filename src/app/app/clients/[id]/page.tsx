@@ -118,6 +118,7 @@ export default async function ClientDetailPage({
                         done: task.done,
                         source: task.source,
                         recurring: task.recurringTask?.cadence ?? null,
+                        due: task.dueDate?.toISOString() ?? null,
                       }}
                       clientId={client.id}
                       clientColor={client.color}
@@ -138,7 +139,7 @@ export default async function ClientDetailPage({
                       className="flex items-center justify-between gap-3"
                     >
                       <p className="min-w-0 flex-1 truncate text-xs font-semibold text-ink/70">
-                        ↻ {recurring.title} —{" "}
+                        {recurring.title} —{" "}
                         {recurring.cadence === "weekly" ? "chaque semaine" : "chaque mois"}
                       </p>
                       <form action={stopRecurringAction}>

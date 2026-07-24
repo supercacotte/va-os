@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { periodFor, type Cadence } from "@/lib/periods";
+import { periodEndFor, periodFor, type Cadence } from "@/lib/periods";
 
 // D16 : génération paresseuse — appelée en tête des lectures VA, elle crée
 // l'occurrence de la période courante pour chaque récurrence active dont la
@@ -13,6 +13,8 @@ export async function ensureRecurringTasksForVa(vaId: string) {
     select: { id: true, title: true, missionId: true, cadence: true },
   });
   if (templates.length === 0) return;
+
+  await backfillDueDates(templates);
 
   const existing = await prisma.task.findMany({
     where: { recurringTaskId: { in: templates.map((t) => t.id) } },
@@ -32,9 +34,28 @@ export async function ensureRecurringTasksForVa(vaId: string) {
       source: "recurring",
       recurringTaskId: t.id,
       recurringPeriod: periodFor(t.cadence as Cadence),
+      dueDate: periodEndFor(t.cadence as Cadence),
     })),
     skipDuplicates: true,
   });
+}
+
+// D19 : rattrapage des occurrences créées avant l'arrivée des échéances —
+// celles de la période courante encore sans dueDate en reçoivent une.
+// Idempotent, une requête par cadence présente.
+async function backfillDueDates(templates: { id: string; cadence: string }[]) {
+  for (const cadence of ["weekly", "monthly"] as const) {
+    const ids = templates.filter((t) => t.cadence === cadence).map((t) => t.id);
+    if (ids.length === 0) continue;
+    await prisma.task.updateMany({
+      where: {
+        recurringTaskId: { in: ids },
+        recurringPeriod: periodFor(cadence),
+        dueDate: null,
+      },
+      data: { dueDate: periodEndFor(cadence) },
+    });
+  }
 }
 
 // Création d'une tâche récurrente : le modèle + l'occurrence de la période
@@ -62,6 +83,7 @@ export async function createRecurringTaskForVa(
         source: "recurring",
         recurringTaskId: template.id,
         recurringPeriod: periodFor(cadence),
+        dueDate: periodEndFor(cadence),
       },
     });
     return template;

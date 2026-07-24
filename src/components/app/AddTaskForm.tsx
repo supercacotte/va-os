@@ -34,11 +34,22 @@ export default function AddTaskForm({ missionId, clientId }: Props) {
           name="title"
           required
           placeholder="Ajouter une tâche…"
-          className="min-w-0 flex-1 rounded-[10px] bg-paper px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+          className="min-w-[160px] flex-1 rounded-[10px] bg-paper px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
         />
         <label htmlFor={`recurrence-${missionId}`} className="sr-only">
           Récurrence
         </label>
+        {/* D19 : échéance optionnelle (ignorée pour une récurrence : chaque
+            occurrence reçoit la sienne, fin de semaine ou fin de mois) */}
+        <label htmlFor={`due-${missionId}`} className="sr-only">
+          Échéance (optionnelle)
+        </label>
+        <input
+          id={`due-${missionId}`}
+          name="dueDate"
+          type="date"
+          className="rounded-full bg-paper px-3.5 py-2 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+        />
         {/* Pill « une fois ▾ » (29a) — la flèche est la nôtre, pas celle du navigateur */}
         <span className="relative">
           <select

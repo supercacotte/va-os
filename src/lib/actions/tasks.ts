@@ -20,6 +20,15 @@ const TitleSchema = z
   .trim()
   .min(2, "Le titre de la tâche doit faire au moins 2 caractères.");
 
+// D19 : échéance optionnelle — "YYYY-MM-DD" (input date) → Date UTC minuit,
+// vide → null. Tout autre format est refusé.
+function parseDueDate(value: FormDataEntryValue | null): Date | null | undefined {
+  if (typeof value !== "string" || value === "") return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
+  const date = new Date(`${value}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
+
 export type TaskFormState = { error?: string } | undefined;
 
 async function requireVa() {
@@ -45,7 +54,12 @@ export async function createTaskAction(
   const title = TitleSchema.safeParse(formData.get("title"));
   if (!title.success) return { error: title.error.issues[0].message };
 
-  // D16 : récurrence optionnelle à la création.
+  const dueDate = parseDueDate(formData.get("dueDate"));
+  if (dueDate === undefined) return { error: "Date invalide." };
+
+  // D16 : récurrence optionnelle à la création. L'échéance saisie est
+  // ignorée pour une récurrence : chaque occurrence reçoit la sienne
+  // (fin de période) automatiquement.
   const recurrence = formData.get("recurrence");
   if (recurrence === "weekly" || recurrence === "monthly") {
     const template = await createRecurringTaskForVa(
@@ -56,7 +70,7 @@ export async function createTaskAction(
     );
     if (!template) return { error: "Mission introuvable." };
   } else {
-    const task = await createTaskForVa(session.user.id, missionId, title.data);
+    const task = await createTaskForVa(session.user.id, missionId, title.data, dueDate);
     if (!task) return { error: "Mission introuvable." };
   }
 
@@ -92,7 +106,13 @@ export async function renameTaskAction(
   const title = TitleSchema.safeParse(formData.get("title"));
   if (!title.success) return { error: title.error.issues[0].message };
 
-  const updated = await updateTaskForVa(session.user.id, taskId, { title: title.data });
+  const dueDate = parseDueDate(formData.get("dueDate"));
+  if (dueDate === undefined) return { error: "Date invalide." };
+
+  const updated = await updateTaskForVa(session.user.id, taskId, {
+    title: title.data,
+    dueDate,
+  });
   if (!updated) return { error: "Tâche introuvable." };
 
   revalidatePath("/app");

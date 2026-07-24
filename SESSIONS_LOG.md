@@ -414,3 +414,31 @@
   appliquées aux calculs.
 - **Prochaine session** : Caroline pushe + vérif du déploiement Vercel ;
   ensuite Phase 6 — abonnements Stripe (et page Tarifs).
+
+## 24/07 — D19 : des échéances sur les tâches
+- **Objectif de la session** : retour de Caroline après les maquettes — une
+  tâche récurrente dit « hebdo » mais pas *quand* ; plus largement, les
+  tâches ont besoin d'une notion de date pour s'organiser.
+- **Fait** :
+  - Migration `task_due_date` : `Task.dueDate DATE` optionnelle (pas d'heure).
+  - Récurrences : chaque occurrence reçoit son échéance automatiquement —
+    dimanche de la semaine ISO (hebdo) ou dernier jour du mois (mensuelle) —
+    + rattrapage idempotent des occurrences existantes sans date dans
+    `ensureRecurringTasksForVa` (couvre la prod au premier chargement).
+  - Ajout/édition : champ date optionnel dans `AddTaskForm` (ignoré si
+    récurrence choisie) et dans le mode édition de `TaskRow` (vider = retirer).
+  - Affichage en mots (29a) : pill « pour aujourd'hui / demain / dimanche /
+    le 12 août » atténuée ; en retard = pill orange « en retard — hier » ;
+    rien sur les tâches faites. Mentions sorties du span tronqué (un titre
+    long n'avale plus les pills).
+  - Tri : tâches datées d'abord (échéance croissante, sans date à la fin)
+    dans le dashboard et la fiche client.
+  - Retrait du glyphe « ↻ » de la ligne des récurrences (fiche client) —
+    conformité « des mots, pas de pictos ».
+  - Vérifié e2e : occurrence « Reçus » backfillée au dimanche 26/07
+    (« pour dimanche »), tâche créée avec date d'hier → « en retard — hier »
+    en orange et remontée en tête, base vérifiée.
+- **Ça coince** : rien de bloquant ; les échéances ne déclenchent pas encore
+  de notification (attendra le branchement Resend) et le portail client ne
+  les affiche pas encore.
+- **Prochaine session** : Caroline pushe + vérif Vercel ; Phase 6 — Stripe.

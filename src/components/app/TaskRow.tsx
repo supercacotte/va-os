@@ -6,6 +6,7 @@ import { useActionState } from "react";
 import { deleteTaskAction, renameTaskAction, toggleTaskAction } from "@/lib/actions/tasks";
 import { quickStartTimerAction, stopTimerAction } from "@/lib/actions/timeEntries";
 import { clientColorVar } from "@/lib/client-colors";
+import { duePhrase, isOverdue } from "@/lib/dates";
 import { formatClock } from "@/lib/format";
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
     done: boolean;
     source: string;
     recurring?: string | null;
+    due?: string | null;
   };
   clientId: string;
   clientColor?: number;
@@ -119,6 +121,16 @@ export default function TaskRow({
               required
               className="min-w-0 flex-1 rounded-[10px] bg-paper px-3 py-1.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
             />
+            <label htmlFor={`edit-due-${task.id}`} className="sr-only">
+              Échéance (optionnelle)
+            </label>
+            <input
+              id={`edit-due-${task.id}`}
+              name="dueDate"
+              type="date"
+              defaultValue={task.due ? task.due.slice(0, 10) : ""}
+              className="rounded-[10px] bg-paper px-2.5 py-1.5 text-[12px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+            />
             <button
               disabled={renamePending}
               type="submit"
@@ -136,23 +148,39 @@ export default function TaskRow({
           </form>
         ) : (
           <>
-            <span
-              className={`min-w-0 flex-1 truncate text-[14px] font-medium text-ink ${
-                optimisticDone ? "line-through opacity-50" : ""
-              }`}
-            >
-              {task.title}
+            {/* Les mentions vivent hors du span tronqué : un titre long ne
+                doit jamais avaler l'échéance ni la récurrence. */}
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <span
+                className={`min-w-0 truncate text-[14px] font-medium text-ink ${
+                  optimisticDone ? "line-through opacity-50" : ""
+                }`}
+              >
+                {task.title}
+              </span>
               {task.source === "client_request" && (
-                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink/60">
+                <span className="shrink-0 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink/60">
                   demande client
                 </span>
               )}
               {task.recurring && (
-                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink/60">
+                <span className="shrink-0 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink/60">
                   {task.recurring === "weekly" ? "hebdo" : "mensuelle"}
                 </span>
               )}
-            </span>
+              {task.due && !optimisticDone && (
+                // D19 : l'échéance en mots — orange = à faire hier ou avant.
+                <span
+                  suppressHydrationWarning
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                    isOverdue(task.due) ? "bg-orange text-ink" : "bg-paper text-ink/60"
+                  }`}
+                >
+                  {isOverdue(task.due) ? "en retard — " : "pour "}
+                  {duePhrase(task.due)}
+                </span>
+              )}
+            </div>
 
             {timerActive ? (
               <div className="flex shrink-0 items-center gap-2">

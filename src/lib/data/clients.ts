@@ -53,12 +53,14 @@ export async function getVaWorkspace(vaId: string) {
         orderBy: { createdAt: "asc" },
         include: {
           tasks: {
-            orderBy: { createdAt: "asc" },
+            // D19 : les tâches datées d'abord, par échéance croissante.
+            orderBy: [{ dueDate: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
             select: {
               id: true,
               title: true,
               done: true,
               source: true,
+              dueDate: true,
               recurringTask: { select: { cadence: true } },
             },
           },
@@ -87,7 +89,7 @@ export async function getClientDetailForVa(vaId: string, clientId: string) {
         orderBy: { createdAt: "asc" },
         include: {
           tasks: {
-            orderBy: { createdAt: "asc" },
+            orderBy: [{ dueDate: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
             include: { recurringTask: { select: { cadence: true } } },
           },
           recurringTasks: {

@@ -65,6 +65,7 @@ export default async function AppPage() {
                 done: task.done,
                 source: task.source,
                 recurring: task.recurringTask?.cadence ?? null,
+                due: task.dueDate?.toISOString() ?? null,
               })),
             })),
           }))}

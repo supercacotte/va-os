@@ -26,20 +26,25 @@ export async function getTasksForVa(vaId: string) {
   });
 }
 
-export async function createTaskForVa(vaId: string, missionId: string, title: string) {
+export async function createTaskForVa(
+  vaId: string,
+  missionId: string,
+  title: string,
+  dueDate: Date | null = null,
+) {
   const mission = await prisma.mission.findFirst({
     where: { id: missionId, client: { vaId } },
     select: { id: true },
   });
   if (!mission) return null;
 
-  return prisma.task.create({ data: { missionId, title } });
+  return prisma.task.create({ data: { missionId, title, dueDate } });
 }
 
 export async function updateTaskForVa(
   vaId: string,
   taskId: string,
-  data: { title?: string; done?: boolean },
+  data: { title?: string; done?: boolean; dueDate?: Date | null },
 ) {
   const { count } = await prisma.task.updateMany({
     where: { id: taskId, mission: { client: { vaId } } },

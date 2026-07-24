@@ -10,7 +10,14 @@ import AddTaskForm from "@/components/app/AddTaskForm";
 import { stopTimerAction } from "@/lib/actions/timeEntries";
 import { clientColorVar } from "@/lib/client-colors";
 
-type Task = { id: string; title: string; done: boolean; source: string; recurring?: string | null };
+type Task = {
+  id: string;
+  title: string;
+  done: boolean;
+  source: string;
+  recurring?: string | null;
+  due?: string | null;
+};
 type Mission = { id: string; name: string; status: string; tasks: Task[] };
 export type WorkspaceClient = {
   id: string;
