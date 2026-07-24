@@ -42,6 +42,12 @@ export default async function Home() {
             Fonctionnalités
           </a>
           <Link
+            href="/annuaire"
+            className="text-sm font-semibold text-ink/80 transition hover:text-ink"
+          >
+            Annuaire
+          </Link>
+          <Link
             href="/connexion"
             prefetch={false}
             className="text-sm font-semibold text-ink underline decoration-orange decoration-2 underline-offset-4 transition hover:decoration-ink"

@@ -10,6 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         { href: "/app/clients", label: "Clients" },
         { href: "/app/temps", label: "Temps" },
         { href: "/app/rapports", label: "Rapports" },
+        { href: "/app/profil", label: "Profil" },
       ]}
     >
       {children}

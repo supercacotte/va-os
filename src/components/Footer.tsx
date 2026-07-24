@@ -16,6 +16,9 @@ export default function Footer({ variant = "app", tone = "pink" }: Props) {
           <Link href="/" className="transition hover:text-paper">
             Accueil
           </Link>
+          <Link href="/annuaire" className="transition hover:text-paper">
+            Annuaire
+          </Link>
           <a href="mailto:hello@vadesk.fr" className="transition hover:text-paper">
             Contact
           </a>

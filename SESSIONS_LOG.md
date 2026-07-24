@@ -327,3 +327,30 @@
   (fidèle aux données) ; footer app « §5 bis » non implémenté (section
   absente de DESIGN.md).
 - **Prochaine session** : Phase 6 — abonnements Stripe.
+
+## 24/07 — D16 + D17 : tâches récurrentes et annuaire public
+- **Objectif de la session** : deux ajouts V1 actés par Caroline.
+- **Fait** :
+  - **D16 Tâches récurrentes** : `RecurringTask` (mission, titre, cadence
+    hebdo/mensuelle) ; occurrences = `Task` normales (`recurringTaskId` +
+    `recurringPeriod`, unique). Génération **paresseuse** au chargement
+    (dashboard, fiche, temps, et portail via la VA du client) — pas de
+    cron. Select « une fois / ↻ chaque semaine / ↻ chaque mois » dans
+    AddTaskForm, badge ↻ sur les tâches, arrêt de la récurrence depuis la
+    mission. Testé : création (Caroline a créé « Reçus » hebdo en live),
+    et bascule de période simulée en base → l'occurrence W30 s'est créée
+    seule au rechargement, la W29 faite reste en historique.
+  - **D17 Annuaire public** : `VaProfile` opt-in strict (`published`
+    défaut false) ; page `/app/profil` (formulaire + badge d'état
+    publié/non publié, avertissement données publiques), page publique
+    `/annuaire` (recherche nom/spécialité/ville via GET, cartes DA avec
+    pills et bouton Contacter mailto), liens depuis la nav landing et le
+    footer ink, meta SEO. Testé : profil Julia publié → visible sur
+    /annuaire, recherche « pré-compta » ✓ / « graphisme » → état vide ✓.
+  - Incidents de session : deux migrations vides créées par les échecs
+    de `prisma migrate dev` non-interactif — nettoyées (dossiers +
+    `_prisma_migrations`) ; workflow retenu : `migrate diff
+    --from-config-datasource` + `migrate deploy`.
+- **Ça coince** : pas de modération admin de l'annuaire (D17 la prévoit
+  « si abus ») ; page /annuaire non paginée (OK à l'échelle beta).
+- **Prochaine session** : Phase 6 — abonnements Stripe.

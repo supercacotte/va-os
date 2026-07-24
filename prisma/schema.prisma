@@ -44,6 +44,7 @@ model User {
   createdAt        DateTime  @default(now())
 
   subscription Subscription?
+  vaProfile    VaProfile?
   clients      Client[]      @relation("VaClients")
   accounts     Account[]
   sessions     Session[]
@@ -83,6 +84,23 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// D17 : profil annuaire public — opt-in strict, jamais publié par défaut.
+model VaProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName  String
+  headline     String?
+  bio          String
+  specialties  String[]
+  location     String?
+  contactEmail String?
+  website      String?
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Subscription {
