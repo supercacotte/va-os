@@ -170,15 +170,3 @@ export async function getClientRevenue(
     annuel,
   };
 }
-
-export async function updateClientHourlyRateForVa(
-  vaId: string,
-  clientId: string,
-  hourlyRate: number | null,
-) {
-  const { count } = await prisma.client.updateMany({
-    where: { id: clientId, vaId },
-    data: { hourlyRate },
-  });
-  return count > 0;
-}

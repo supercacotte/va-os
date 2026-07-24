@@ -9,7 +9,9 @@ import {
   createProcedureForVa,
   deleteProcedureForVa,
   duplicateProcedureForVa,
+  setProcedureVisibilityForVa,
   updateProcedureForVa,
+  type ProcedureInput,
 } from "@/lib/data/procedures";
 
 const TitleSchema = z
@@ -28,6 +30,17 @@ async function requireVa() {
   return session;
 }
 
+// Métadonnées communes create/update (33a) : cadence, durée, visibilité portail.
+function parseMeta(formData: FormData): Omit<ProcedureInput, "title" | "steps"> {
+  const cadenceRaw = String(formData.get("cadence") ?? "").trim();
+  const minutesRaw = String(formData.get("estimatedMinutes") ?? "").replace(/[^0-9]/g, "");
+  return {
+    cadence: cadenceRaw || null,
+    estimatedMinutes: minutesRaw ? Math.min(Number(minutesRaw), 100000) : null,
+    visibleToClient: formData.get("visibleToClient") === "on",
+  };
+}
+
 export async function createProcedureAction(
   _state: ProcedureFormState,
   formData: FormData,
@@ -43,7 +56,11 @@ export async function createProcedureAction(
   const steps = String(formData.get("steps") ?? "");
   if (!htmlHasTextContent(steps)) return { error: "La procédure est vide." };
 
-  const created = await createProcedureForVa(session.user.id, clientId, title.data, steps);
+  const created = await createProcedureForVa(session.user.id, clientId, {
+    title: title.data,
+    steps,
+    ...parseMeta(formData),
+  });
   if (!created) return { error: "Client introuvable." };
 
   revalidatePath(`/app/clients/${clientId}`);
@@ -68,11 +85,28 @@ export async function updateProcedureAction(
   const steps = String(formData.get("steps") ?? "");
   if (!htmlHasTextContent(steps)) return { error: "La procédure est vide." };
 
-  const updated = await updateProcedureForVa(session.user.id, procedureId, title.data, steps);
+  const updated = await updateProcedureForVa(session.user.id, procedureId, {
+    title: title.data,
+    steps,
+    ...parseMeta(formData),
+  });
   if (!updated) return { error: "Procédure introuvable." };
 
   revalidatePath(`/app/clients/${clientId}`);
   return { ok: true };
+}
+
+// Toggle « portail » (33a) : visibleToClient passé dans le form.
+export async function toggleProcedureVisibilityAction(formData: FormData) {
+  const session = await requireVa();
+
+  const procedureId = formData.get("procedureId");
+  const clientId = formData.get("clientId");
+  const visible = formData.get("visible");
+  if (typeof procedureId !== "string" || typeof clientId !== "string") return;
+
+  await setProcedureVisibilityForVa(session.user.id, procedureId, visible === "true");
+  revalidatePath(`/app/clients/${clientId}`);
 }
 
 export async function deleteProcedureAction(formData: FormData) {

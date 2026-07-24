@@ -251,13 +251,19 @@ async function main() {
       where: { clientId: marieForSop.id },
     });
     if (existingSop === 0) {
-      for (const template of SLC_TEMPLATES.slice(0, 2)) {
+      // 3 procédures de démo : 2 visibles portail, 1 masquée (33a).
+      const demoSops = SLC_TEMPLATES.slice(0, 3);
+      for (const [index, template] of demoSops.entries()) {
         await prisma.procedure.create({
           data: {
             vaId: va.id,
             clientId: marieForSop.id,
             title: template.title,
             steps: sanitizeStepsHtml(template.html),
+            cadence: template.cadence,
+            estimatedMinutes: template.estimatedMinutes,
+            // la 3e (pré-compta, index 2) est masquée du portail pour la démo
+            visibleToClient: index < 2,
           },
         });
       }

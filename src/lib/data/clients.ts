@@ -12,6 +12,7 @@ import { CLIENT_COLOR_COUNT } from "@/lib/client-colors";
 export type ClientInput = {
   name: string;
   company: string | null;
+  hourlyRate?: number | null;
 };
 
 export async function getVaDashboard(vaId: string) {

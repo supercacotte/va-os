@@ -236,6 +236,13 @@ model Procedure {
   client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
   title     String
   steps     String // HTML sanitizé (pattern TipTap + sanitize-html du repo)
+  // Métadonnées d'affichage (maquette 33a) : cadence libre (« Mensuelle »,
+  // « Hebdo », « Ponctuelle »…) et durée estimée en minutes.
+  cadence          String?
+  estimatedMinutes Int?
+  // Visibilité sur le portail du client, réglable par procédure (comme les
+  // rapports, D15). Défaut visible.
+  visibleToClient Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

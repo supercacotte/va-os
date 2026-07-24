@@ -11,6 +11,25 @@ function daysAgo(date: Date) {
   return `il y a ${days} jours`;
 }
 
+function formatMinutes(min: number) {
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, "0")}`;
+}
+
+function metaLine(p: {
+  cadence: string | null;
+  estimatedMinutes: number | null;
+  updatedAt: Date;
+}) {
+  const parts: string[] = [];
+  if (p.cadence) parts.push(p.cadence);
+  if (p.estimatedMinutes != null) parts.push(formatMinutes(p.estimatedMinutes));
+  parts.push(`mise à jour ${daysAgo(p.updatedAt)}`);
+  return parts.join(" · ");
+}
+
 // 4e capacité du portail (D22) : le client consulte les procédures de SON
 // compte, en lecture seule. Étanchéité : la data part du compte connecté,
 // jamais d'un clientId en paramètre.
@@ -44,7 +63,7 @@ export default async function PortailProceduresPage() {
                       {procedure.title}
                     </p>
                     <p className="text-[12px] font-semibold text-ink opacity-50">
-                      Modifié {daysAgo(procedure.updatedAt)}
+                      {metaLine(procedure)}
                     </p>
                   </div>
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper text-[16px] font-bold leading-none text-ink shadow-sticker">

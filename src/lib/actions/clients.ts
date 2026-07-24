@@ -25,6 +25,12 @@ const ClientSchema = z.object({
     .trim()
     .max(120, "Le nom de l'entreprise est trop long (120 caractères max).")
     .transform((value) => value || null),
+  // Taux horaire (bloc CA, 33a) : entier 1-9999 €/h, ou vide.
+  hourlyRate: z
+    .string()
+    .trim()
+    .transform((value) => value.replace(/[^0-9]/g, ""))
+    .transform((value) => (value ? Math.min(Number(value), 9999) : null)),
 });
 
 export type ClientFormState =
@@ -46,6 +52,7 @@ function parseClientForm(formData: FormData) {
   const validated = ClientSchema.safeParse({
     name: formData.get("name"),
     company: formData.get("company") ?? "",
+    hourlyRate: formData.get("hourlyRate") ?? "",
   });
   if (!validated.success) {
     return { errors: z.flattenError(validated.error).fieldErrors };
@@ -81,6 +88,7 @@ export async function updateClientAction(
   if (!updated) return { message: "Client introuvable." };
 
   revalidatePath("/app");
+  revalidatePath(`/app/clients/${clientId}`);
   return { message: "Modifications enregistrées." };
 }
 

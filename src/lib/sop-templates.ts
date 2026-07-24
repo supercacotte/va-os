@@ -15,9 +15,23 @@ export type SopTemplate = {
   label: string;
   // titre pré-rempli de la procédure
   title: string;
+  // cadence pré-remplie (33a) — l'un des CADENCE_OPTIONS
+  cadence: string;
+  // durée estimée pré-remplie, en minutes
+  estimatedMinutes: number;
   // contenu HTML (sanitizé à l'écriture ET au rendu)
   html: string;
 };
+
+// Cadences proposées (maquette 33a) — libellés stockés tels quels.
+export const CADENCE_OPTIONS = [
+  "Ponctuelle",
+  "Quotidienne",
+  "Hebdo",
+  "Mensuelle",
+  "Trimestrielle",
+  "Annuelle",
+] as const;
 
 // Squelette vierge proposé par défaut à la création d'une procédure.
 export const BLANK_TEMPLATE_HTML = `
@@ -65,6 +79,8 @@ export const SLC_TEMPLATES: SopTemplate[] = [
     key: "podcast",
     label: "SLC — Publier un épisode de podcast",
     title: "Publier un épisode de podcast",
+    cadence: "Hebdo",
+    estimatedMinutes: 20,
     html: `
 <p><em>Résumé en une phrase : mettre en ligne un épisode déjà monté, de l'upload à la notification de l'équipe.</em></p>
 <h2>Informations</h2>
@@ -108,6 +124,8 @@ export const SLC_TEMPLATES: SopTemplate[] = [
     key: "newsletter",
     label: "SLC — Programmer la newsletter hebdomadaire",
     title: "Programmer la newsletter hebdomadaire",
+    cadence: "Hebdo",
+    estimatedMinutes: 30,
     html: `
 <p><em>Résumé en une phrase : préparer et programmer l'envoi de la newsletter du vendredi à partir du contenu validé.</em></p>
 <h2>Informations</h2>
@@ -148,6 +166,8 @@ export const SLC_TEMPLATES: SopTemplate[] = [
     key: "precompta",
     label: "SLC — Clôturer la pré-compta du mois",
     title: "Clôturer la pré-compta du mois",
+    cadence: "Mensuelle",
+    estimatedMinutes: 45,
     html: `
 <p><em>Résumé en une phrase : rassembler et transmettre les justificatifs du mois au comptable, au propre.</em></p>
 <h2>Informations</h2>

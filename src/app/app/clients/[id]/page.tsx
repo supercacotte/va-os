@@ -66,20 +66,20 @@ export default async function ClientDetailPage({
         </div>
       </div>
 
-      {revenue && (
-        <div className="mb-8">
-          <RevenueBlock clientId={client.id} revenue={revenue} />
-        </div>
-      )}
-
       <div className="grid gap-7 lg:grid-cols-[380px_minmax(0,1fr)]">
-        <section className="flex flex-col gap-3">
-          <h2 className={SECTION_LABEL}>Infos du client</h2>
-          <div className="rounded-[18px] bg-sand p-6">
-            <ClientForm
-              client={{ id: client.id, name: client.name, company: client.company }}
-            />
-            <div className="mt-6 border-t border-ink/15 pt-4">
+        <div className="flex flex-col gap-7">
+          <section className="flex flex-col gap-3">
+            <h2 className={SECTION_LABEL}>Infos du client</h2>
+            <div className="rounded-[18px] bg-sand p-6">
+              <ClientForm
+                client={{
+                  id: client.id,
+                  name: client.name,
+                  company: client.company,
+                  hourlyRate: client.hourlyRate,
+                }}
+              />
+              <div className="mt-6 border-t border-ink/15 pt-4">
               <p className="mb-2 text-[13px] font-bold uppercase tracking-[1.5px] text-ink">
                 Accès au portail
               </p>
@@ -105,9 +105,12 @@ export default async function ClientDetailPage({
                   <InviteClientForm clientId={client.id} />
                 </>
               )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          {revenue && <RevenueBlock revenue={revenue} />}
+        </div>
 
         <section className="flex flex-col gap-3">
           <h2 className={SECTION_LABEL}>Missions</h2>
@@ -129,6 +132,7 @@ export default async function ClientDetailPage({
                 clientId: client.id,
               }}
               clientColor={client.color}
+              openCount={mission.tasks.filter((task) => !task.done).length}
             >
               {mission.tasks.length === 0 ? (
                 <p className="text-[13px] font-medium text-ink opacity-70">
@@ -153,6 +157,7 @@ export default async function ClientDetailPage({
                       timerStartedAt={
                         activeEntry ? activeEntry.startedAt.toISOString() : null
                       }
+                      variant="kebab"
                     />
                   ))}
                 </ul>
@@ -197,6 +202,9 @@ export default async function ClientDetailPage({
             id: procedure.id,
             title: procedure.title,
             steps: procedure.steps,
+            cadence: procedure.cadence,
+            estimatedMinutes: procedure.estimatedMinutes,
+            visibleToClient: procedure.visibleToClient,
             updatedAt: procedure.updatedAt.toISOString(),
           }))}
           otherClients={otherClients}

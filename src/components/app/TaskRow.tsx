@@ -3,6 +3,7 @@
 import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { useActionState } from "react";
 
+import KebabMenu from "@/components/app/KebabMenu";
 import { deleteTaskAction, renameTaskAction, toggleTaskAction } from "@/lib/actions/tasks";
 import { quickStartTimerAction, stopTimerAction } from "@/lib/actions/timeEntries";
 import { clientColorVar } from "@/lib/client-colors";
@@ -22,6 +23,9 @@ type Props = {
   clientColor?: number;
   timerActive?: boolean;
   timerStartedAt?: string | null;
+  // "pills" = actions au survol (dashboard, 29a) ; "kebab" = menu « ··· »
+  // (fiche client, 33a).
+  variant?: "pills" | "kebab";
 };
 
 // « Des mots, pas de pictos » (maquette 29a) : les actions sont des
@@ -30,6 +34,8 @@ const PILL_PAPER =
   "rounded-full bg-paper px-3 py-1 text-[11px] font-bold text-ink shadow-sticker transition hover:brightness-95";
 const PILL_INK =
   "rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-paper transition hover:opacity-85";
+const MENU_ITEM =
+  "w-full rounded-[10px] px-3 py-2 text-left text-[13px] font-semibold text-ink transition hover:bg-sand";
 
 // Badge « ● 00:12:41 » : version miniature du chrono, seconde par seconde.
 function TimerBadge({ startedAt }: { startedAt: string }) {
@@ -56,6 +62,7 @@ export default function TaskRow({
   clientColor,
   timerActive = false,
   timerStartedAt = null,
+  variant = "pills",
 }: Props) {
   const [editing, setEditing] = useState(false);
   // Pas de <form> pour la checkbox : le reset automatique des formulaires
@@ -202,36 +209,69 @@ export default function TaskRow({
                     fait ✓
                   </span>
                 )}
-                <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100">
-                  {!optimisticDone && (
-                    <form action={quickStartTimerAction}>
+                {variant === "kebab" ? (
+                  // Fiche client (33a) : actions dans un menu « ··· ».
+                  <KebabMenu label={`Actions pour ${task.title}`}>
+                    {!optimisticDone && (
+                      <form action={quickStartTimerAction}>
+                        <input type="hidden" name="taskId" value={task.id} />
+                        <input type="hidden" name="clientId" value={clientId} />
+                        <button type="submit" className={MENU_ITEM}>
+                          Lancer le chrono
+                        </button>
+                      </form>
+                    )}
+                    <button type="button" onClick={() => setEditing(true)} className={MENU_ITEM}>
+                      Éditer
+                    </button>
+                    <div className="mt-1 border-t border-ink/10 pt-1">
+                      <form
+                        action={deleteTaskAction}
+                        onSubmit={(e) => {
+                          if (!confirm(`Supprimer la tâche « ${task.title} » ?`)) e.preventDefault();
+                        }}
+                      >
+                        <input type="hidden" name="taskId" value={task.id} />
+                        <input type="hidden" name="clientId" value={clientId} />
+                        <button type="submit" className={`${MENU_ITEM} hover:bg-tomato/40`}>
+                          Supprimer
+                        </button>
+                      </form>
+                    </div>
+                  </KebabMenu>
+                ) : (
+                  // Dashboard (29a) : micro-pills au survol.
+                  <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100">
+                    {!optimisticDone && (
+                      <form action={quickStartTimerAction}>
+                        <input type="hidden" name="taskId" value={task.id} />
+                        <input type="hidden" name="clientId" value={clientId} />
+                        <button
+                          type="submit"
+                          title="Lancer le chrono sur cette tâche"
+                          className={PILL_PAPER}
+                        >
+                          chrono
+                        </button>
+                      </form>
+                    )}
+                    <button type="button" onClick={() => setEditing(true)} className={PILL_INK}>
+                      éditer
+                    </button>
+                    <form
+                      action={deleteTaskAction}
+                      onSubmit={(e) => {
+                        if (!confirm(`Supprimer la tâche « ${task.title} » ?`)) e.preventDefault();
+                      }}
+                    >
                       <input type="hidden" name="taskId" value={task.id} />
                       <input type="hidden" name="clientId" value={clientId} />
-                      <button
-                        type="submit"
-                        title="Lancer le chrono sur cette tâche"
-                        className={PILL_PAPER}
-                      >
-                        chrono
+                      <button type="submit" className={PILL_PAPER}>
+                        suppr.
                       </button>
                     </form>
-                  )}
-                  <button type="button" onClick={() => setEditing(true)} className={PILL_INK}>
-                    éditer
-                  </button>
-                  <form
-                    action={deleteTaskAction}
-                    onSubmit={(e) => {
-                      if (!confirm(`Supprimer la tâche « ${task.title} » ?`)) e.preventDefault();
-                    }}
-                  >
-                    <input type="hidden" name="taskId" value={task.id} />
-                    <input type="hidden" name="clientId" value={clientId} />
-                    <button type="submit" className={PILL_PAPER}>
-                      suppr.
-                    </button>
-                  </form>
-                </div>
+                  </div>
+                )}
               </>
             )}
           </>

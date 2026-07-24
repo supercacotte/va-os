@@ -9,7 +9,7 @@ import {
 } from "@/lib/actions/clients";
 
 type Props = {
-  client?: { id: string; name: string; company: string | null };
+  client?: { id: string; name: string; company: string | null; hourlyRate?: number | null };
 };
 
 export default function ClientForm({ client }: Props) {
@@ -53,6 +53,25 @@ export default function ClientForm({ client }: Props) {
           <p className="text-xs font-semibold text-ink/70">{state.errors.company[0]}</p>
         )}
       </div>
+
+      {client && (
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="hourlyRate" className="text-[13px] font-bold text-ink">
+            Taux horaire <span className="font-medium opacity-60">(€ / h, pour le CA)</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              id="hourlyRate"
+              name="hourlyRate"
+              inputMode="numeric"
+              defaultValue={client.hourlyRate ?? ""}
+              placeholder="45"
+              className="w-24 rounded-[10px] bg-paper px-4 py-3 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+            />
+            <span className="text-[13px] font-semibold text-ink opacity-60">€ / h</span>
+          </div>
+        </div>
+      )}
 
       {state?.message && <p className="text-[13px] font-semibold text-ink">{state.message}</p>}
 

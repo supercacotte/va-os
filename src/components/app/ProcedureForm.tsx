@@ -9,14 +9,46 @@ import {
   updateProcedureAction,
   type ProcedureFormState,
 } from "@/lib/actions/procedures";
-import { BLANK_TEMPLATE_HTML, SLC_TEMPLATES } from "@/lib/sop-templates";
+import { BLANK_TEMPLATE_HTML, CADENCE_OPTIONS, SLC_TEMPLATES } from "@/lib/sop-templates";
 
-type ExistingProcedure = { id: string; title: string; steps: string };
+type ExistingProcedure = {
+  id: string;
+  title: string;
+  steps: string;
+  cadence: string | null;
+  estimatedMinutes: number | null;
+  visibleToClient: boolean;
+};
 
-// Formulaire de création / édition d'une procédure. En création, un sélecteur
-// de modèle (Vierge / templates SLC) pré-remplit titre + contenu — les
-// templates SLC ne sont que des points de départ, jamais des procédures
-// stockées (D22).
+const FIELD =
+  "w-full rounded-[10px] bg-paper px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30";
+const LABEL = "text-[13px] font-bold text-ink";
+
+function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      className={`relative h-6 w-11 shrink-0 rounded-full border-2 transition ${
+        checked ? "border-ink bg-lime" : "border-ink/30 bg-paper"
+      }`}
+    >
+      <span
+        className={`absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full transition-all ${
+          checked ? "left-[calc(100%-20px)] bg-ink" : "left-0.5 bg-ink/30"
+        }`}
+      />
+    </button>
+  );
+}
+
+// Formulaire de création / édition d'une procédure (maquette 33a). En
+// création, un sélecteur de modèle (Vierge / templates SLC) pré-remplit titre,
+// contenu, cadence et durée — les templates SLC ne sont que des points de
+// départ, jamais des procédures stockées (D22).
 export default function ProcedureForm({
   clientId,
   procedure,
@@ -38,14 +70,20 @@ export default function ProcedureForm({
     undefined,
   );
 
-  // Modèle sélectionné (création seulement). "blank" = squelette vierge.
   const [templateKey, setTemplateKey] = useState("blank");
   const [title, setTitle] = useState(procedure?.title ?? "");
+  const [cadence, setCadence] = useState(procedure?.cadence ?? "");
+  const [minutes, setMinutes] = useState(
+    procedure?.estimatedMinutes != null ? String(procedure.estimatedMinutes) : "",
+  );
+  const [visible, setVisible] = useState(procedure?.visibleToClient ?? true);
 
   function pickTemplate(key: string) {
     setTemplateKey(key);
     const template = SLC_TEMPLATES.find((t) => t.key === key);
     setTitle(template?.title ?? "");
+    setCadence(template?.cadence ?? "");
+    setMinutes(template ? String(template.estimatedMinutes) : "");
   }
 
   const editorDefault = isEdit
@@ -56,10 +94,11 @@ export default function ProcedureForm({
     <form action={action} className="flex flex-col gap-4 rounded-[16px] bg-sand p-5">
       <input type="hidden" name="clientId" value={clientId} />
       {isEdit && <input type="hidden" name="procedureId" value={procedure!.id} />}
+      {visible && <input type="hidden" name="visibleToClient" value="on" />}
 
       {!isEdit && (
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="template" className="text-[13px] font-bold text-ink">
+          <label htmlFor="template" className={LABEL}>
             Partir d&apos;un modèle
           </label>
           <select
@@ -79,7 +118,7 @@ export default function ProcedureForm({
       )}
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="procedure-title" className="text-[13px] font-bold text-ink">
+        <label htmlFor="procedure-title" className={LABEL}>
           Titre de la procédure
         </label>
         <input
@@ -89,13 +128,58 @@ export default function ProcedureForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Publier un épisode de podcast"
-          className="w-full rounded-[10px] bg-paper px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+          className={FIELD}
         />
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="cadence" className={LABEL}>
+            Cadence <span className="font-medium opacity-60">(optionnel)</span>
+          </label>
+          <select
+            id="cadence"
+            name="cadence"
+            value={cadence}
+            onChange={(e) => setCadence(e.target.value)}
+            className={FIELD}
+          >
+            <option value="">—</option>
+            {CADENCE_OPTIONS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="estimatedMinutes" className={LABEL}>
+            Durée estimée <span className="font-medium opacity-60">(min, optionnel)</span>
+          </label>
+          <input
+            id="estimatedMinutes"
+            name="estimatedMinutes"
+            inputMode="numeric"
+            value={minutes}
+            onChange={(e) => setMinutes(e.target.value.replace(/[^0-9]/g, ""))}
+            placeholder="45"
+            className={FIELD}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 rounded-[12px] bg-paper px-4 py-3">
+        <div>
+          <p className={LABEL}>Visible sur le portail du client</p>
+          <p className="text-[11px] font-medium text-ink opacity-60">
+            {visible ? "Le client verra cette procédure, en lecture seule." : "Masquée du portail — visible seulement par toi."}
+          </p>
+        </div>
+        <Switch checked={visible} onChange={setVisible} label="Visible sur le portail" />
+      </div>
+
       <div className="flex flex-col gap-1.5">
-        <span className="text-[13px] font-bold text-ink">Contenu</span>
-        {/* key force le remontage de l'éditeur quand on change de modèle */}
+        <span className={LABEL}>Contenu</span>
         <ProcedureEditor key={isEdit ? procedure!.id : templateKey} defaultValue={editorDefault} />
       </div>
 

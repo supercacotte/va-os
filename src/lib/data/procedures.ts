@@ -7,28 +7,25 @@ import { sanitizeStepsHtml } from "@/lib/sanitize";
 // (via la relation client) ; côté portail on filtre par le compte connecté
 // (relation portalUser) — jamais de clientId venant d'un paramètre.
 
-const LIST_SELECT = {
+export type ProcedureInput = {
+  title: string;
+  steps: string;
+  cadence: string | null;
+  estimatedMinutes: number | null;
+  visibleToClient: boolean;
+};
+
+const CARD_SELECT = {
   id: true,
   title: true,
+  steps: true,
+  cadence: true,
+  estimatedMinutes: true,
+  visibleToClient: true,
   updatedAt: true,
 } as const;
 
 // --- Côté VA (/app) -------------------------------------------------------
-
-export async function getProceduresForClient(vaId: string, clientId: string) {
-  // Vérifie l'appartenance du client à la VA avant de lister.
-  const client = await prisma.client.findFirst({
-    where: { id: clientId, vaId },
-    select: { id: true },
-  });
-  if (!client) return null;
-
-  return prisma.procedure.findMany({
-    where: { clientId, vaId },
-    orderBy: { updatedAt: "desc" },
-    select: LIST_SELECT,
-  });
-}
 
 // Section fiche client : contenu inclus pour permettre aperçu et édition
 // inline sans aller-retour (peu de procédures par client, données de la VA).
@@ -42,15 +39,14 @@ export async function getProceduresWithStepsForClient(vaId: string, clientId: st
   return prisma.procedure.findMany({
     where: { clientId, vaId },
     orderBy: { updatedAt: "desc" },
-    select: { id: true, title: true, steps: true, updatedAt: true },
+    select: CARD_SELECT,
   });
 }
 
 export async function createProcedureForVa(
   vaId: string,
   clientId: string,
-  title: string,
-  steps: string,
+  data: ProcedureInput,
 ) {
   const client = await prisma.client.findFirst({
     where: { id: clientId, vaId },
@@ -59,7 +55,15 @@ export async function createProcedureForVa(
   if (!client) return null;
 
   return prisma.procedure.create({
-    data: { vaId, clientId, title, steps: sanitizeStepsHtml(steps) },
+    data: {
+      vaId,
+      clientId,
+      title: data.title,
+      steps: sanitizeStepsHtml(data.steps),
+      cadence: data.cadence,
+      estimatedMinutes: data.estimatedMinutes,
+      visibleToClient: data.visibleToClient,
+    },
     select: { id: true, clientId: true },
   });
 }
@@ -67,12 +71,30 @@ export async function createProcedureForVa(
 export async function updateProcedureForVa(
   vaId: string,
   procedureId: string,
-  title: string,
-  steps: string,
+  data: ProcedureInput,
 ) {
   const { count } = await prisma.procedure.updateMany({
     where: { id: procedureId, vaId },
-    data: { title, steps: sanitizeStepsHtml(steps) },
+    data: {
+      title: data.title,
+      steps: sanitizeStepsHtml(data.steps),
+      cadence: data.cadence,
+      estimatedMinutes: data.estimatedMinutes,
+      visibleToClient: data.visibleToClient,
+    },
+  });
+  return count > 0;
+}
+
+// Bascule la visibilité portail d'une procédure (toggle « portail », 33a).
+export async function setProcedureVisibilityForVa(
+  vaId: string,
+  procedureId: string,
+  visibleToClient: boolean,
+) {
+  const { count } = await prisma.procedure.updateMany({
+    where: { id: procedureId, vaId },
+    data: { visibleToClient },
   });
   return count > 0;
 }
@@ -94,7 +116,13 @@ export async function duplicateProcedureForVa(
   const [source, target] = await Promise.all([
     prisma.procedure.findFirst({
       where: { id: procedureId, vaId },
-      select: { title: true, steps: true },
+      select: {
+        title: true,
+        steps: true,
+        cadence: true,
+        estimatedMinutes: true,
+        visibleToClient: true,
+      },
     }),
     prisma.client.findFirst({
       where: { id: targetClientId, vaId },
@@ -109,6 +137,9 @@ export async function duplicateProcedureForVa(
       clientId: targetClientId,
       title: source.title,
       steps: source.steps,
+      cadence: source.cadence,
+      estimatedMinutes: source.estimatedMinutes,
+      visibleToClient: source.visibleToClient,
     },
     select: { id: true, clientId: true },
   });
@@ -126,11 +157,22 @@ export async function getOtherClientsForVa(vaId: string, exceptClientId: string)
 // --- Côté portail (client, lecture seule) ---------------------------------
 
 // Étanchéité (D12) : on part du compte connecté (portalUser), jamais d'un
-// clientId fourni. Un client ne peut donc voir que SES procédures.
+// clientId fourni. Le client ne voit que SES procédures ET seulement celles
+// marquées visibles sur le portail (33a).
 export async function getProceduresForPortalUser(userId: string) {
   return prisma.procedure.findMany({
-    where: { client: { portalUser: { id: userId } } },
+    where: {
+      visibleToClient: true,
+      client: { portalUser: { id: userId } },
+    },
     orderBy: { updatedAt: "desc" },
-    select: { id: true, title: true, steps: true, updatedAt: true },
+    select: {
+      id: true,
+      title: true,
+      steps: true,
+      cadence: true,
+      estimatedMinutes: true,
+      updatedAt: true,
+    },
   });
 }
