@@ -88,6 +88,31 @@ export default async function Home() {
             factures
           </span>
         </span>
+        <span className="animate-float absolute left-[18%] top-6 hidden md:block" style={{ animationDelay: "0.4s" }}>
+          <span className="inline-block rotate-2 rounded-[8px] border-4 border-paper bg-orange px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            réseaux sociaux
+          </span>
+        </span>
+        <span className="animate-float absolute left-[10%] top-52 hidden md:block" style={{ animationDelay: "1.3s" }}>
+          <span className="inline-block -rotate-2 rounded-[8px] border-4 border-paper bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            devis
+          </span>
+        </span>
+        <span className="animate-float absolute left-[15%] top-72 hidden md:block" style={{ animationDelay: "2.1s" }}>
+          <span className="inline-block rotate-3 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            prospection
+          </span>
+        </span>
+        <span className="animate-float absolute right-[13%] top-52 hidden md:block" style={{ animationDelay: "1.7s" }}>
+          <span className="inline-block rotate-2 rounded-[8px] border-4 border-paper bg-lilac px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            agenda
+          </span>
+        </span>
+        <span className="animate-float absolute right-[6%] top-72 hidden md:block" style={{ animationDelay: "2.8s" }}>
+          <span className="inline-block -rotate-3 rounded-[8px] border-4 border-paper bg-orange px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            relances
+          </span>
+        </span>
 
         <p className="text-[13px] font-bold uppercase tracking-[1.5px] text-ink">
           Le cockpit des assistantes virtuelles
