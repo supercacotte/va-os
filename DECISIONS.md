@@ -29,6 +29,9 @@
 
 | D15 | Rapports **persistés** (modèle `Report`, un par client × mois, « générer » = action explicite de la VA) + **toggle de visibilité portail par client** (`Client.portalReportsEnabled`, défaut ON) : le portail ne montre que les rapports générés d'un client dont le toggle est actif | ✅ 23/07 | Maquettes 15a/16c validées par Caroline ; remplace la V1 « tous les mois avec du temps sont visibles » (note de la session Phase 5) |
 
+| D16 | **Tâches récurrentes en V1** : modèle `RecurringTask` (titre, mission, cadence hebdo/mensuelle) + génération **paresseuse** de l'occurrence de la période au chargement — pas de cron. Arrêter une récurrence ne touche pas aux occurrences passées | ✅ 24/07 | Besoin cœur de métier (pré-compta mensuelle, reporting…) ; occurrences = Task normales, chrono/rapports/portail inchangés |
+| D17 | **Annuaire public de VA en V1** : `/annuaire` sans connexion, profils **opt-in uniquement** (`VaProfile.published`, défaut false), recherche nom/spécialité, contact direct email/site. Pas de modération admin en V1 (à ajouter si abus) | ✅ 24/07 | Canal d'acquisition : les VA se référencent, les clients potentiels les trouvent |
+
 ## Modèle d'entrée pour les prochaines décisions
 
 ```

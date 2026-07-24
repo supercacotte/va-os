@@ -51,6 +51,15 @@ Abonnement Stripe (mode `subscription`), essai à définir, annulation self-serv
 7. Sync réunions (plan Pro) : ingestion unifiée, adapters dans l'ordre —
    Fireflies (webhooks) → Granola (polling via n8n sur le VPS) → Fathom (V1.1).
 8. Abonnements Stripe 2 plans + gestion du statut d'abonnement.
+9. **Tâches récurrentes** (ajout 24/07, D16) : à la création d'une tâche,
+   option « chaque semaine / chaque mois » — modèle `RecurringTask` +
+   génération paresseuse de l'occurrence de la période courante au
+   chargement (pas de cron). Occurrences = tâches normales (chrono,
+   rapports, portail inchangés).
+10. **Annuaire public de VA** (ajout 24/07, D17) : page `/annuaire`
+    accessible sans connexion depuis la home — les VA se référencent via un
+    profil **opt-in** (jamais publiées par défaut), les visiteurs cherchent
+    par nom/spécialité et contactent directement (email/site).
 
 ## 5. Hors scope V1 (gelé — ne pas rouvrir sans décision datée)
 
@@ -147,6 +156,35 @@ model Procedure {
   steps     String   // HTML sanitizé (pattern TipTap + sanitize-html du repo)
   isSlcTemplate Boolean @default(false)
   createdAt DateTime @default(now())
+}
+
+// D16 — modèle de tâche récurrente ; les occurrences sont des Task normales
+// (Task.recurringTaskId + recurringPeriod, unique par période).
+model RecurringTask {
+  id        String   @id @default(cuid())
+  missionId String
+  mission   Mission  @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  title     String
+  cadence   String   // weekly | monthly
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// D17 — profil annuaire public, opt-in strict (published=false par défaut).
+model VaProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName  String
+  headline     String?
+  bio          String
+  specialties  String[]
+  location     String?
+  contactEmail String?
+  website      String?
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model MeetingItem {
