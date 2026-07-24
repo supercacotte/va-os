@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 
 import Chronometer from "@/components/app/Chronometer";
 import StartTimerForm from "@/components/app/StartTimerForm";
@@ -158,14 +157,12 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
                 aria-expanded={expanded}
                 className="flex w-full items-center gap-3 rounded-[14px] px-5 py-4 text-left"
               >
+                {/* Déplier/replier = − / +, cohérent avec « + Nouveau client » (29a) */}
                 <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[18px] font-bold leading-none text-ink"
                   style={{ backgroundColor: clientColorVar(selectedClient?.color ?? 1) }}
                 >
-                  <ChevronRight
-                    size={16}
-                    className={`transition-transform ${expanded ? "rotate-90" : ""}`}
-                  />
+                  {expanded ? "−" : "+"}
                 </span>
                 <p className="min-w-0 flex-1 truncate text-[17px] font-semibold text-ink">
                   {mission.name}
@@ -193,7 +190,9 @@ export default function DashboardBoard({ clients, activeTimer }: Props) {
                           key={task.id}
                           task={task}
                           clientId={selectedClient!.id}
+                          clientColor={selectedClient!.color}
                           timerActive={activeTimer?.taskId === task.id}
+                          timerStartedAt={activeTimer?.startedAt}
                         />
                       ))}
                     </ul>

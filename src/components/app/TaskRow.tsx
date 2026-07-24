@@ -1,10 +1,12 @@
 "use client";
 
-import { useOptimistic, useState, useTransition } from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { useActionState } from "react";
 
 import { deleteTaskAction, renameTaskAction, toggleTaskAction } from "@/lib/actions/tasks";
 import { quickStartTimerAction, stopTimerAction } from "@/lib/actions/timeEntries";
+import { clientColorVar } from "@/lib/client-colors";
+import { formatClock } from "@/lib/format";
 
 type Props = {
   task: {
@@ -15,10 +17,44 @@ type Props = {
     recurring?: string | null;
   };
   clientId: string;
+  clientColor?: number;
   timerActive?: boolean;
+  timerStartedAt?: string | null;
 };
 
-export default function TaskRow({ task, clientId, timerActive = false }: Props) {
+// « Des mots, pas de pictos » (maquette 29a) : les actions sont des
+// micro-pills texte visibles au survol, la récurrence une simple mention.
+const PILL_PAPER =
+  "rounded-full bg-paper px-3 py-1 text-[11px] font-bold text-ink shadow-sticker transition hover:brightness-95";
+const PILL_INK =
+  "rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-paper transition hover:opacity-85";
+
+// Badge « ● 00:12:41 » : version miniature du chrono, seconde par seconde.
+function TimerBadge({ startedAt }: { startedAt: string }) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span
+      suppressHydrationWarning
+      className="-rotate-2 rounded-full bg-paper px-2.5 py-1 text-[11px] font-bold tabular-nums text-ink shadow-sticker"
+    >
+      ● {formatClock(Math.max(0, now - Date.parse(startedAt)))}
+    </span>
+  );
+}
+
+export default function TaskRow({
+  task,
+  clientId,
+  clientColor,
+  timerActive = false,
+  timerStartedAt = null,
+}: Props) {
   const [editing, setEditing] = useState(false);
   // Pas de <form> pour la checkbox : le reset automatique des formulaires
   // après une action (React 19) écraserait son état. Action directe +
@@ -45,16 +81,28 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
   }
 
   return (
-    <li className="group flex flex-col gap-1 rounded-[10px] px-2 py-1.5 transition hover:bg-paper/60">
+    <li
+      className={`group flex flex-col gap-1 rounded-[12px] px-3 py-2 transition ${
+        timerActive ? "" : "hover:bg-paper/60"
+      }`}
+      style={
+        timerActive && clientColor ? { backgroundColor: clientColorVar(clientColor) } : undefined
+      }
+    >
       <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          checked={optimisticDone}
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={optimisticDone}
           disabled={togglePending}
-          onChange={toggle}
+          onClick={toggle}
           aria-label={`Marquer « ${task.title} » comme ${optimisticDone ? "à faire" : "faite"}`}
-          className="h-4 w-4 accent-ink"
-        />
+          className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[6px] border-2 border-ink transition ${
+            optimisticDone ? "bg-ink text-paper" : "bg-paper hover:bg-sand"
+          }`}
+        >
+          {optimisticDone && <span className="text-[12px] font-bold leading-none">✓</span>}
+        </button>
 
         {editing ? (
           <form action={renameAction} className="flex min-w-0 flex-1 items-center gap-2">
@@ -74,90 +122,92 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
             <button
               disabled={renamePending}
               type="submit"
-              className="rounded-lg bg-orange px-2.5 py-1 text-xs font-bold text-ink shadow-sticker disabled:opacity-60"
+              className="rounded-full bg-orange px-3 py-1 text-[11px] font-bold text-ink shadow-sticker disabled:opacity-60"
             >
               OK
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="text-xs font-semibold text-ink/60 transition hover:text-ink"
+              className="text-[11px] font-semibold text-ink/60 transition hover:text-ink"
             >
-              Annuler
+              annuler
             </button>
           </form>
         ) : (
           <>
             <span
-              className={`min-w-0 flex-1 truncate text-[13px] font-medium text-ink ${
-                optimisticDone ? "line-through opacity-60" : ""
+              className={`min-w-0 flex-1 truncate text-[14px] font-medium text-ink ${
+                optimisticDone ? "line-through opacity-50" : ""
               }`}
             >
               {task.title}
               {task.source === "client_request" && (
-                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink">
+                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink/60">
                   demande client
                 </span>
               )}
               {task.recurring && (
-                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink">
-                  ↻ {task.recurring === "weekly" ? "hebdo" : "mensuelle"}
+                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink/60">
+                  {task.recurring === "weekly" ? "hebdo" : "mensuelle"}
                 </span>
               )}
             </span>
-            {timerActive && (
-              <form action={stopTimerAction} className="shrink-0">
-                <input type="hidden" name="clientId" value={clientId} />
-                <button
-                  type="submit"
-                  className="rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-paper transition hover:opacity-80"
-                >
-                  ■ Stop
-                </button>
-              </form>
-            )}
-            <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-hover:opacity-100">
-              {!timerActive && !task.done && (
-                <form action={quickStartTimerAction}>
-                  <input type="hidden" name="taskId" value={task.id} />
+
+            {timerActive ? (
+              <div className="flex shrink-0 items-center gap-2">
+                {timerStartedAt && <TimerBadge startedAt={timerStartedAt} />}
+                <form action={stopTimerAction}>
                   <input type="hidden" name="clientId" value={clientId} />
-                  <button
-                    type="submit"
-                    title="Lancer le chrono sur cette tâche"
-                    className="rounded-full px-2 py-1 text-xs font-bold text-ink/60 transition hover:text-ink"
-                  >
-                    ▶ Chrono
+                  <button type="submit" className={PILL_INK}>
+                    stop
                   </button>
                 </form>
-              )}
-              <button
-                type="button"
-                onClick={() => setEditing(true)}
-                className="rounded-full px-2 py-1 text-xs font-semibold text-ink/50 transition hover:text-ink"
-              >
-                Éditer
-              </button>
-              <form
-                action={deleteTaskAction}
-                onSubmit={(e) => {
-                  if (!confirm(`Supprimer la tâche « ${task.title} » ?`)) e.preventDefault();
-                }}
-              >
-                <input type="hidden" name="taskId" value={task.id} />
-                <input type="hidden" name="clientId" value={clientId} />
-                <button
-                  type="submit"
-                  className="rounded-full px-2 py-1 text-xs font-semibold text-ink/50 transition hover:text-ink"
-                >
-                  Suppr.
-                </button>
-              </form>
-            </div>
+              </div>
+            ) : (
+              <>
+                {optimisticDone && (
+                  <span className="shrink-0 rounded-full bg-lime px-2.5 py-1 text-[11px] font-bold text-ink">
+                    fait ✓
+                  </span>
+                )}
+                <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100">
+                  {!optimisticDone && (
+                    <form action={quickStartTimerAction}>
+                      <input type="hidden" name="taskId" value={task.id} />
+                      <input type="hidden" name="clientId" value={clientId} />
+                      <button
+                        type="submit"
+                        title="Lancer le chrono sur cette tâche"
+                        className={PILL_PAPER}
+                      >
+                        chrono
+                      </button>
+                    </form>
+                  )}
+                  <button type="button" onClick={() => setEditing(true)} className={PILL_INK}>
+                    éditer
+                  </button>
+                  <form
+                    action={deleteTaskAction}
+                    onSubmit={(e) => {
+                      if (!confirm(`Supprimer la tâche « ${task.title} » ?`)) e.preventDefault();
+                    }}
+                  >
+                    <input type="hidden" name="taskId" value={task.id} />
+                    <input type="hidden" name="clientId" value={clientId} />
+                    <button type="submit" className={PILL_PAPER}>
+                      suppr.
+                    </button>
+                  </form>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
       {renameState?.error && (
-        <p className="pl-7 text-xs font-semibold text-ink/70">{renameState.error}</p>
+        <p className="pl-9 text-xs font-semibold text-ink/70">{renameState.error}</p>
       )}
     </li>
   );

@@ -39,22 +39,31 @@ export default function AddTaskForm({ missionId, clientId }: Props) {
         <label htmlFor={`recurrence-${missionId}`} className="sr-only">
           Récurrence
         </label>
-        <select
-          id={`recurrence-${missionId}`}
-          name="recurrence"
-          defaultValue="none"
-          className="rounded-[10px] bg-paper px-3 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
-        >
-          <option value="none">une fois</option>
-          <option value="weekly">↻ chaque semaine</option>
-          <option value="monthly">↻ chaque mois</option>
-        </select>
+        {/* Pill « une fois ▾ » (29a) — la flèche est la nôtre, pas celle du navigateur */}
+        <span className="relative">
+          <select
+            id={`recurrence-${missionId}`}
+            name="recurrence"
+            defaultValue="none"
+            className="appearance-none rounded-full bg-paper py-2.5 pl-4 pr-8 text-[13px] font-bold text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+          >
+            <option value="none">une fois</option>
+            <option value="weekly">chaque semaine</option>
+            <option value="monthly">chaque mois</option>
+          </select>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-ink"
+          >
+            ▾
+          </span>
+        </span>
         <button
           disabled={pending}
           type="submit"
-          className="rounded-[10px] bg-orange px-4 py-2.5 text-xs font-bold text-ink shadow-sticker transition hover:brightness-95 disabled:opacity-60"
+          className="rounded-xl bg-orange px-4 py-2.5 text-[13px] font-bold text-ink shadow-sticker transition hover:brightness-95 disabled:opacity-60"
         >
-          {pending ? "Ajout…" : "Ajouter"}
+          {pending ? "Ajout…" : "+ Ajouter"}
         </button>
       </div>
       {state?.error && <p className="text-xs font-semibold text-ink/70">{state.error}</p>}

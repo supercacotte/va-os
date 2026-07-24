@@ -120,7 +120,11 @@ export default async function ClientDetailPage({
                         recurring: task.recurringTask?.cadence ?? null,
                       }}
                       clientId={client.id}
+                      clientColor={client.color}
                       timerActive={activeEntry?.task.id === task.id}
+                      timerStartedAt={
+                        activeEntry ? activeEntry.startedAt.toISOString() : null
+                      }
                     />
                   ))}
                 </ul>
