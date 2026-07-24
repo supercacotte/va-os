@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { CLIENT_COLOR_COUNT } from "../src/lib/client-colors";
+import { SLC_TEMPLATES } from "../src/lib/sop-templates";
+import { sanitizeStepsHtml } from "../src/lib/sanitize";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -228,6 +230,31 @@ async function main() {
       create: { userId: user.id, published: true, ...demoData(demo) },
       update: {},
     });
+  }
+
+  // Procédures d'exemple (Phase 6, D22) : on instancie 2 templates SLC comme
+  // vraies procédures sur Marie Dupont — le client de test qui a un portail.
+  // Les templates SLC eux-mêmes ne sont PAS stockés ; ce sont des modèles.
+  const marieForSop = await prisma.client.findFirst({
+    where: { vaId: va.id, name: "Marie Dupont" },
+    select: { id: true },
+  });
+  if (marieForSop) {
+    const existingSop = await prisma.procedure.count({
+      where: { clientId: marieForSop.id },
+    });
+    if (existingSop === 0) {
+      for (const template of SLC_TEMPLATES.slice(0, 2)) {
+        await prisma.procedure.create({
+          data: {
+            vaId: va.id,
+            clientId: marieForSop.id,
+            title: template.title,
+            steps: sanitizeStepsHtml(template.html),
+          },
+        });
+      }
+    }
   }
 
   console.log(

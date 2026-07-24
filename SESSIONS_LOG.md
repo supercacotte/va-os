@@ -442,3 +442,42 @@
   de notification (attendra le branchement Resend) et le portail client ne
   les affiche pas encore.
 - **Prochaine session** : Caroline pushe + vérif Vercel ; Phase 6 — Stripe.
+
+## 24/07 — Phase 6 : procédures (SOP) rattachées au client (D22)
+- **Objectif de la session** : construire la Phase 6 (ex-Phase 8, réordonnée
+  par D20) — procédures documentées, rattachées à un client, éditables côté
+  VA et consultables en lecture seule sur le portail (4e capacité, D22).
+- **Fait** :
+  - Référence de contenu `docs/reference/sop-template.md` (structure de la
+    « Phase 3 » de la skill sop-builder) + `src/lib/sop-templates.ts`
+    (squelette vierge + 3 modèles SLC). **Aucune IA dans l'app** : les
+    Phases 1/2/4 de la skill (génération, extraction, QA) sont hors scope
+    V1, reportées en V2 (même logique que D17).
+  - Schéma : `Procedure.clientId` obligatoire + relation + `updatedAt`,
+    suppression de `isSlcTemplate` (les modèles ne sont pas stockés).
+    Migration `procedure_per_client`.
+  - `lib/data/procedures.ts` (D12) : côté VA filtré par `vaId` (appartenance
+    du client vérifiée) ; côté portail filtré par le compte connecté
+    (`portalUser`), jamais de clientId en paramètre. Duplication vers un
+    autre client de la même VA (les deux appartenances vérifiées).
+  - `lib/actions/procedures.ts` : create / update / delete / duplicate,
+    HTML sanitizé (`sanitizeStepsHtml`) à l'écriture, validation « pas vide ».
+  - Éditeur TipTap (`ProcedureEditor`, pattern StepsEditor du repo réf) +
+    `ProcedureForm` (sélecteur de modèle → pré-remplissage) +
+    `ProceduresSection` (liste / créer / éditer / voir / dupliquer / suppr.)
+    sur la fiche client. Rendu lecture seule partagé `ProcedureContent`
+    (re-sanitize au rendu).
+  - Portail : page `/portail/procedures` (4e onglet), rendu serveur en
+    `<details>` natif, lecture seule.
+  - Seed : 2 modèles SLC instanciés en vraies procédures sur Marie Dupont.
+  - **Tests d'étanchéité (7/7)** au niveau requête, via les mêmes clauses
+    `where` que la data : VA Léa ne lit / modifie / supprime / duplique pas
+    une procédure de Julia ; portail Marie ne voit que ses procédures et ne
+    lit pas celle d'un autre client par id direct ; contrôle positif OK.
+    Route portail : 307 pour un anonyme.
+- **Ça coince** : le rendu **visuel** du portail (page `/portail/procedures`)
+  n'a pas pu être capturé — le panneau navigateur partagé rebascule sur la
+  session VA de Julia à chaque déconnexion (quirk connu). L'étanchéité et le
+  composant de rendu sont prouvés par ailleurs ; à confirmer visuellement en
+  se connectant comme Marie.
+- **Prochaine session** : Phase 7 — abonnements Stripe PWYW (9/19/39 €, D21).

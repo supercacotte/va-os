@@ -152,6 +152,7 @@ model Client {
   portalUser User?
   missions   Mission[]
   reports    Report[]
+  procedures Procedure[]
   createdAt  DateTime  @default(now())
 }
 
@@ -220,13 +221,21 @@ model TimeEntry {
   // durée éditable a posteriori
 }
 
+// D22 : une procédure appartient à un client (pas de bibliothèque centrale).
+// Consultation depuis la fiche client (VA) et le portail (client, lecture
+// seule). Les templates SLC ne sont PAS stockés ici : ce sont des modèles
+// proposés à la création (src/lib/sop-templates.ts).
 model Procedure {
-  id            String   @id @default(cuid())
-  vaId          String
-  title         String
-  steps         String // HTML sanitizé (pattern TipTap + sanitize-html du repo)
-  isSlcTemplate Boolean  @default(false)
-  createdAt     DateTime @default(now())
+  id        String   @id @default(cuid())
+  vaId      String
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  title     String
+  steps     String // HTML sanitizé (pattern TipTap + sanitize-html du repo)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
 }
 
 model MeetingItem {

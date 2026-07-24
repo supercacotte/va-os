@@ -3,6 +3,10 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { getClientDetailForVa } from "@/lib/data/clients";
+import {
+  getOtherClientsForVa,
+  getProceduresWithStepsForClient,
+} from "@/lib/data/procedures";
 import { getActiveTimeEntryForVa } from "@/lib/data/timeEntries";
 import { clientColorVar } from "@/lib/client-colors";
 import ClientForm from "@/components/app/ClientForm";
@@ -11,6 +15,7 @@ import AddMissionForm from "@/components/app/AddMissionForm";
 import MissionCard from "@/components/app/MissionCard";
 import AddTaskForm from "@/components/app/AddTaskForm";
 import TaskRow from "@/components/app/TaskRow";
+import ProceduresSection from "@/components/app/ProceduresSection";
 import { stopRecurringAction } from "@/lib/actions/tasks";
 
 const SECTION_LABEL = "text-[13px] font-bold uppercase tracking-[1.5px] text-ink";
@@ -24,9 +29,11 @@ export default async function ClientDetailPage({
   if (session?.user.role !== "VA") redirect("/");
 
   const { id } = await params;
-  const [client, activeEntry] = await Promise.all([
+  const [client, activeEntry, procedures, otherClients] = await Promise.all([
     getClientDetailForVa(session.user.id, id),
     getActiveTimeEntryForVa(session.user.id),
+    getProceduresWithStepsForClient(session.user.id, id),
+    getOtherClientsForVa(session.user.id, id),
   ]);
   if (!client) notFound();
 
@@ -161,6 +168,19 @@ export default async function ClientDetailPage({
 
           <AddMissionForm clientId={client.id} />
         </section>
+      </div>
+
+      <div className="mt-10 border-t border-ink/15 pt-8">
+        <ProceduresSection
+          clientId={client.id}
+          procedures={procedures.map((procedure) => ({
+            id: procedure.id,
+            title: procedure.title,
+            steps: procedure.steps,
+            updatedAt: procedure.updatedAt.toISOString(),
+          }))}
+          otherClients={otherClients}
+        />
       </div>
     </main>
   );

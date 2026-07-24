@@ -9,6 +9,7 @@ export default function PortailLayout({ children }: { children: React.ReactNode 
         { href: "/portail", label: "Tableau de bord", exact: true },
         { href: "/portail/demandes", label: "Demandes" },
         { href: "/portail/rapports", label: "Rapports" },
+        { href: "/portail/procedures", label: "Procédures" },
       ]}
     >
       {children}
