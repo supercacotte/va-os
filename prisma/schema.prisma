@@ -147,6 +147,10 @@ model Client {
   // Numéro 1-20 dans la palette clients du DESIGN.md — attribué à la
   // création, ne change jamais (pas recalculé par index de liste).
   color      Int       @default(1)
+  // Taux horaire de ce client, en €/h (bloc CA de la fiche, maquette 32a).
+  // Sert à estimer le chiffre d'affaires (heures trackées × taux) — jamais
+  // affiché au client, jamais une facture.
+  hourlyRate Int?
   // D15 : gouverne la visibilité des rapports générés sur le portail client.
   portalReportsEnabled Boolean @default(true)
   portalUser User?

@@ -8,12 +8,14 @@ import {
   getProceduresWithStepsForClient,
 } from "@/lib/data/procedures";
 import { getActiveTimeEntryForVa } from "@/lib/data/timeEntries";
+import { getClientRevenue } from "@/lib/data/revenue";
 import { clientColorVar } from "@/lib/client-colors";
 import ClientForm from "@/components/app/ClientForm";
 import InviteClientForm from "@/components/app/InviteClientForm";
 import RevokePortalButton from "@/components/app/RevokePortalButton";
 import AddMissionForm from "@/components/app/AddMissionForm";
 import MissionCard from "@/components/app/MissionCard";
+import RevenueBlock from "@/components/app/RevenueBlock";
 import AddTaskForm from "@/components/app/AddTaskForm";
 import TaskRow from "@/components/app/TaskRow";
 import ProceduresSection from "@/components/app/ProceduresSection";
@@ -30,11 +32,12 @@ export default async function ClientDetailPage({
   if (session?.user.role !== "VA") redirect("/");
 
   const { id } = await params;
-  const [client, activeEntry, procedures, otherClients] = await Promise.all([
+  const [client, activeEntry, procedures, otherClients, revenue] = await Promise.all([
     getClientDetailForVa(session.user.id, id),
     getActiveTimeEntryForVa(session.user.id),
     getProceduresWithStepsForClient(session.user.id, id),
     getOtherClientsForVa(session.user.id, id),
+    getClientRevenue(session.user.id, id),
   ]);
   if (!client) notFound();
 
@@ -62,6 +65,12 @@ export default async function ClientDetailPage({
           )}
         </div>
       </div>
+
+      {revenue && (
+        <div className="mb-8">
+          <RevenueBlock clientId={client.id} revenue={revenue} />
+        </div>
+      )}
 
       <div className="grid gap-7 lg:grid-cols-[380px_minmax(0,1fr)]">
         <section className="flex flex-col gap-3">

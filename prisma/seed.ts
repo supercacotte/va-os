@@ -237,8 +237,15 @@ async function main() {
   // Les templates SLC eux-mêmes ne sont PAS stockés ; ce sont des modèles.
   const marieForSop = await prisma.client.findFirst({
     where: { vaId: va.id, name: "Marie Dupont" },
-    select: { id: true },
+    select: { id: true, hourlyRate: true },
   });
+  // Taux horaire de démo pour le bloc CA (maquette 32a) — seulement si absent.
+  if (marieForSop && marieForSop.hourlyRate === null) {
+    await prisma.client.update({
+      where: { id: marieForSop.id },
+      data: { hourlyRate: 45 },
+    });
+  }
   if (marieForSop) {
     const existingSop = await prisma.procedure.count({
       where: { clientId: marieForSop.id },
