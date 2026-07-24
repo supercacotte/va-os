@@ -378,3 +378,39 @@
   pas Natural Earth) ; « Tarifs » toujours absent de la nav (page en
   Phase 6) ; « Voir plus » recharge la page (pas d'infinite scroll).
 - **Prochaine session** : Phase 6 — abonnements Stripe (et page Tarifs).
+
+## 24/07 — Maquettes 29a, 30a, 30b : profil refondu, compte, lignes de tâches
+- **Objectif de la session** : implémenter les 3 nouvelles maquettes de
+  `design/` (Ma fiche publique, Mon compte, lignes de tâches « des mots,
+  pas de pictos ») avec les fonctionnalités qu'elles impliquent.
+- **Fait** :
+  - Migration `profile_conditions_and_settings` : `VaProfile.hourlyRate` /
+    `capacityNote` / `showStats` + modèle `UserSettings` (notifications,
+    fuseau, arrondi chrono, début de semaine, langue).
+  - **30a** — `/app/profil` refondu : onglets « Ma fiche publique / Mon
+    compte », éditeur en sections (identité, spécialités en chips,
+    où/comment, conditions), sidebar avec toggle annuaire, aperçu live de
+    la carte annuaire et stats auto (`getVaPublicStats`) masquables ;
+    fiche `/annuaire/[id]` enrichie (tarif, capacité, bloc 3 stats).
+    Ancien `ProfileForm` supprimé.
+  - **30b** — `/app/profil/compte` : email privé, changement de mot de
+    passe (bcrypt, ancien exigé), 4 switches notifications, préférences,
+    abonnement placeholder Beta honnête, export ZIP de CSV (`/api/export`,
+    filtré vaId, 401 anonyme), zone sensible (retirer la fiche, suppression
+    de compte double-confirmée côté serveur + comptes portail). → D18.
+  - **29a** — TaskRow refondu : checkbox carrée, micro-pills texte
+    « chrono / éditer / suppr. » au survol, pill « fait ✓ », mention
+    récurrence atténuée, ligne teintée couleur client + badge « ● 00:12:41 »
+    live + pill « stop » quand le chrono tourne ; pastille − / + sur
+    l'accordéon missions ; « une fois ▾ » + « + Ajouter ».
+  - Vérifié e2e (navigateur) : sauvegarde profil (tarif 38 €, capacité) en
+    base, fiche publique OK, réglages persistés, export 200/ZIP + 401
+    anonyme, gardes mdp/SUPPRIMER, chrono en ligne teintée avec badge qui
+    tourne. 4 commits (schéma, 30a, 30b, 29a).
+- **Ça coince** : le panneau navigateur est partagé — clics/navigations de
+  Caroline pendant les tests (chrono stoppé sous mes yeux, refs périmées) ;
+  vérifs refaites en JS direct. Les emails de notification restent à
+  brancher (Resend, Phase 6+), préférences stockées mais pas encore
+  appliquées aux calculs.
+- **Prochaine session** : Caroline pushe + vérif du déploiement Vercel ;
+  ensuite Phase 6 — abonnements Stripe (et page Tarifs).

@@ -31,6 +31,7 @@
 
 | D16 | **Tâches récurrentes en V1** : modèle `RecurringTask` (titre, mission, cadence hebdo/mensuelle) + génération **paresseuse** de l'occurrence de la période au chargement — pas de cron. Arrêter une récurrence ne touche pas aux occurrences passées | ✅ 24/07 | Besoin cœur de métier (pré-compta mensuelle, reporting…) ; occurrences = Task normales, chrono/rapports/portail inchangés |
 | D17 | **Annuaire public de VA en V1** : `/annuaire` sans connexion, profils **opt-in uniquement** (`VaProfile.published`, défaut false), recherche nom/spécialité, contact direct email/site. Pas de modération admin en V1 (à ajouter si abus) | ✅ 24/07 | Canal d'acquisition : les VA se référencent, les clients potentiels les trouvent |
+| D18 | **« Mon compte » honnête pendant la beta** (maquette 30b) : notifications et préférences (fuseau, arrondi chrono, début de semaine, langue) **stockées dans `UserSettings` mais pas encore effectives** (annoncé dans l'UI) ; carte Abonnement = Beta 0 €/mois, facturation désactivée jusqu'à la Phase 6 ; **portabilité dès la V1** : export ZIP de CSV (`/api/export`) + suppression de compte en cascade (comptes portail inclus, mot « SUPPRIMER » exigé côté serveur) | ✅ 24/07 | Ne jamais afficher un réglage qui ment ; « tout est à toi » est un argument produit — l'export et la suppression existent avant même le paiement |
 
 ## Modèle d'entrée pour les prochaines décisions
 
