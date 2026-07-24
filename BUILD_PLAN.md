@@ -47,9 +47,10 @@
 - Templates SLC pré-chargés (seed), flag `isSlcTemplate`.
 
 ## Phase 7 — Abonnements Stripe PWYW (ex-Phase 6) (semaine du 18 août)
-- PWYW (D21) : un seul Price à montant libre (`custom_unit_amount` avec
-  plancher), checkout `mode: subscription`, webhook `/api/stripe/webhook`,
-  table `Subscription` (plan unique — plus de gating Pro en V1).
+- PWYW (D21) : un seul Price à montant libre — `custom_unit_amount` avec
+  minimum 9 €, preset 19 €, maximum 39 €/mois —, checkout
+  `mode: subscription`, webhook `/api/stripe/webhook`, table `Subscription`
+  (plan unique — plus de gating Pro en V1).
 - Page "Mon abonnement" (portail de facturation Stripe hébergé).
 
 ## Phase 8 — Facturation Qonto (ex-Phase 7) (semaine du 25 août, si accès API obtenu)

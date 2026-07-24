@@ -30,9 +30,9 @@ outil : le temps tracké devient un rapport d'activité, qui devient une facture
 ## 3. Offres
 
 **V1 : pricing PWYW — pay what you want (D21, 24/07).** Un seul plan, toutes
-les fonctionnalités, prix mensuel libre choisi par la VA à l'abonnement
-(plancher technique et montant suggéré à fixer en Phase 7). Remplace le
-modèle 2 plans 19/29 € (historique : v1.1 du 23/07, D10).
+les fonctionnalités, prix mensuel libre choisi par la VA à l'abonnement :
+**minimum 9 €, suggéré 19 €, maximum 39 €/mois** (précisé le 24/07, D21).
+Remplace le modèle 2 plans 19/29 € (historique : v1.1 du 23/07, D10).
 
 | Fonctionnalité | V1 (PWYW) |
 |---|---|
