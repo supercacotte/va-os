@@ -12,7 +12,11 @@ import {
   getOwnedClientWithPortal,
   updateClientForVa,
 } from "@/lib/data/clients";
-import { createPortalUser, findUserByEmail } from "@/lib/data/users";
+import {
+  createPortalUser,
+  findUserByEmail,
+  revokePortalUserForVa,
+} from "@/lib/data/users";
 
 const ClientSchema = z.object({
   name: z.string().trim().min(2, "Le nom doit faire au moins 2 caractères."),
@@ -149,4 +153,17 @@ export async function inviteClientUser(
   }
 
   return { ok: true, message: `Invitation envoyée à ${email}.` };
+}
+
+// Révoque l'accès du client à son portail (supprime son compte). Réversible :
+// la VA peut réinviter le même email ensuite.
+export async function revokePortalAccess(formData: FormData) {
+  const session = await auth();
+  if (session?.user.role !== "VA") return;
+
+  const clientId = formData.get("clientId");
+  if (typeof clientId !== "string" || !clientId) return;
+
+  await revokePortalUserForVa(session.user.id, clientId);
+  revalidatePath(`/app/clients/${clientId}`);
 }

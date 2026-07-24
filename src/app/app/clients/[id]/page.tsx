@@ -11,6 +11,7 @@ import { getActiveTimeEntryForVa } from "@/lib/data/timeEntries";
 import { clientColorVar } from "@/lib/client-colors";
 import ClientForm from "@/components/app/ClientForm";
 import InviteClientForm from "@/components/app/InviteClientForm";
+import RevokePortalButton from "@/components/app/RevokePortalButton";
 import AddMissionForm from "@/components/app/AddMissionForm";
 import MissionCard from "@/components/app/MissionCard";
 import AddTaskForm from "@/components/app/AddTaskForm";
@@ -70,17 +71,27 @@ export default async function ClientDetailPage({
               client={{ id: client.id, name: client.name, company: client.company }}
             />
             <div className="mt-6 border-t border-ink/15 pt-4">
+              <p className="mb-2 text-[13px] font-bold uppercase tracking-[1.5px] text-ink">
+                Accès au portail
+              </p>
               {client.portalUser ? (
-                <p className="text-[13px] font-semibold text-ink">
-                  Portail activé pour {client.portalUser.email}{" "}
-                  <span className="ml-1 rounded-full bg-lime px-2 py-0.5 text-[11px] font-bold">
-                    actif ✓
-                  </span>
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="min-w-0 text-[13px] font-semibold text-ink">
+                    Activé pour {client.portalUser.email}{" "}
+                    <span className="ml-1 inline-block rounded-full bg-lime px-2 py-0.5 text-[11px] font-bold">
+                      actif ✓
+                    </span>
+                  </p>
+                  <RevokePortalButton
+                    clientId={client.id}
+                    email={client.portalUser.email}
+                  />
+                </div>
               ) : (
                 <>
                   <p className="mb-2 text-[13px] font-medium text-ink opacity-70">
-                    Invite ce client sur son portail (lecture seule de l&apos;avancement) :
+                    Donne à ce client l&apos;accès à son portail (lecture seule de
+                    l&apos;avancement, des rapports et des procédures) :
                   </p>
                   <InviteClientForm clientId={client.id} />
                 </>
