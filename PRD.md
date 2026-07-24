@@ -14,7 +14,8 @@ outil : le temps tracké devient un rapport d'activité, qui devient une facture
 1. **Chaîne fermée** du chrono à la facture générée via Qonto.
 2. **Bibliothèque de procédures (SOP)** avec templates brandés Smart Lazy Club.
 3. **Extraction automatique de tâches** depuis les transcripts de réunion
-   (Fireflies, Granola, Fathom) — réservée au plan Pro.
+   (Fireflies, Granola, Fathom) — incluse dans le plan PWYW en V1 (D21),
+   réservée au palier supérieur en V2.
 
 ## 2. Personas
 
@@ -28,17 +29,24 @@ outil : le temps tracké devient un rapport d'activité, qui devient une facture
 
 ## 3. Offres
 
-| | Essentielle — 19 €/mois | Pro — 29 €/mois |
-|---|---|---|
-| Clients / missions / tâches | ✅ | ✅ |
-| Chrono + édition a posteriori | ✅ | ✅ |
-| Rapport d'activité + export PDF | ✅ | ✅ |
-| Facturation via Qonto | ✅ | ✅ |
-| Bibliothèque SOP + templates SLC | ✅ | ✅ |
-| Portail client | ✅ | ✅ |
-| **Sync réunions (Fireflies / Granola / Fathom)** | ❌ | ✅ |
+**V1 : pricing PWYW — pay what you want (D21, 24/07).** Un seul plan, toutes
+les fonctionnalités, prix mensuel libre choisi par la VA à l'abonnement
+(plancher technique et montant suggéré à fixer en Phase 7). Remplace le
+modèle 2 plans 19/29 € (historique : v1.1 du 23/07, D10).
 
-Abonnement Stripe (mode `subscription`), essai à définir, annulation self-service.
+| Fonctionnalité | V1 (PWYW) |
+|---|---|
+| Clients / missions / tâches | ✅ |
+| Chrono + édition a posteriori | ✅ |
+| Rapport d'activité + export PDF | ✅ |
+| Facturation via Qonto | ✅ |
+| Bibliothèque SOP + templates SLC | ✅ |
+| Portail client | ✅ |
+| Sync réunions (Fireflies / Granola / Fathom) | ✅ |
+
+Abonnement Stripe (mode `subscription`, montant libre), essai à définir,
+annulation self-service. La segmentation par paliers revient en V2 (cf. §5 :
+sync réunions + canal chat au palier supérieur).
 
 ## 4. Scope V1 (gelé)
 
@@ -48,9 +56,9 @@ Abonnement Stripe (mode `subscription`), essai à définir, annulation self-serv
 4. Génération de facture semi-automatique via **API Qonto** (bouton, pas d'envoi auto).
 5. Bibliothèque de procédures avec template guidé.
 6. Portail client : 3 capacités (avancement / demande / rapport).
-7. Sync réunions (plan Pro) : ingestion unifiée, adapters dans l'ordre —
+7. Sync réunions (incluse, D21) : ingestion unifiée, adapters dans l'ordre —
    Fireflies (webhooks) → Granola (polling via n8n sur le VPS) → Fathom (V1.1).
-8. Abonnements Stripe 2 plans + gestion du statut d'abonnement.
+8. Abonnements Stripe PWYW (un plan, montant libre — D21) + gestion du statut d'abonnement.
 9. **Tâches récurrentes** (ajout 24/07, D16) : à la création d'une tâche,
    option « chaque semaine / chaque mois » — modèle `RecurringTask` +
    génération paresseuse de l'occurrence de la période courante au
@@ -86,7 +94,7 @@ Le client final se connecte via un compte lié à un `Client` (pas un tenant).
 
 ```prisma
 enum Role { VA CLIENT ADMIN }
-enum Plan { ESSENTIELLE PRO }
+enum Plan { ESSENTIELLE PRO } // draft v1.1 — passera à un plan unique PWYW en Phase 7 (D21)
 enum SubscriptionStatus { TRIALING ACTIVE PAST_DUE CANCELED }
 
 model User {

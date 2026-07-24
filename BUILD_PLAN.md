@@ -47,8 +47,9 @@
 - Templates SLC pré-chargés (seed), flag `isSlcTemplate`.
 
 ## Phase 7 — Abonnements Stripe PWYW (ex-Phase 6) (semaine du 18 août)
-- 2 Price IDs, checkout `mode: subscription`, webhook
-  `/api/stripe/webhook`, table `Subscription`, gating du plan Pro.
+- PWYW (D21) : un seul Price à montant libre (`custom_unit_amount` avec
+  plancher), checkout `mode: subscription`, webhook `/api/stripe/webhook`,
+  table `Subscription` (plan unique — plus de gating Pro en V1).
 - Page "Mon abonnement" (portail de facturation Stripe hébergé).
 
 ## Phase 8 — Facturation Qonto (ex-Phase 7) (semaine du 25 août, si accès API obtenu)
@@ -58,7 +59,7 @@
 - Bouton "Générer la facture" depuis un rapport d'activité → brouillon Qonto.
 - ⚠️ Si l'accès API traîne : la V1 sort avec export PDF seul, Qonto en V1.1.
 
-## Phase 9 — Sync réunions, plan Pro (semaine du 25 août)
+## Phase 9 — Sync réunions (semaine du 25 août — incluse dans le plan PWYW, D21)
 - Route `/api/inbound/[provider]` + table `MeetingItem` dédupliquée.
 - Adapter 1 : Fireflies (webhooks). Adapter 2 : Granola (polling n8n → route).
 - Extraction de tâches : appel Claude API, tâches créées en `source:
