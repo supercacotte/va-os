@@ -209,9 +209,39 @@ async function main() {
     }
   }
 
+  // Profils d'annuaire de démo (D17) — comptes VA fictifs, publiés.
+  const demoProfiles = [
+    { email: "julia.moreau@test.local", displayName: "Julia Moreau", headline: "Admin & orga pour solopreneurs débordés — boîte mail à zéro, factures à l'heure, agendas qui respirent.", bio: "Boîte mail à zéro, factures à l'heure, agendas qui respirent. J'aide les solopreneurs à retrouver du temps et de la clarté dans leur quotidien.", specialties: ["Admin", "Compta"], location: "Nantes — full remote", region: "pdl", languages: ["FR", "EN"], availability: "available", availabilityNote: null },
+    { email: "sarah.lopez@test.local", displayName: "Sarah Lopez", headline: "Réseaux sociaux & contenu : calendrier édito, visuels Canva, communauté qui répond présente.", bio: "Calendrier édito, visuels Canva, community management : je fais vivre vos réseaux pendant que vous faites tourner votre boîte.", specialties: ["Réseaux sociaux", "Canva"], location: "Lyon", region: "ara", languages: ["FR", "ES"], availability: "available", availabilityNote: null },
+    { email: "camille.bardet@test.local", displayName: "Camille Bardet", headline: "E-commerce : SAV, suivi de commandes, fiches produit — vos clients répondus en moins de 24 h.", bio: "SAV, suivi de commandes, fiches produit : vos clients e-commerce répondus en moins de 24 h, sept jours sur sept si besoin.", specialties: ["E-commerce", "Support client"], location: "Bordeaux", region: "naq", languages: ["FR"], availability: "full", availabilityNote: "dès sept." },
+    { email: "aicha.konate@test.local", displayName: "Aïcha Konaté", headline: "Assistante de direction bilingue : agendas complexes, déplacements, comptes-rendus impeccables.", bio: "Assistante de direction bilingue : agendas complexes, organisation de déplacements, comptes-rendus impeccables et confidentialité totale.", specialties: ["Admin", "Agenda"], location: "Paris", region: "idf", languages: ["FR", "EN"], availability: "available", availabilityNote: null },
+  ];
+  for (const demo of demoProfiles) {
+    let user = await prisma.user.findUnique({ where: { email: demo.email } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: { email: demo.email, name: demo.displayName.split(" ")[0], role: "VA", emailVerified: new Date() },
+      });
+    }
+    await prisma.vaProfile.upsert({
+      where: { userId: user.id },
+      create: { userId: user.id, published: true, ...demoData(demo) },
+      update: {},
+    });
+  }
+
   console.log(
     `Seed OK — VA ${VA_EMAIL} (${clients.length} clients), VA ${VA2_EMAIL} (${leaClients.length} clients), ADMIN ${ADMIN_EMAIL}, CLIENT ${CLIENT_EMAIL} — mot de passe commun : ${TEST_PASSWORD}.`,
   );
+}
+
+function demoData(demo: {
+  displayName: string; headline: string; bio: string; specialties: string[];
+  location: string; region: string; languages: string[]; availability: string;
+  availabilityNote: string | null; email: string;
+}) {
+  const { email: _email, ...rest } = demo;
+  return rest;
 }
 
 main()

@@ -96,6 +96,10 @@ model VaProfile {
   bio          String
   specialties  String[]
   location     String?
+  region       String? // code région FR (idf, ara, naq…) pour la carte
+  languages    String[]
+  availability String   @default("available") // available | full
+  availabilityNote String?
   contactEmail String?
   website      String?
   published    Boolean  @default(false)

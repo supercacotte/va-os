@@ -11,10 +11,37 @@ export type VaProfileInput = {
   bio: string;
   specialties: string[];
   location: string | null;
+  region: string | null;
+  languages: string[];
+  availability: string;
+  availabilityNote: string | null;
   contactEmail: string | null;
   website: string | null;
   published: boolean;
 };
+
+export type DirectoryFilters = {
+  q?: string;
+  ville?: string;
+  specialties?: string[];
+  dispo?: boolean;
+  region?: string;
+};
+
+const PUBLIC_SELECT = {
+  id: true,
+  displayName: true,
+  headline: true,
+  bio: true,
+  specialties: true,
+  location: true,
+  region: true,
+  languages: true,
+  availability: true,
+  availabilityNote: true,
+  contactEmail: true,
+  website: true,
+} as const;
 
 export async function getVaProfile(userId: string) {
   return prisma.vaProfile.findUnique({ where: { userId } });
@@ -28,11 +55,19 @@ export async function upsertVaProfile(userId: string, data: VaProfileInput) {
   });
 }
 
-export async function getPublishedVaProfiles(query?: string) {
-  const q = query?.trim();
+export async function getPublishedVaProfiles(filters: DirectoryFilters = {}) {
+  const q = filters.q?.trim();
+  const ville = filters.ville?.trim();
+
   return prisma.vaProfile.findMany({
     where: {
       published: true,
+      ...(filters.region ? { region: filters.region } : {}),
+      ...(filters.dispo ? { availability: "available" } : {}),
+      ...(ville ? { location: { contains: ville, mode: "insensitive" } } : {}),
+      ...(filters.specialties?.length
+        ? { specialties: { hasSome: filters.specialties } }
+        : {}),
       ...(q
         ? {
             OR: [
@@ -46,15 +81,41 @@ export async function getPublishedVaProfiles(query?: string) {
         : {}),
     },
     orderBy: { createdAt: "asc" },
-    select: {
-      id: true,
-      displayName: true,
-      headline: true,
-      bio: true,
-      specialties: true,
-      location: true,
-      contactEmail: true,
-      website: true,
-    },
+    select: PUBLIC_SELECT,
   });
+}
+
+export async function getPublishedVaProfileById(id: string) {
+  return prisma.vaProfile.findFirst({
+    where: { id, published: true },
+    select: PUBLIC_SELECT,
+  });
+}
+
+// Agrégats pour la sidebar (spécialités fréquentes) et la carte (par région).
+export async function getDirectoryAggregates() {
+  const profiles = await prisma.vaProfile.findMany({
+    where: { published: true },
+    select: { specialties: true, region: true },
+  });
+
+  const specialtyCounts = new Map<string, number>();
+  const regionCounts = new Map<string, number>();
+  for (const profile of profiles) {
+    for (const specialty of profile.specialties) {
+      specialtyCounts.set(specialty, (specialtyCounts.get(specialty) ?? 0) + 1);
+    }
+    if (profile.region) {
+      regionCounts.set(profile.region, (regionCounts.get(profile.region) ?? 0) + 1);
+    }
+  }
+
+  return {
+    total: profiles.length,
+    topSpecialties: Array.from(specialtyCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([name]) => name),
+    regionCounts: Object.fromEntries(regionCounts),
+  };
 }

@@ -354,3 +354,27 @@
 - **Ça coince** : pas de modération admin de l'annuaire (D17 la prévoit
   « si abus ») ; page /annuaire non paginée (OK à l'échelle beta).
 - **Prochaine session** : Phase 6 — abonnements Stripe.
+
+## 24/07 — Annuaire selon la maquette home-annuaire
+- **Objectif de la session** : refonte de l'annuaire sur la maquette déposée
+  (filtres, disponibilité, carte de France, pages profil).
+- **Fait** :
+  - `VaProfile` enrichi : `region` (13 régions FR), `languages[]`,
+    `availability` (dispo/complète) + note (« dès sept. ») — formulaire
+    profil mis à jour, migration `va_profile_directory_fields`.
+  - `/annuaire` en 3 zones : sidebar filtres (recherche, ville, spécialités
+    agrégées dynamiquement, dispo, carte « toi, ici ? » avec sticker),
+    liste de cartes (avatars rayés à initiales avec liseré, pills dispo
+    lime / complète sand, langues, « Voir le profil »), tri
+    pertinence/A–Z, pagination « Voir plus », carte de France stylisée
+    avec bulles par région cliquables (filtre) + carte du premier profil.
+  - Page publique `/annuaire/[id]` (profil complet, meta dynamiques,
+    contact mailto + site) — 404 si non publié.
+  - Seed : 4 profils de démo publiés (les personas de la maquette).
+  - Vérifié e2e : layout desktop conforme, filtre dispo (exclut
+    « complète »), filtre région via bulle (ara → Sarah seule), détail 200.
+- **Écarts maquette assumés** : le rayon en km nécessite un géocodage
+  externe → remplacé par le filtre par région via la carte (illustrative,
+  pas Natural Earth) ; « Tarifs » toujours absent de la nav (page en
+  Phase 6) ; « Voir plus » recharge la page (pas d'infinite scroll).
+- **Prochaine session** : Phase 6 — abonnements Stripe (et page Tarifs).

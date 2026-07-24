@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { upsertProfileAction, type ProfileFormState } from "@/lib/actions/profile";
+import { REGIONS } from "@/lib/regions";
 
 type Profile = {
   displayName: string;
@@ -10,6 +11,10 @@ type Profile = {
   bio: string;
   specialties: string[];
   location: string | null;
+  region: string | null;
+  languages: string[];
+  availability: string;
+  availabilityNote: string | null;
   contactEmail: string | null;
   website: string | null;
   published: boolean;
@@ -91,16 +96,46 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="location" className={LABEL}>
-            Localisation <span className="font-medium opacity-60">(optionnel)</span>
+            Ville <span className="font-medium opacity-60">(optionnel)</span>
           </label>
           <input
             id="location"
             name="location"
             defaultValue={profile?.location ?? ""}
-            placeholder="Lyon / remote"
+            placeholder="Lyon — full remote"
             className={FIELD}
           />
           {state?.errors?.location && <p className={ERROR}>{state.errors.location[0]}</p>}
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="region" className={LABEL}>
+            Région <span className="font-medium opacity-60">(pour la carte)</span>
+          </label>
+          <select
+            id="region"
+            name="region"
+            defaultValue={profile?.region ?? ""}
+            className={FIELD}
+          >
+            <option value="">—</option>
+            {REGIONS.map((region) => (
+              <option key={region.code} value={region.code}>
+                {region.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="languages" className={LABEL}>
+            Langues <span className="font-medium opacity-60">(FR, EN…)</span>
+          </label>
+          <input
+            id="languages"
+            name="languages"
+            defaultValue={profile?.languages.join(", ") ?? ""}
+            placeholder="FR, EN"
+            className={FIELD}
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="contactEmail" className={LABEL}>
@@ -132,6 +167,38 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
           className={FIELD}
         />
         {state?.errors?.website && <p className={ERROR}>{state.errors.website[0]}</p>}
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="availability" className={LABEL}>
+            Disponibilité
+          </label>
+          <select
+            id="availability"
+            name="availability"
+            defaultValue={profile?.availability ?? "available"}
+            className={FIELD}
+          >
+            <option value="available">dispo maintenant ✓</option>
+            <option value="full">complète (préciser à côté)</option>
+          </select>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="availabilityNote" className={LABEL}>
+            Précision <span className="font-medium opacity-60">(« dès sept. »…)</span>
+          </label>
+          <input
+            id="availabilityNote"
+            name="availabilityNote"
+            defaultValue={profile?.availabilityNote ?? ""}
+            placeholder="dès sept."
+            className={FIELD}
+          />
+          {state?.errors?.availabilityNote && (
+            <p className={ERROR}>{state.errors.availabilityNote[0]}</p>
+          )}
+        </div>
       </div>
 
       <label className="flex items-center gap-3 rounded-[14px] bg-paper px-4 py-3">

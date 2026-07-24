@@ -43,6 +43,25 @@ const ProfileSchema = z.object({
     .trim()
     .transform((v) => (v && !/^https?:\/\//.test(v) ? `https://${v}` : v || null))
     .pipe(z.url("URL invalide.").nullable()),
+  region: z
+    .string()
+    .trim()
+    .transform((v) => v || null),
+  languages: z
+    .string()
+    .trim()
+    .transform((v) =>
+      v
+        .split(",")
+        .map((item) => item.trim().toUpperCase())
+        .filter(Boolean)
+        .slice(0, 5),
+    ),
+  availabilityNote: z
+    .string()
+    .trim()
+    .max(40, "La note de disponibilité est trop longue (40 caractères max).")
+    .transform((v) => v || null),
 });
 
 export type ProfileFormState =
@@ -70,6 +89,9 @@ export async function upsertProfileAction(
     location: formData.get("location") ?? "",
     contactEmail: formData.get("contactEmail") ?? "",
     website: formData.get("website") ?? "",
+    region: formData.get("region") ?? "",
+    languages: formData.get("languages") ?? "",
+    availabilityNote: formData.get("availabilityNote") ?? "",
   });
   if (!validated.success) {
     return { errors: z.flattenError(validated.error).fieldErrors };
@@ -77,6 +99,7 @@ export async function upsertProfileAction(
 
   await upsertVaProfile(session.user.id, {
     ...validated.data,
+    availability: formData.get("availability") === "full" ? "full" : "available",
     published: formData.get("published") === "on",
   });
 
