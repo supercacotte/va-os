@@ -197,6 +197,9 @@ model Task {
   mission         Mission        @relation(fields: [missionId], references: [id], onDelete: Cascade)
   title           String
   done            Boolean        @default(false)
+  // D19 : échéance optionnelle, date seule (pas d'heure) — auto pour les
+  // occurrences récurrentes (fin de la période).
+  dueDate         DateTime?      @db.Date
   source          String         @default("manual") // manual | meeting_sync | client_request | recurring
   recurringTaskId String?
   recurringTask   RecurringTask? @relation(fields: [recurringTaskId], references: [id], onDelete: SetNull)
