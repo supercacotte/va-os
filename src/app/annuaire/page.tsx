@@ -69,7 +69,6 @@ export default async function AnnuairePage({
       : profiles;
   const visible = sorted.slice(0, page * PAGE_SIZE);
   const hasMore = sorted.length > visible.length;
-  const featured = visible[0];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -108,7 +107,7 @@ export default async function AnnuairePage({
       </header>
 
       <main className="flex-1 bg-paper">
-        <div className="grid lg:grid-cols-[280px_minmax(0,1fr)_400px]">
+        <div className="grid lg:grid-cols-[260px_minmax(0,1fr)_360px]">
           {/* Sidebar filtres */}
           <aside className="border-b border-ink/10 px-6 py-8 lg:border-b-0 lg:border-r">
             <form method="GET" className="flex flex-col gap-5">
@@ -261,7 +260,7 @@ export default async function AnnuairePage({
                 {visible.map((profile) => (
                   <article
                     key={profile.id}
-                    className="flex flex-wrap items-start gap-5 rounded-[18px] bg-paper p-6 shadow-sticker ring-1 ring-ink/5"
+                    className="flex items-start gap-5 rounded-[18px] bg-paper p-5 shadow-sticker ring-1 ring-ink/5"
                   >
                     <VaAvatar name={profile.displayName} />
                     <div className="min-w-0 flex-1">
@@ -287,11 +286,11 @@ export default async function AnnuairePage({
                         </p>
                       )}
                       {profile.headline && (
-                        <p className="mt-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
+                        <p className="mt-1.5 line-clamp-2 text-[13px] font-medium leading-relaxed text-ink opacity-80">
                           {profile.headline}
                         </p>
                       )}
-                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <div className="mt-2.5 flex flex-wrap items-center gap-2">
                         {profile.specialties.slice(0, 4).map((specialty) => (
                           <span
                             key={specialty}
@@ -329,16 +328,6 @@ export default async function AnnuairePage({
               regionCounts={aggregates.regionCounts}
               activeRegion={params.region}
               buildHref={(region) => buildQuery(params, { region, page: null })}
-              featured={
-                featured
-                  ? {
-                      id: featured.id,
-                      displayName: featured.displayName,
-                      location: featured.location,
-                      available: featured.availability === "available",
-                    }
-                  : null
-              }
             />
           </aside>
         </div>
