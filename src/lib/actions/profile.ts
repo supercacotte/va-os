@@ -62,6 +62,16 @@ const ProfileSchema = z.object({
     .trim()
     .max(40, "La note de disponibilité est trop longue (40 caractères max).")
     .transform((v) => v || null),
+  hourlyRate: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/[^0-9]/g, ""))
+    .transform((v) => (v ? Math.min(Number(v), 999) : null)),
+  capacityNote: z
+    .string()
+    .trim()
+    .max(30, "La capacité est trop longue (30 caractères max).")
+    .transform((v) => v || null),
 });
 
 export type ProfileFormState =
@@ -92,6 +102,8 @@ export async function upsertProfileAction(
     region: formData.get("region") ?? "",
     languages: formData.get("languages") ?? "",
     availabilityNote: formData.get("availabilityNote") ?? "",
+    hourlyRate: formData.get("hourlyRate") ?? "",
+    capacityNote: formData.get("capacityNote") ?? "",
   });
   if (!validated.success) {
     return { errors: z.flattenError(validated.error).fieldErrors };
@@ -100,6 +112,7 @@ export async function upsertProfileAction(
   await upsertVaProfile(session.user.id, {
     ...validated.data,
     availability: formData.get("availability") === "full" ? "full" : "available",
+    showStats: formData.get("showStats") === "on",
     published: formData.get("published") === "on",
   });
 

@@ -17,6 +17,9 @@ export type VaProfileInput = {
   availabilityNote: string | null;
   contactEmail: string | null;
   website: string | null;
+  hourlyRate: number | null;
+  capacityNote: string | null;
+  showStats: boolean;
   published: boolean;
 };
 
@@ -41,6 +44,10 @@ const PUBLIC_SELECT = {
   availabilityNote: true,
   contactEmail: true,
   website: true,
+  hourlyRate: true,
+  capacityNote: true,
+  showStats: true,
+  userId: true,
 } as const;
 
 export async function getVaProfile(userId: string) {
@@ -117,5 +124,27 @@ export async function getDirectoryAggregates() {
       .slice(0, 6)
       .map(([name]) => name),
     regionCounts: Object.fromEntries(regionCounts),
+  };
+}
+
+// Stats affichées automatiquement sur la fiche (maquette 30a) — calculées
+// depuis l'espace de la VA, jamais saisies.
+export async function getVaPublicStats(vaId: string) {
+  const [clientCount, missionCount, entries] = await Promise.all([
+    prisma.client.count({ where: { vaId } }),
+    prisma.mission.count({ where: { client: { vaId } } }),
+    prisma.timeEntry.findMany({
+      where: { endedAt: { not: null }, task: { mission: { client: { vaId } } } },
+      select: { startedAt: true, endedAt: true },
+    }),
+  ]);
+  const trackedMs = entries.reduce(
+    (sum, entry) => sum + (entry.endedAt!.getTime() - entry.startedAt.getTime()),
+    0,
+  );
+  return {
+    clientCount,
+    missionCount,
+    hoursTracked: Math.round(trackedMs / 3_600_000),
   };
 }

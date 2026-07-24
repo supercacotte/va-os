@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getPublishedVaProfileById } from "@/lib/data/profile";
+import { getPublishedVaProfileById, getVaPublicStats } from "@/lib/data/profile";
 import { regionLabel } from "@/lib/regions";
 import Footer from "@/components/Footer";
 import VaAvatar from "@/components/annuaire/VaAvatar";
@@ -27,6 +27,7 @@ export default async function VaProfilePage({
   if (!profile) notFound();
 
   const region = regionLabel(profile.region);
+  const stats = profile.showStats ? await getVaPublicStats(profile.userId) : null;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -110,6 +111,52 @@ export default async function VaProfilePage({
                     {specialty}
                   </span>
                 ))}
+              </div>
+            )}
+
+            {(profile.hourlyRate || profile.capacityNote) && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {profile.hourlyRate && (
+                  <span className="rounded-full bg-sand px-3 py-1.5 text-xs font-bold text-ink">
+                    {profile.hourlyRate} €/h
+                  </span>
+                )}
+                {profile.capacityNote && (
+                  <span className="rounded-full bg-sand px-3 py-1.5 text-xs font-bold text-ink">
+                    capacité : {profile.capacityNote}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {stats && (
+              <div className="mt-6 grid grid-cols-3 gap-3 rounded-[16px] bg-sand p-5 text-center">
+                <div>
+                  <p className="text-[26px] font-bold leading-tight text-ink">
+                    {stats.clientCount}
+                  </p>
+                  <p className="text-[11px] font-semibold text-ink opacity-60">
+                    client{stats.clientCount > 1 ? "s" : ""} actif
+                    {stats.clientCount > 1 ? "s" : ""}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[26px] font-bold leading-tight text-ink">
+                    {stats.missionCount}
+                  </p>
+                  <p className="text-[11px] font-semibold text-ink opacity-60">
+                    mission{stats.missionCount > 1 ? "s" : ""} menée
+                    {stats.missionCount > 1 ? "s" : ""}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[26px] font-bold leading-tight text-ink">
+                    {stats.hoursTracked}
+                  </p>
+                  <p className="text-[11px] font-semibold text-ink opacity-60">
+                    heures trackées
+                  </p>
+                </div>
               </div>
             )}
 
