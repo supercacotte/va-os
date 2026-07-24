@@ -42,9 +42,17 @@
 
 <!-- Réordonnancement du 23/07 (D20) : 6 = SOP (ex-8), 7 = Stripe (ex-6),
      8 = Qonto (ex-7, en dernier — vérification de l'accès développeur ~7 j). -->
-## Phase 6 — Procédures / SOP (ex-Phase 8) (semaine du 18 août)
+## Phase 6 — Procédures / SOP par client (ex-Phase 8, amendée le 23/07 — D22) (semaine du 18 août)
+- `Procedure.clientId` obligatoire — pas de bibliothèque centrale : les
+  procédures se consultent depuis la fiche client (VA) et le portail du
+  client concerné (lecture seule, 4e capacité du portail — D22).
 - Éditeur repris de `StepsEditor` (TipTap + sanitize).
-- Templates SLC pré-chargés (seed), flag `isSlcTemplate`.
+- Action « Dupliquer vers un autre client » côté VA.
+- Templates SLC pré-chargés (seed), flag `isSlcTemplate` : modèles proposés
+  à la création uniquement, jamais listés comme procédures.
+- Sécurité (D12) : lib/data filtre par `vaId` ET, côté portail, par le
+  `clientId` du compte connecté — un client ne voit jamais les procédures
+  d'un autre client de la même VA.
 
 ## Phase 7 — Abonnements Stripe PWYW (ex-Phase 6) (semaine du 18 août)
 - PWYW (D21) : un seul Price à montant libre — `custom_unit_amount` avec

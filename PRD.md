@@ -24,8 +24,11 @@ outil : le temps tracké devient un rapport d'activité, qui devient une facture
   dimanche. C'est elle qui paie l'abonnement.
 - **Le client de Léa** — fondateur ou dirigeant de PME. Ne paie rien, ne
   configure rien. Portail volontairement minimal : consulter l'avancement,
-  déposer une demande, voir le rapport d'activité. **Trois capacités, pas une
-  de plus** (lock-in par l'habitude, sans surface de support).
+  déposer une demande, voir le rapport d'activité, consulter les procédures
+  de son compte (lecture seule). **Quatre capacités, pas une de plus**
+  (lock-in par l'habitude, sans surface de support — la règle des 3 a été
+  amendée le 23/07, D22 : la 4e est en lecture seule et remplace le dépôt
+  de SOP dans le Notion du client).
 
 ## 3. Offres
 
@@ -54,8 +57,14 @@ sync réunions + canal chat au palier supérieur).
 2. Chrono nommable, rattaché à une tâche/mission, éditable a posteriori.
 3. Rapport d'activité par client et par période + export PDF.
 4. Génération de facture semi-automatique via **API Qonto** (bouton, pas d'envoi auto).
-5. Bibliothèque de procédures avec template guidé.
-6. Portail client : 3 capacités (avancement / demande / rapport).
+5. Procédures (SOP) **rattachées à un client** (amendement du 23/07, D22) :
+   `Procedure.clientId` obligatoire, pas de bibliothèque centrale —
+   consultation depuis la fiche client (VA) et le portail (client, lecture
+   seule). Action « Dupliquer vers un autre client » côté VA. Les templates
+   SLC restent des modèles proposés à la création, jamais des procédures
+   visibles.
+6. Portail client : 4 capacités (avancement / demande / rapport /
+   procédures en lecture seule — D22).
 7. Sync réunions (incluse, D21) : ingestion unifiée, adapters dans l'ordre —
    Fireflies (webhooks) → Granola (polling via n8n sur le VPS) → Fathom (V1.1).
 8. Abonnements Stripe PWYW (un plan, montant libre — D21) + gestion du statut d'abonnement.
@@ -168,6 +177,7 @@ model TimeEntry {
 model Procedure {
   id        String   @id @default(cuid())
   vaId      String
+  clientId  String   // D22 : obligatoire — une procédure appartient à un client
   title     String
   steps     String   // HTML sanitizé (pattern TipTap + sanitize-html du repo)
   isSlcTemplate Boolean @default(false)
