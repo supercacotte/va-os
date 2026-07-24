@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import Footer from "@/components/Footer";
+import RotatingName from "@/components/landing/RotatingName";
+import TickingClock from "@/components/landing/TickingClock";
 
 const SPACE_BY_ROLE = {
   VA: "/app",
@@ -66,17 +68,25 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-sand px-6 pb-16 pt-14 text-center">
-        <span className="absolute left-[12%] top-16 hidden -rotate-6 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
-          to-do list
+        <span className="animate-float absolute left-[12%] top-16 hidden md:block" style={{ animationDelay: "0s" }}>
+          <span className="inline-block -rotate-6 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            to-do list
+          </span>
         </span>
-        <span className="absolute left-[6%] top-32 hidden rotate-3 rounded-[8px] border-4 border-paper bg-lilac px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
-          deadlines
+        <span className="animate-float absolute left-[6%] top-32 hidden md:block" style={{ animationDelay: "0.9s" }}>
+          <span className="inline-block rotate-3 rounded-[8px] border-4 border-paper bg-lilac px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            deadlines
+          </span>
         </span>
-        <span className="absolute right-[10%] top-14 hidden rotate-2 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
-          emails
+        <span className="animate-float absolute right-[10%] top-14 hidden md:block" style={{ animationDelay: "1.7s" }}>
+          <span className="inline-block rotate-2 rounded-[8px] border-4 border-paper bg-lime px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            emails
+          </span>
         </span>
-        <span className="absolute right-[7%] top-32 hidden -rotate-3 rounded-[8px] border-4 border-paper bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker md:block">
-          factures
+        <span className="animate-float absolute right-[7%] top-32 hidden md:block" style={{ animationDelay: "2.5s" }}>
+          <span className="inline-block -rotate-3 rounded-[8px] border-4 border-paper bg-pink px-3 py-1 text-xs font-bold text-ink shadow-sticker">
+            factures
+          </span>
         </span>
 
         <p className="text-[13px] font-bold uppercase tracking-[1.5px] text-ink">
@@ -164,10 +174,10 @@ export default async function Home() {
                 <div className="flex items-center justify-between">
                   <p className="text-[11px] font-bold text-ink">En cours</p>
                   <span className="rotate-2 rounded-full bg-lime px-1.5 py-0.5 text-[8px] font-bold text-ink">
-                    ● rec
+                    <span className="animate-pulse">●</span> rec
                   </span>
                 </div>
-                <p className="mt-2 font-bowlby text-lg leading-none text-ink">01:23:47</p>
+                <p className="mt-2 font-bowlby text-lg leading-none text-ink"><TickingClock /></p>
                 <p className="mt-1 text-[9px] font-semibold text-ink opacity-70">
                   Marie — Réseaux sociaux
                 </p>
@@ -185,16 +195,27 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Bandeau ink */}
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-ink px-6 py-4">
-        {MARQUEE.map((item, index) => (
-          <span key={item} className="flex items-center gap-4 text-sm font-bold text-paper">
-            {item}
-            {index < MARQUEE.length - 1 && (
-              <span className={MARQUEE_COLORS[index % MARQUEE_COLORS.length]}>✦</span>
-            )}
-          </span>
-        ))}
+      {/* Bandeau ink défilant */}
+      <div className="marquee-mask overflow-hidden bg-ink py-4">
+        <div className="flex w-max animate-marquee">
+          {[0, 1].map((copy) => (
+            <div
+              key={copy}
+              aria-hidden={copy === 1}
+              className="flex items-center gap-8 pr-8"
+            >
+              {MARQUEE.map((item, index) => (
+                <span
+                  key={item}
+                  className="flex items-center gap-8 whitespace-nowrap text-sm font-bold text-paper"
+                >
+                  {item}
+                  <span className={MARQUEE_COLORS[index % MARQUEE_COLORS.length]}>✦</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Chrono. Suivi de mission. Rapport. */}
@@ -216,10 +237,10 @@ export default async function Home() {
               <div className="flex items-center justify-between">
                 <p className="text-[13px] font-bold text-ink">En cours</p>
                 <span className="rounded-full border-2 border-paper bg-lime px-2 py-0.5 text-[10px] font-bold text-ink">
-                  ● rec
+                  <span className="animate-pulse">●</span> rec
                 </span>
               </div>
-              <p className="mt-2 font-bowlby text-[28px] leading-none text-ink">01:23:47</p>
+              <p className="mt-2 font-bowlby text-[28px] leading-none text-ink"><TickingClock /></p>
               <div className="mt-3 flex gap-2">
                 <span className="rounded-[8px] bg-ink px-3 py-1.5 text-xs font-bold text-paper">
                   ⏸ Pause
@@ -322,7 +343,7 @@ export default async function Home() {
             <div className="rounded-[18px] bg-lilac p-5 shadow-sticker">
               <p className="text-[13px] font-bold text-ink">Un truc à déléguer ?</p>
               <p className="mt-1 font-bowlby text-[24px] leading-tight text-ink">
-                Demande à Julia.
+                Demande à <RotatingName />.
               </p>
               <div className="mt-3 rounded-[10px] bg-paper/70 px-3 py-2.5 text-[12px] font-medium text-ink opacity-70">
                 Décris ce dont tu as besoin…
