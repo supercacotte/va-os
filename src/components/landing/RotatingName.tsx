@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 // « Demande à {prénom}. » — le prénom tourne. Commence par Julia (SSR stable).
+// 8 caractères max pour éviter les sauts de mise en page.
 const NAMES = [
   "Julia",
   "Camille",
@@ -20,7 +21,7 @@ const NAMES = [
   "Clara",
   "Élodie",
   "Anaïs",
-  "Charlotte",
+  "Inès",
   "Juliette",
   "Amandine",
   "Margaux",
@@ -32,7 +33,7 @@ export default function RotatingName() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((current) => (current + 1) % NAMES.length);
-    }, 2200);
+    }, 1500);
     return () => clearInterval(interval);
   }, []);
 
