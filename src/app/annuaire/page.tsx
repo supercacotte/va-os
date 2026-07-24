@@ -15,7 +15,7 @@ export const metadata = {
     "Trouvez une assistante virtuelle indépendante : profils, spécialités, disponibilité et contact direct. Référencement gratuit pour les VA sur VA Desk.",
 };
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 8;
 const FIELD =
   "w-full rounded-[10px] bg-sand px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30";
 const SIDE_LABEL = "text-[13px] font-bold text-ink";
@@ -325,29 +325,20 @@ export default async function AnnuairePage({
 
           {/* Carte */}
           <aside className="hidden px-6 py-8 lg:block">
-            {featured && (
-              <div className="mb-4 flex items-center gap-3 rounded-[16px] bg-paper p-4 shadow-sticker ring-1 ring-ink/5">
-                <VaAvatar name={featured.displayName} size="sm" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-ink">{featured.displayName}</p>
-                  <p className="truncate text-xs font-medium text-ink opacity-70">
-                    {[featured.location, featured.availability === "available" ? "dispo ✓" : null]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                </div>
-                <Link
-                  href={`/annuaire/${featured.id}`}
-                  className="shrink-0 rounded-xl bg-orange px-3 py-2 text-xs font-bold text-ink shadow-sticker transition hover:brightness-95"
-                >
-                  Voir le profil
-                </Link>
-              </div>
-            )}
             <FranceMap
               regionCounts={aggregates.regionCounts}
               activeRegion={params.region}
               buildHref={(region) => buildQuery(params, { region, page: null })}
+              featured={
+                featured
+                  ? {
+                      id: featured.id,
+                      displayName: featured.displayName,
+                      location: featured.location,
+                      available: featured.availability === "available",
+                    }
+                  : null
+              }
             />
           </aside>
         </div>
