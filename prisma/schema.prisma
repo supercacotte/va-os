@@ -45,6 +45,7 @@ model User {
 
   subscription Subscription?
   vaProfile    VaProfile?
+  settings     UserSettings?
   clients      Client[]      @relation("VaClients")
   accounts     Account[]
   sessions     Session[]
@@ -102,9 +103,29 @@ model VaProfile {
   availabilityNote String?
   contactEmail String?
   website      String?
+  hourlyRate   Int? // €/h, affiché sur la fiche seulement
+  capacityNote String? // « 10 h/mois »
+  showStats    Boolean  @default(true) // stats auto sur la fiche publique
   published    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// Réglages privés (maquette 30b). Stockés dès maintenant ; les notifications
+// deviendront effectives avec l'envoi d'emails (Resend) et l'arrondi avec
+// les rapports.
+model UserSettings {
+  id                     String  @id @default(cuid())
+  userId                 String  @unique
+  user                   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifyClientRequest    Boolean @default(true)
+  notifyDirectoryContact Boolean @default(true)
+  notifyLongTimer        Boolean @default(true)
+  notifyWeeklyDigest     Boolean @default(false)
+  timezone               String  @default("Europe/Paris")
+  timerRounding          String  @default("quarter") // none | quarter | half
+  weekStart              String  @default("monday")
+  locale                 String  @default("fr")
 }
 
 model Subscription {
