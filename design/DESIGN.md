@@ -16,10 +16,11 @@ Cockpit joyeux et éditorial pour assistantes virtuelles. Principe directeur : *
 | `lime` | `#E3F85A` | **Succès / fait** : badges « tout est fait ✓ », badge compteur du titre, « ● rec » |
 | `orange` | `#FCA049` | **Action / à faire** : bouton Démarrer, badges « n à faire », avatar, soulignés de liens |
 | `olive` | `#CBC064` | Réserve (graphiques, catégories). Ne pas utiliser en fond de texte long |
+| `tomato` | `#FF9D92` | **Alerte / en retard** : uniquement le sticker « en retard — … » d'une échéance dépassée. Jamais en fond de surface |
 
 ### Logique couleur (importante)
 - **La couleur code le client** : chaque client reçoit une couleur (lilac, pink, puis olive…) reprise sur sa carte, la pastille `›` de ses missions, et le panneau chrono quand un chrono tourne pour lui.
-- **Orange = il y a une action à faire. Lime = c'est fait.** Ne jamais inverser, ne jamais utiliser ces deux couleurs pour autre chose.
+- **Orange = il y a une action à faire. Lime = c'est fait. Tomato = c'est en retard.** Ne jamais inverser, ne jamais utiliser ces couleurs pour autre chose. Tomato reste rare par construction : s'il y en a partout, le problème n'est pas la couleur.
 - Une seule signification par couleur et par écran. Le nav actif est en `ink`, jamais dans une couleur client.
 
 ### Palette clients étendue (20 couleurs)

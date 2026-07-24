@@ -13,6 +13,8 @@
   --lime: #e3f85a;
   --orange: #fca049;
   --olive: #cbc064;
+  /* Rouge doux réservé aux alertes (échéance dépassée) — jamais en surface */
+  --tomato: #ff9d92;
 
   /* Palette clients 1-20 (hex de secours — oklch ci-dessous) */
   --client-1: #c5c4ff;
@@ -42,6 +44,7 @@
   :root {
     --lilac: oklch(0.83 0.09 282);
     --pink: oklch(0.85 0.11 340);
+    --tomato: oklch(0.78 0.13 28);
     --client-1: oklch(0.83 0.09 282);
     --client-2: oklch(0.85 0.11 340);
     --client-3: oklch(0.86 0.09 216);
@@ -74,6 +77,7 @@
   --color-lime: var(--lime);
   --color-orange: var(--orange);
   --color-olive: var(--olive);
+  --color-tomato: var(--tomato);
 
   --color-client-1: var(--client-1);
   --color-client-2: var(--client-2);

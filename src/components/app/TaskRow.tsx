@@ -169,11 +169,14 @@ export default function TaskRow({
                 </span>
               )}
               {task.due && !optimisticDone && (
-                // D19 : l'échéance en mots — orange = à faire hier ou avant.
+                // D19 : l'échéance en mots. Dépassée = sticker tomato penché,
+                // le seul rouge de l'app — il doit sauter aux yeux.
                 <span
                   suppressHydrationWarning
                   className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                    isOverdue(task.due) ? "bg-orange text-ink" : "bg-paper text-ink/60"
+                    isOverdue(task.due)
+                      ? "-rotate-2 bg-tomato px-2.5 py-1 text-ink shadow-sticker"
+                      : "bg-paper text-ink/60"
                   }`}
                 >
                   {isOverdue(task.due) ? "en retard — " : "pour "}
