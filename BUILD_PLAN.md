@@ -40,19 +40,23 @@
   rapports partagés. Rien d'autre.
 - 🎯 **Jalon beta : démo à Julia + 2-3 beta-testeuses SLC. Ne pas repousser.**
 
-## Phase 6 — Abonnements Stripe (semaine du 18 août)
+<!-- Réordonnancement du 23/07 (D20) : 6 = SOP (ex-8), 7 = Stripe (ex-6),
+     8 = Qonto (ex-7, en dernier — vérification de l'accès développeur ~7 j). -->
+## Phase 6 — Procédures / SOP (ex-Phase 8) (semaine du 18 août)
+- Éditeur repris de `StepsEditor` (TipTap + sanitize).
+- Templates SLC pré-chargés (seed), flag `isSlcTemplate`.
+
+## Phase 7 — Abonnements Stripe PWYW (ex-Phase 6) (semaine du 18 août)
 - 2 Price IDs, checkout `mode: subscription`, webhook
   `/api/stripe/webhook`, table `Subscription`, gating du plan Pro.
 - Page "Mon abonnement" (portail de facturation Stripe hébergé).
 
-## Phase 7 — Facturation Qonto (semaine du 18 août, si accès API obtenu)
+## Phase 8 — Facturation Qonto (ex-Phase 7) (semaine du 25 août, si accès API obtenu)
+- Placée en dernier : l'accès développeur Qonto est en cours de
+  vérification (~7 jours) — dépendance externe, on ne bloque rien derrière.
 - OAuth Qonto par VA, tokens chiffrés.
 - Bouton "Générer la facture" depuis un rapport d'activité → brouillon Qonto.
 - ⚠️ Si l'accès API traîne : la V1 sort avec export PDF seul, Qonto en V1.1.
-
-## Phase 8 — Procédures / SOP (semaine du 25 août)
-- Éditeur repris de `StepsEditor` (TipTap + sanitize).
-- Templates SLC pré-chargés (seed), flag `isSlcTemplate`.
 
 ## Phase 9 — Sync réunions, plan Pro (semaine du 25 août)
 - Route `/api/inbound/[provider]` + table `MeetingItem` dédupliquée.
