@@ -65,8 +65,16 @@ Abonnement Stripe (mode `subscription`), essai à définir, annulation self-serv
 
 - **V2** : ingestion email automatique, tags auto + suggestion de procédure,
   curseur d'efficience, archives avec recherche, facturation programmée,
-  WhatsApp/Telegram (risque d'API non officielles ; onboarding Meta
-  disproportionné à ce prix), envoi Gmail (revue CASA Google).
+  **canal d'entrée de tâches par chat** : bot Telegram dédié (**API
+  officielle** — la contrainte de D4 tient toujours, pas d'API non
+  officielle) permettant aux clients d'envoyer des demandes qui deviennent
+  des tâches `source client_request`, liaison client via lien d'invitation ;
+  WhatsApp envisageable ensuite **via API officielle uniquement** (l'onboarding
+  Meta reste disproportionné en self-service, cf. D4). Dans l'offre V2 à
+  paliers, ce canal est **complémentaire de la sync réunions** : réservé au
+  palier supérieur, les deux couvrent l'entrée automatique de tâches (à
+  l'oral via les réunions, à l'écrit via le chat). Envoi Gmail (revue CASA
+  Google).
 - **V3 ou jamais** : coffre-fort de mots de passe persistant (jamais en
   vibe-coding — partage éphémère sécurisé seulement), mode équipe/agence,
   calendrier prédictif IA.
