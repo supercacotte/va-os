@@ -11,6 +11,7 @@ import AddMissionForm from "@/components/app/AddMissionForm";
 import MissionCard from "@/components/app/MissionCard";
 import AddTaskForm from "@/components/app/AddTaskForm";
 import TaskRow from "@/components/app/TaskRow";
+import { stopRecurringAction } from "@/lib/actions/tasks";
 
 const SECTION_LABEL = "text-[13px] font-bold uppercase tracking-[1.5px] text-ink";
 
@@ -116,6 +117,7 @@ export default async function ClientDetailPage({
                         title: task.title,
                         done: task.done,
                         source: task.source,
+                        recurring: task.recurringTask?.cadence ?? null,
                       }}
                       clientId={client.id}
                       timerActive={activeEntry?.task.id === task.id}
@@ -124,6 +126,31 @@ export default async function ClientDetailPage({
                 </ul>
               )}
               <AddTaskForm missionId={mission.id} clientId={client.id} />
+              {mission.recurringTasks.length > 0 && (
+                <div className="mt-3 flex flex-col gap-1 border-t border-ink/15 pt-2.5">
+                  {mission.recurringTasks.map((recurring) => (
+                    <div
+                      key={recurring.id}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <p className="min-w-0 flex-1 truncate text-xs font-semibold text-ink/70">
+                        ↻ {recurring.title} —{" "}
+                        {recurring.cadence === "weekly" ? "chaque semaine" : "chaque mois"}
+                      </p>
+                      <form action={stopRecurringAction}>
+                        <input type="hidden" name="recurringTaskId" value={recurring.id} />
+                        <input type="hidden" name="clientId" value={client.id} />
+                        <button
+                          type="submit"
+                          className="text-xs font-semibold text-ink/50 transition hover:text-ink"
+                        >
+                          Arrêter la récurrence
+                        </button>
+                      </form>
+                    </div>
+                  ))}
+                </div>
+              )}
             </MissionCard>
           ))}
 

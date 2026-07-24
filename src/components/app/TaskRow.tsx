@@ -7,7 +7,13 @@ import { deleteTaskAction, renameTaskAction, toggleTaskAction } from "@/lib/acti
 import { quickStartTimerAction, stopTimerAction } from "@/lib/actions/timeEntries";
 
 type Props = {
-  task: { id: string; title: string; done: boolean; source: string };
+  task: {
+    id: string;
+    title: string;
+    done: boolean;
+    source: string;
+    recurring?: string | null;
+  };
   clientId: string;
   timerActive?: boolean;
 };
@@ -91,6 +97,11 @@ export default function TaskRow({ task, clientId, timerActive = false }: Props) 
               {task.source === "client_request" && (
                 <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink">
                   demande client
+                </span>
+              )}
+              {task.recurring && (
+                <span className="ml-2 rounded-full bg-paper px-2 py-0.5 text-[11px] font-bold text-ink">
+                  ↻ {task.recurring === "weekly" ? "hebdo" : "mensuelle"}
                 </span>
               )}
             </span>

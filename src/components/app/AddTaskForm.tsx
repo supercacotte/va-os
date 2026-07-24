@@ -36,6 +36,19 @@ export default function AddTaskForm({ missionId, clientId }: Props) {
           placeholder="Ajouter une tâche…"
           className="min-w-0 flex-1 rounded-[10px] bg-paper px-4 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
         />
+        <label htmlFor={`recurrence-${missionId}`} className="sr-only">
+          Récurrence
+        </label>
+        <select
+          id={`recurrence-${missionId}`}
+          name="recurrence"
+          defaultValue="none"
+          className="rounded-[10px] bg-paper px-3 py-2.5 text-[13px] font-medium text-ink outline-none transition focus:ring-2 focus:ring-ink/30"
+        >
+          <option value="none">une fois</option>
+          <option value="weekly">↻ chaque semaine</option>
+          <option value="monthly">↻ chaque mois</option>
+        </select>
         <button
           disabled={pending}
           type="submit"

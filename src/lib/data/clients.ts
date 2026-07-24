@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { ensureRecurringTasksForVa } from "@/lib/data/recurring";
 import { CLIENT_COLOR_COUNT } from "@/lib/client-colors";
 
 // D12 : chaque fonction filtre par vaId (ou par l'utilisateur portail) dans sa
@@ -43,6 +44,7 @@ export async function getClientsForVa(vaId: string) {
 // Tout l'espace de travail de la VA pour le dashboard : clients → missions
 // → tâches, en un aller-retour.
 export async function getVaWorkspace(vaId: string) {
+  await ensureRecurringTasksForVa(vaId);
   return prisma.client.findMany({
     where: { vaId },
     orderBy: { createdAt: "asc" },
@@ -52,7 +54,13 @@ export async function getVaWorkspace(vaId: string) {
         include: {
           tasks: {
             orderBy: { createdAt: "asc" },
-            select: { id: true, title: true, done: true, source: true },
+            select: {
+              id: true,
+              title: true,
+              done: true,
+              source: true,
+              recurringTask: { select: { cadence: true } },
+            },
           },
         },
       },
@@ -70,6 +78,7 @@ export async function getClientOptionsForVa(vaId: string) {
 }
 
 export async function getClientDetailForVa(vaId: string, clientId: string) {
+  await ensureRecurringTasksForVa(vaId);
   return prisma.client.findFirst({
     where: { id: clientId, vaId },
     include: {
@@ -77,7 +86,15 @@ export async function getClientDetailForVa(vaId: string, clientId: string) {
       missions: {
         orderBy: { createdAt: "asc" },
         include: {
-          tasks: { orderBy: { createdAt: "asc" } },
+          tasks: {
+            orderBy: { createdAt: "asc" },
+            include: { recurringTask: { select: { cadence: true } } },
+          },
+          recurringTasks: {
+            where: { active: true },
+            orderBy: { createdAt: "asc" },
+            select: { id: true, title: true, cadence: true },
+          },
         },
       },
     },

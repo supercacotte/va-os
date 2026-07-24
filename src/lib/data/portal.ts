@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { ensureRecurringTasksForVa } from "@/lib/data/recurring";
 
 // D12 règle 4 : côté portail, TOUT est filtré par l'utilisateur connecté
 // (relation portalUser) — le clientId ne vient jamais d'un paramètre, et
@@ -9,6 +10,15 @@ import { prisma } from "@/lib/prisma";
 export const REQUEST_MISSION_NAME = "Demandes du portail";
 
 export async function getPortalOverview(userId: string) {
+  const base = await prisma.client.findFirst({
+    where: { portalUser: { id: userId } },
+    select: { vaId: true },
+  });
+  if (!base) return null;
+  // D16 : le client voit l'occurrence de la période même si sa VA n'a pas
+  // encore ouvert l'app.
+  await ensureRecurringTasksForVa(base.vaId);
+
   return prisma.client.findFirst({
     where: { portalUser: { id: userId } },
     include: {

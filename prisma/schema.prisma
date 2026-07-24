@@ -125,24 +125,43 @@ model Report {
 }
 
 model Mission {
-  id        String   @id @default(cuid())
-  clientId  String
-  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  name      String
-  status    String   @default("active")
-  tasks     Task[]
-  createdAt DateTime @default(now())
+  id             String          @id @default(cuid())
+  clientId       String
+  client         Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name           String
+  status         String          @default("active")
+  tasks          Task[]
+  recurringTasks RecurringTask[]
+  createdAt      DateTime        @default(now())
+}
+
+// D16 : modèle de tâche récurrente — les occurrences sont des Task normales,
+// générées paresseusement à l'ouverture (une par période, unique).
+model RecurringTask {
+  id          String   @id @default(cuid())
+  missionId   String
+  mission     Mission  @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  title       String
+  cadence     String // weekly | monthly
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  occurrences Task[]
 }
 
 model Task {
-  id          String      @id @default(cuid())
-  missionId   String
-  mission     Mission     @relation(fields: [missionId], references: [id], onDelete: Cascade)
-  title       String
-  done        Boolean     @default(false)
-  source      String      @default("manual") // manual | meeting_sync | client_request
-  timeEntries TimeEntry[]
-  createdAt   DateTime    @default(now())
+  id              String         @id @default(cuid())
+  missionId       String
+  mission         Mission        @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  title           String
+  done            Boolean        @default(false)
+  source          String         @default("manual") // manual | meeting_sync | client_request | recurring
+  recurringTaskId String?
+  recurringTask   RecurringTask? @relation(fields: [recurringTaskId], references: [id], onDelete: SetNull)
+  recurringPeriod String? // "2026-07" (monthly) | "2026-W31" (weekly)
+  timeEntries     TimeEntry[]
+  createdAt       DateTime       @default(now())
+
+  @@unique([recurringTaskId, recurringPeriod])
 }
 
 model TimeEntry {

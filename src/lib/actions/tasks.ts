@@ -10,6 +10,10 @@ import {
   toggleTaskForVa,
   updateTaskForVa,
 } from "@/lib/data/tasks";
+import {
+  createRecurringTaskForVa,
+  stopRecurringTaskForVa,
+} from "@/lib/data/recurring";
 
 const TitleSchema = z
   .string()
@@ -41,12 +45,36 @@ export async function createTaskAction(
   const title = TitleSchema.safeParse(formData.get("title"));
   if (!title.success) return { error: title.error.issues[0].message };
 
-  const task = await createTaskForVa(session.user.id, missionId, title.data);
-  if (!task) return { error: "Mission introuvable." };
+  // D16 : récurrence optionnelle à la création.
+  const recurrence = formData.get("recurrence");
+  if (recurrence === "weekly" || recurrence === "monthly") {
+    const template = await createRecurringTaskForVa(
+      session.user.id,
+      missionId,
+      title.data,
+      recurrence,
+    );
+    if (!template) return { error: "Mission introuvable." };
+  } else {
+    const task = await createTaskForVa(session.user.id, missionId, title.data);
+    if (!task) return { error: "Mission introuvable." };
+  }
 
   revalidatePath("/app");
   revalidatePath(`/app/clients/${clientId}`);
   return undefined;
+}
+
+export async function stopRecurringAction(formData: FormData) {
+  const session = await requireVa();
+
+  const recurringTaskId = formData.get("recurringTaskId");
+  const clientId = formData.get("clientId");
+  if (typeof recurringTaskId !== "string" || typeof clientId !== "string") return;
+
+  await stopRecurringTaskForVa(session.user.id, recurringTaskId);
+  revalidatePath("/app");
+  revalidatePath(`/app/clients/${clientId}`);
 }
 
 export async function renameTaskAction(

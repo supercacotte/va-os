@@ -59,7 +59,13 @@ export default async function AppPage() {
               id: mission.id,
               name: mission.name,
               status: mission.status,
-              tasks: mission.tasks,
+              tasks: mission.tasks.map((task) => ({
+                id: task.id,
+                title: task.title,
+                done: task.done,
+                source: task.source,
+                recurring: task.recurringTask?.cadence ?? null,
+              })),
             })),
           }))}
           activeTimer={

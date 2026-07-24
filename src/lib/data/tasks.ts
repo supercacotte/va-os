@@ -1,12 +1,14 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { ensureRecurringTasksForVa } from "@/lib/data/recurring";
 
 // D12 : le tenant (vaId) est vérifié dans la clause where de chaque fonction,
 // via la chaîne mission → client pour les tâches.
 
 // Liste plate des tâches de la VA, pour les selects (rattachement d'un temps).
 export async function getTasksForVa(vaId: string) {
+  await ensureRecurringTasksForVa(vaId);
   return prisma.task.findMany({
     where: { mission: { client: { vaId } } },
     orderBy: { createdAt: "asc" },
